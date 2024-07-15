@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express');
 const passportConfig = require('./passport-config');
 const app = express();
@@ -20,3 +21,9 @@ app.use('/ai', aiRouter);
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
 });
+
+/**
+ * Connect to the database
+ */
+const { connectToDatabase } = require('./database/db')
+connectToDatabase();
