@@ -19,8 +19,12 @@ passport.use(
 
 const authenticate = passport.authenticate('jwt', { session: false });
 
+const generateToken = (payload, expiresIn = '1h') => {
+  return jwt.sign(payload, SECRET_KEY, { expiresIn });
+};
+
 module.exports = {
   initialize: () => passport.initialize(),
   authenticate,
-  generateToken: (payload) => jwt.sign(payload, SECRET_KEY, { expiresIn: '1h' })
+  generateToken
 };
