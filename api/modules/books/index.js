@@ -42,6 +42,7 @@ async function searchBooksByTitle(partialName) {
   }
 
   let url = `https://www.googleapis.com/books/v1/volumes?q=intitle:${partialName}`;
+  const seenTitles = new Set();
 
   try {
     const response = await axios.get(url);
