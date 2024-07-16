@@ -42,7 +42,7 @@ const onSubmit = () => {
 
 <style scoped>
 .fill-height {
-  background-image: url('/public/wave_background.svg');
+  background-image: url('/public/blurry-gradient-haikei.svg');
   background-size: cover;
   background-position: center;
 }
