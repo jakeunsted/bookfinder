@@ -12,7 +12,7 @@ export default defineNuxtConfig({
         config.plugins.push(vuetify({ autoImport: true }))
       })
     },
-    './modules/eslintrc.js'
+    './modules/eslintrc.js',
   ],
   vite: {
     vue: {
@@ -21,4 +21,8 @@ export default defineNuxtConfig({
       },
     },
   },
+  // plugins: [
+  //   '~/plugins/fetch.ts' // Add this line to register the plugin
+  // ],
+  compatibilityDate: '2024-07-16',
 })

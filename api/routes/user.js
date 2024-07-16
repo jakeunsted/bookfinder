@@ -34,6 +34,7 @@ router.post(
  */
 router.post(
   '/logout',
+  passportConfig.authenticate,
   async (req, res) => {
     passportConfig.invalidateToken(req);
     res.json({ message: 'Logged out' });
@@ -75,6 +76,7 @@ router.post(
  */
 router.get(
   '/role/:id',
+  passportConfig.authenticate,
   async (req, res) => {
     const { id } = req.params;
     try {
@@ -83,6 +85,17 @@ router.get(
     } catch (error) {
       res.status(500).send(error.message);
     }
+  }
+);
+
+/**
+ * Check user authentication status
+ */
+router.get(
+  '/check-status',
+  passportConfig.authenticate,
+  async (req, res) => {
+    res.json({ status: 'Authenticated' });
   }
 );
 

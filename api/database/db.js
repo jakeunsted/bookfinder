@@ -21,10 +21,14 @@ async function connectToDatabase() {
 
     // init models
     const UserModel = require('./models/user.model');
+    const BookModel = require('./models/books.model');
     UserModel.init(sequelize);
+    BookModel.init(sequelize);
     
     // Sync models
-    await UserModel.sync(); // Add this line to sync the User model
+    await UserModel.sync();
+    await BookModel.sync();
+
     console.log('User model synced successfully');
   } catch (error) {
     console.error('Unable to connect to database: ', error);
