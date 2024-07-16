@@ -53,7 +53,7 @@ async function searchBooksByTitle(partialName) {
         description: book.volumeInfo.description,
         pageCount: book.volumeInfo.pageCount,
         categories: book.volumeInfo.categories,
-        image: book.volumeInfo.imageLinks?.thumbnail
+        image: book.volumeInfo.imageLinks?.thumbnail ?? 'nothing'
       }))
       .filter(book => {
         if (seenTitles.has(book.title)) {

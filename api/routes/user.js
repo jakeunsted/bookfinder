@@ -26,6 +26,14 @@ router.post(
     } else {
       res.status(401).send('Invalid credentials');
     }
+
+    // if (user exists) {
+    //   const payload = { id: user.id };
+    //   const token = passportConfig.generateToken(payload);
+    //   res.json({ token });
+    // } else {
+    //   res.status(401).send('Invalid credentials');
+    // }
   }
 );
 

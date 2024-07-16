@@ -21,8 +21,6 @@ passport.use(
     } catch (error) {
       return done(error, false);
     }
-
-    // return done(null, jwt_payload); // just generates a token
   })
 );
 
