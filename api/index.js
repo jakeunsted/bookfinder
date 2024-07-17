@@ -8,7 +8,7 @@ app.use(passportConfig.initialize());
 app.use(express.json());
 
 app.get('/health', (req, res) => {
-  res.send('Alive');
+  res.status(200).send('OK');
 });
 
 const booksRouter = require('./routes/books');
@@ -18,9 +18,10 @@ app.use('/books', booksRouter);
 app.use('/user', userRouter);
 app.use('/ai', aiRouter);
 
-app.listen(3001, () => {
-  console.log('Server is running on port 3001');
-});
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});;
 
 /**
  * Connect to the database
