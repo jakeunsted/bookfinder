@@ -14,7 +14,7 @@ async function getUserById(id) {
   }
   
   try {
-    const user = User.findByPk(id, options);
+    const user = await User.findByPk(id, options);
     if (!user) {
       throw new Error('User not found');
     }
@@ -37,7 +37,7 @@ async function getUserRoleById(id) {
   }
 
   try {
-    const user = User.findByPk(id, options);
+    const user = await User.findByPk(id, options);
     if (!user) {
       throw new Error('User not found');
     }
@@ -59,7 +59,7 @@ async function createUser(username, password, email, role) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const user = User.create({
+    const user = await User.create({
       username,
       password: hashedPassword,
       email,
@@ -77,7 +77,7 @@ async function createUser(username, password, email, role) {
  */
 async function deleteUserById(id) {
   try {
-    const user = User.findByPk(id);
+    const user = await User.findByPk(id);
     if (!user) {
       throw new Error('User not found');
     }

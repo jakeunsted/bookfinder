@@ -17,23 +17,18 @@ router.post(
     .withMessage('Password is required'),
   async (req, res) => {
     const { username, password } = req.body;
-  
-    // Validate the user credentials (this is just a demonstration, replace with your actual user validation)
-    if (username === 'jake' && password === 'test') {
-      const payload = { username };
+
+    try {
+      const validatedUser = await userService.verifyPassword(username, password);
+      if (!validatedUser) {
+        throw new Error('Invalid credentials');
+      }
+      const payload = { id: validatedUser.id };
       const token = passportConfig.generateToken(payload);
       res.json({ token });
-    } else {
-      res.status(401).send('Invalid credentials');
+    } catch (error) {
+      res.status(500).send(error.message);
     }
-
-    // if (user exists) {
-    //   const payload = { id: user.id };
-    //   const token = passportConfig.generateToken(payload);
-    //   res.json({ token });
-    // } else {
-    //   res.status(401).send('Invalid credentials');
-    // }
   }
 );
 
@@ -90,6 +85,23 @@ router.get(
     try {
       const role = await userService.getUserRoleById(id);
       res.json(role);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  }
+);
+
+/**
+ * Get user by id
+ */
+router.get(
+  '/:id',
+  passportConfig.authenticate,
+  async (req, res) => {
+    const { id } = req.params;
+    try {
+      const user = await userService.getUserById(id);
+      res.json(user);
     } catch (error) {
       res.status(500).send(error.message);
     }

@@ -10,9 +10,8 @@ const opts = {
 
 passport.use(
   new JwtStrategy(opts, async (jwt_payload, done) => {
-    // Here you can fetch the user from your database if needed
     try {
-      const user = await userService.getUserById(jwt_payload.id);
+      const user = await userService.getUserById(jwt_payload.userId);
       if (user) {
         return done(null, user);
       } else {
@@ -26,8 +25,10 @@ passport.use(
 
 const authenticate = (req, res, next) => {
   passport.authenticate('jwt', { session: false }, (err, user) => {
-    if (err || !user) {
-      console.log('not authorized');
+    if (err) {
+      return res.status(401).send('Unauthorized');
+    }
+    if (!user) {
       return res.status(401).send('Unauthorized');
     }
     req.user = user;
