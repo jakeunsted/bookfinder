@@ -115,7 +115,10 @@ router.get(
   '/check-status',
   passportConfig.authenticate,
   async (req, res) => {
-    res.json({ status: 'Authenticated' });
+    if (!req.user) {
+      return res.status(401).send('Unauthorized');
+    }
+    res.json({ status: 'Authenticated', user: req.user });
   }
 );
 

@@ -21,8 +21,10 @@ export default defineNuxtConfig({
       },
     },
   },
-  // plugins: [
-  //   '~/plugins/fetch.ts' // Add this line to register the plugin
-  // ],
+  runtimeConfig: {
+    public: {
+      jwtSecret: process.env.SECRET_KEY
+    }
+  },
   compatibilityDate: '2024-07-16',
 })

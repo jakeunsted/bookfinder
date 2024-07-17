@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
  * @param {number} id
  */
 async function getUserById(id) {
+  console.log('getUserById: ', id);
   const options = {
     attributes: {
       exclude: ['password']
@@ -29,6 +30,7 @@ async function getUserById(id) {
  * @param {number} id
  */
 async function getUserRoleById(id) {
+  console.log('getUserRoleById: ', id);
   const options = {
     attributes: {
       exclude: ['password']

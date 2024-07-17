@@ -10,8 +10,9 @@ const opts = {
 
 passport.use(
   new JwtStrategy(opts, async (jwt_payload, done) => {
+    console.log('jwt_payload: ', jwt_payload);
     try {
-      const user = await userService.getUserById(jwt_payload.userId);
+      const user = await userService.getUserById(jwt_payload.id);
       if (user) {
         return done(null, user);
       } else {
@@ -26,9 +27,11 @@ passport.use(
 const authenticate = (req, res, next) => {
   passport.authenticate('jwt', { session: false }, (err, user) => {
     if (err) {
+      console.log('Error authenticating user: ', err);
       return res.status(401).send('Unauthorized');
     }
     if (!user) {
+      console.log('No user found');
       return res.status(401).send('Unauthorized');
     }
     req.user = user;

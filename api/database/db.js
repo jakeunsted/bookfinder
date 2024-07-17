@@ -11,14 +11,13 @@ const sequelize = new Sequelize(process.env.DATABASE_NAME, process.env.DATABASE_
       require: true,
       rejectUnauthorized: false
     }
-  }
+  },
+  logging: true
 })
 
 async function connectToDatabase() {
   try {
     await sequelize.authenticate();
-    console.log('Connected to database successfully');
-
     // init models
     const UserModel = require('./models/user.model');
     const BookModel = require('./models/books.model');
@@ -29,7 +28,7 @@ async function connectToDatabase() {
     await UserModel.sync();
     await BookModel.sync();
 
-    console.log('User model synced successfully');
+    console.log('Connected to database successfully');
   } catch (error) {
     console.error('Unable to connect to database: ', error);
   }

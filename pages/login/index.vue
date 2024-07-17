@@ -7,9 +7,9 @@
           <v-card-text>
             <v-form @submit.prevent="onSubmit">
               <v-text-field
-                v-model="email"
-                label="Email"
-                type="email"
+                v-model="username"
+                label="Username"
+                type="username"
                 required
               ></v-text-field>
               <v-text-field
@@ -28,16 +28,23 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from 'vue';
+import { useAuth } from '~/composables/useAuth';
+import { useRouter } from 'vue-router';
 
-const email = ref('')
-const password = ref('')
+const username = ref('');
+const password = ref('');
+const { login } = useAuth();
+const router = useRouter();
 
-const onSubmit = () => {
-  // Handle login logic here
-  console.log('Email:', email.value)
-  console.log('Password:', password.value)
-}
+const onSubmit = async () => {
+  try {
+    await login(username.value, password.value);
+    router.push('/find');
+  } catch (error) {
+    alert('Login failed: ' + error.message);
+  }
+};
 </script>
 
 <style scoped>

@@ -1,11 +1,18 @@
 require('dotenv').config()
 const express = require('express');
 const passportConfig = require('./passport-config');
+const cors = require('cors');
 const app = express();
 
 app.use(passportConfig.initialize());
 
 app.use(express.json());
+
+app.use(cors({
+  origin: 'http://localhost:3000', // Allow requests from this origin
+  methods: ['GET', 'POST'], // Allow these HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'] // Allow these headers
+}));
 
 app.get('/health', (req, res) => {
   res.status(200).send('OK');
