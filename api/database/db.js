@@ -12,7 +12,7 @@ const sequelize = new Sequelize(process.env.DATABASE_NAME, process.env.DATABASE_
       rejectUnauthorized: false
     }
   },
-  logging: true
+  logging: false
 })
 
 async function connectToDatabase() {

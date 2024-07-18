@@ -25,7 +25,16 @@ export const useAuth = () => {
     }
   };
 
+  const logout = () => {
+    const jwtToken = useCookie('jwt_token');
+    jwtToken.value = null;
+
+    // Redirect to login page
+    return navigateTo('/login');
+  }
+
   return {
-    login
+    login,
+    logout
   };
 };

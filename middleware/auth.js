@@ -6,10 +6,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   if (typeof window !== 'undefined') {
     token = localStorage.getItem('jwt_token');
-    console.log('localStorage Token retrieved:', token);
   }
-
-  console.log('Token retrieved:', token);
 
   if (!token) {
     console.log('No token found, redirecting to login');
@@ -19,9 +16,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   try {
     const decoded = jwtDecode(token);
     console.log('Decoded token:', decoded);
-    // Additional checks like token expiration can be added here
+    console.log('account id from token:', decoded.id);
     if (decoded) {
-      console.log('Token is valid, allowing access');
       return;
     }
   } catch (error) {
