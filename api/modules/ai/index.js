@@ -4,6 +4,8 @@
 const { OpenAI} = require('openai');
 require('dotenv').config()
 
+const { checkForBook } = require('../../database/services/books.service')
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
   engine: 'gpt-3.5-turbo-0125',
@@ -17,18 +19,26 @@ const findRelatedBooks = async (isbn) => {
     throw new Error('ISBN is required');
   }
 
+  /**
+   * Check if book has already been searched before in DB
+   */
+  const bookExists = await checkForBook(isbn);
+  if (bookExists) {
+    return bookExists.recommendations;
+  }
+
   const response = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo-0125',
     messages: [{ role: 'user', content: `
       You are a chatbot designed to recommend books similar to the one provided.
       I will give you an ISBN number, you will give me 5 recommended book ISBNs.
-      Only return the ISBN numbers of the books. Do not say any other words.
+      Only return the valid ISBN numbers of the books. Do not say any other words.
       Return in a JSON format, like {"one": "1234567890", "two": "1234567890" ... }.
       `,
     }],
   })
 
-  console.log('response', response.choices[0].message.content);
+  // console.log('response', response.choices[0].message.content);
 
   // Extract the content from the response
   const jsonResponse = response.choices[0].message.content;

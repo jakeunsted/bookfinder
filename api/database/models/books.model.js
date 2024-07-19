@@ -19,6 +19,10 @@ class Book extends Model {
       recommendations: {
         type: DataTypes.JSONB,
         allowNull: true
+      },
+      createdById: {
+        type: DataTypes.INTEGER,
+        allowNull: false
       }
     }, {
       sequelize,

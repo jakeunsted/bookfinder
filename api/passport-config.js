@@ -8,6 +8,9 @@ const opts = {
   secretOrKey: process.env.SECRET_KEY
 };
 
+/**
+ * Passport JWT strategy
+ */
 passport.use(
   new JwtStrategy(opts, async (jwt_payload, done) => {
     console.log('jwt_payload: ', jwt_payload);
@@ -24,6 +27,12 @@ passport.use(
   })
 );
 
+/**
+ * Authenticate the user
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Next} next 
+ */
 const authenticate = (req, res, next) => {
   passport.authenticate('jwt', { session: false }, (err, user) => {
     if (err) {
@@ -51,6 +60,7 @@ const generateToken = (payload, expiresIn = '1h') => {
 
 /**
  * Invalidate the token
+ * @param {request} req
  */
 const invalidateToken = (req) => {
   req.logout();

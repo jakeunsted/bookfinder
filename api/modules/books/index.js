@@ -23,7 +23,7 @@ async function getBookByISBN(isbn) {
       categories: book.volumeInfo.categories,
       image: book.volumeInfo.imageLinks.thumbnail
     };
-    console.log('returnBook', returnBook);
+    // console.log('returnBook', returnBook);
     return returnBook;
   } catch (error) {
     console.error('error', error);
@@ -62,7 +62,7 @@ async function searchBooksByTitle(partialName) {
         seenTitles.add(book.title);
         return true;
       });
-    console.log('books', books);
+    // console.log('books', books);
     return books;
   } catch (error) {
     console.error('error', error);
