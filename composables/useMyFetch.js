@@ -5,6 +5,7 @@ export const useMyFetch = async (path, options = {}, useAuth = true) => {
   const config = useRuntimeConfig()
   const url = `${config.public.baseUrl}${path}`
 
+  console.log('token', token);
   // Set up request headers
   const headers = {
     'Content-Type': 'application/json',
@@ -21,17 +22,22 @@ export const useMyFetch = async (path, options = {}, useAuth = true) => {
 
   try {
     const response = await fetch(url, fetchOptions)
-    console.log('fetch response', response);
 
-    if (response.status === 401) {
+    if (response.status === 401 && useAuth) {
       window.location.href = '/login'
       return
     }
-    
+
+    // Check if response content-type is JSON
+    const contentType = response.headers.get('content-type')
+    if (!contentType || !contentType.includes('application/json')) {
+      throw new Error('Invalid content-type, expected application/json')
+    }
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
-    
+
     const data = await response.json()
     return data
   } catch (error) {
