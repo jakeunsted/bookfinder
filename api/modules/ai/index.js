@@ -38,8 +38,6 @@ const findRelatedBooks = async (isbn) => {
     }],
   })
 
-  // console.log('response', response.choices[0].message.content);
-
   // Extract the content from the response
   const jsonResponse = response.choices[0].message.content;
 

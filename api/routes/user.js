@@ -96,12 +96,13 @@ router.get(
  */
 router.get(
   '/:id',
-  passportConfig.authenticate,
+  // passportConfig.authenticate,
   async (req, res) => {
     const { id } = req.params;
     try {
       const user = await userService.getUserById(id);
-      res.json(user);
+      console.log('user: ', user.dataValues);
+      res.json(user.dataValues);
     } catch (error) {
       res.status(500).send(error.message);
     }

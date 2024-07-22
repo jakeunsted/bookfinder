@@ -23,7 +23,11 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      jwtSecret: process.env.SECRET_KEY
+      jwtSecret: process.env.SECRET_KEY,
+      baseUrl: process.env.BASE_URL,
+    },
+    app: {
+      baseUrl: process.env.BASE_URL,
     }
   },
   compatibilityDate: '2024-07-16',
