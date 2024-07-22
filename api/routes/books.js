@@ -12,7 +12,7 @@ router.get(
     .withMessage('Invalid ISBN'),
   async (req, res) => {
     const result = await books.getBookByISBN(req.params.isbn);
-    console.log('express result', result);
+    // console.log('express result', result);
     res.send(result);
   }
 );
@@ -31,7 +31,7 @@ router.get(
 
     try {
       const result = await books.searchBooksByTitle(req.query.title);
-      console.log('express result', result);
+      // console.log('express result', result);
       res.send(result);
     } catch (error) {
       console.log('error', error);
