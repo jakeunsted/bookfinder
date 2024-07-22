@@ -3,6 +3,7 @@ import { useCookie } from '#app';
 export const useAuth = () => {
   const login = async (username, password) => {
     const config = useRuntimeConfig();
+    console.log('username', username);
     try {
       const response = await fetch(`${config.public.baseUrl}/user/login`, {
         method: 'POST',

@@ -1,35 +1,59 @@
+<!-- pages/books/recommend/index.vue -->
 <template>
-  <v-container class="flex flex-col items-center p-4">
-    <BookSearch @search="fetchBooks" />
+  <div class="flex flex-col items-center p-4">
+    <BookSearch v-if="!selectedBook" @search="fetchBooks" />
     <BookList
+      v-if="!selectedBook && !aiSearch"
       :books="books"
       :loading="loading"
       :hasSearched="hasSearched"
-      @select="logBook"
+      @select="selectBook"
     />
-  </v-container>
+    <BookList
+      v-if="!selectedBook && aiSearch"
+      :books="recommendedBooks"
+      :loading="loading"
+      :hasSearched="hasSearched"
+      @select="selectBook"
+    />
+    <BookDetail
+      v-if="selectedBook"
+      :book="selectedBook"
+      :showFullDescription="showFullDescription"
+      :aiSearch="aiSearch"
+      @clear="clearSelection"
+      @toggle-description="toggleDescription"
+      @find-similar="fetchRecommendations"
+    />
+  </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import BookSearch from '~/components/books/BookSearch.vue'
 import BookList from '~/components/books/BookSearchResults.vue'
+import BookDetail from '~/components/books/BookDetails.vue'
 import { useMyFetch } from '~/composables/useMyFetch'
 
-const searchQuery = ref('')
 const books = ref([])
+const recommendedBooks = ref([])
 const loading = ref(false)
 const hasSearched = ref(false)
+const selectedBook = ref(null)
+const showFullDescription = ref(false)
+const aiSearch = ref(false)
 
 // Function to fetch books
 const fetchBooks = async (query) => {
   if (query.trim() === '') {
     books.value = []
+    recommendedBooks.value = []
     return
   }
 
   loading.value = true
   hasSearched.value = true
+  aiSearch.value = false
 
   try {
     const response = await useMyFetch(`/books/?title=${encodeURIComponent(query)}`)
@@ -42,8 +66,33 @@ const fetchBooks = async (query) => {
   }
 }
 
-// Function to log the book object when an item is clicked
-const logBook = (book) => {
-  console.log('Selected book:', book)
+const fetchRecommendations = async () => {
+  console.log('recommendations for: ', selectedBook.value);
+  const isbn = selectedBook.value.isbn.isbn13 || selectedBook.value.isbn.isbn10
+  console.log('isbn:', isbn);
+
+  selectedBook.value = null
+  loading.value = true
+
+  const response = await useMyFetch(`/ai/related-books?isbn=${isbn}`)
+  aiSearch.value = true
+  console.log('recommendations:', response);
+  recommendedBooks.value = response.books
+  loading.value = false
+}
+
+// Function to select a book and show details
+const selectBook = (book) => {
+  selectedBook.value = book
+}
+
+// Function to clear the selected book and go back to search
+const clearSelection = () => {
+  selectedBook.value = null
+}
+
+// Function to toggle the description view
+const toggleDescription = () => {
+  showFullDescription.value = !showFullDescription.value
 }
 </script>
