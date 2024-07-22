@@ -4,10 +4,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   let token = useCookie('jwt_token').value;
 
-  if (typeof window !== 'undefined') {
-    token = localStorage.getItem('jwt_token');
-  }
-
   if (!token) {
     console.log('No token found, redirecting to login');
     return navigateTo('/login');
@@ -16,6 +12,13 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   try {
     const decoded = jwtDecode(token);
     console.log('Decoded token:', decoded);
+    /**
+     * check if token is expired (decoded.exp)
+     */
+    if (decoded.exp < Date.now() / 1000) {
+      console.log('Token expired, redirecting to login');
+      return navigateTo('/books/recommend');
+    }
     console.log('account id from token:', decoded.id);
     if (decoded) {
       return;

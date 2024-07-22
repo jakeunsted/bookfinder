@@ -2,6 +2,13 @@ import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
+  css: ['~/assets/css/main.css'],
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
   build: {
     transpile: ['vuetify'],
   },
@@ -23,8 +30,12 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      jwtSecret: process.env.SECRET_KEY
+      jwtSecret: process.env.SECRET_KEY,
+      baseUrl: process.env.API_BASE_URL,
+    },
+    app: {
+      baseUrl: process.env.API_BASE_URL,
     }
   },
-  compatibilityDate: '2024-07-16',
+  compatibilityDate: '2024-07-22',
 })

@@ -31,14 +31,12 @@ const findRelatedBooks = async (isbn) => {
     model: 'gpt-3.5-turbo-0125',
     messages: [{ role: 'user', content: `
       You are a chatbot designed to recommend books similar to the one provided.
-      I will give you an ISBN number, you will give me 5 recommended book ISBNs.
+      I will give you an ISBN number, you will give me a maximum of 10 recommended book ISBNs.
       Only return the valid ISBN numbers of the books. Do not say any other words.
       Return in a JSON format, like {"one": "1234567890", "two": "1234567890" ... }.
       `,
     }],
   })
-
-  // console.log('response', response.choices[0].message.content);
 
   // Extract the content from the response
   const jsonResponse = response.choices[0].message.content;

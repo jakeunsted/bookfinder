@@ -13,7 +13,6 @@ const opts = {
  */
 passport.use(
   new JwtStrategy(opts, async (jwt_payload, done) => {
-    console.log('jwt_payload: ', jwt_payload);
     try {
       const user = await userService.getUserById(jwt_payload.id);
       if (user) {
@@ -54,7 +53,7 @@ const authenticate = (req, res, next) => {
  * @param {*} expiresIn 
  * @returns 
  */
-const generateToken = (payload, expiresIn = '1h') => {
+const generateToken = (payload, expiresIn = '6h') => {
   return jwt.sign(payload, process.env.SECRET_KEY, { expiresIn });
 };
 

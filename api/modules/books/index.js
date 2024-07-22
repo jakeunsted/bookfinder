@@ -23,7 +23,6 @@ async function getBookByISBN(isbn) {
       categories: book.volumeInfo.categories,
       image: book.volumeInfo.imageLinks.thumbnail
     };
-    // console.log('returnBook', returnBook);
     return returnBook;
   } catch (error) {
     console.error('error', error);
@@ -47,14 +46,24 @@ async function searchBooksByTitle(partialName) {
   try {
     const response = await axios.get(url);
     const books = response.data.items
-      .map(book => ({
-        title: book.volumeInfo.title,
-        authors: book.volumeInfo.authors,
-        description: book.volumeInfo.description,
-        pageCount: book.volumeInfo.pageCount,
-        categories: book.volumeInfo.categories,
-        image: book.volumeInfo.imageLinks?.thumbnail ?? 'nothing'
-      }))
+      .map(book => {
+        const identifiers = book.volumeInfo.industryIdentifiers || [];
+        const isbn10 = identifiers.find(identifier => identifier.type === 'ISBN_10')?.identifier ?? null;
+        const isbn13 = identifiers.find(identifier => identifier.type === 'ISBN_13')?.identifier ?? null;
+
+        return {
+          title: book.volumeInfo.title,
+          authors: book.volumeInfo.authors,
+          description: book.volumeInfo.description,
+          pageCount: book.volumeInfo.pageCount,
+          categories: book.volumeInfo.categories,
+          image: book.volumeInfo.imageLinks?.thumbnail ?? 'nothing',
+          isbn: {
+            isbn10,
+            isbn13
+          }
+        };
+      })
       .filter(book => {
         if (seenTitles.has(book.title)) {
           return false;
@@ -62,10 +71,10 @@ async function searchBooksByTitle(partialName) {
         seenTitles.add(book.title);
         return true;
       });
-    // console.log('books', books);
+
     return books;
   } catch (error) {
-    console.error('error', error);
+    console.error('Error fetching books:', error);
     throw error;
   }
 }
