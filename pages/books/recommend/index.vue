@@ -3,7 +3,7 @@
   <div class="flex flex-col items-center p-4">
     <BookSearch v-if="!selectedBook" @search="fetchBooks" />
     <!-- Book results from search -->
-    <BookList
+    <BookSearchResults
       v-if="!selectedBook && !aiSearch"
       :books="books"
       :loading="loading"
@@ -11,7 +11,7 @@
       @select="selectBook"
     />
     <!-- Book results from AI recommendations -->
-    <BookList
+    <BookSearchResults
       v-if="!selectedBook && aiSearch"
       :books="recommendedBooks"
       :loading="loading"
@@ -34,7 +34,7 @@
 <script setup>
 import { ref } from 'vue'
 import BookSearch from '~/components/books/BookSearch.vue'
-import BookList from '~/components/books/BookSearchResults.vue'
+import BookSearchResults from '~/components/books/BookSearchResults.vue'
 import BookDetail from '~/components/books/BookDetails.vue'
 import { useMyFetch } from '~/composables/useMyFetch'
 
