@@ -2,6 +2,7 @@
 <template>
   <div class="flex flex-col items-center p-4">
     <BookSearch v-if="!selectedBook" @search="fetchBooks" />
+    <!-- Book results from search -->
     <BookList
       v-if="!selectedBook && !aiSearch"
       :books="books"
@@ -9,6 +10,7 @@
       :hasSearched="hasSearched"
       @select="selectBook"
     />
+    <!-- Book results from AI recommendations -->
     <BookList
       v-if="!selectedBook && aiSearch"
       :books="recommendedBooks"
@@ -16,6 +18,7 @@
       :hasSearched="hasSearched"
       @select="selectBook"
     />
+    <!-- Book details when clicking into -->
     <BookDetail
       v-if="selectedBook"
       :book="selectedBook"
@@ -67,16 +70,12 @@ const fetchBooks = async (query) => {
 }
 
 const fetchRecommendations = async () => {
-  console.log('recommendations for: ', selectedBook.value);
   const isbn = selectedBook.value.isbn.isbn13 || selectedBook.value.isbn.isbn10
-  console.log('isbn:', isbn);
-
   selectedBook.value = null
   loading.value = true
+  aiSearch.value = true
 
   const response = await useMyFetch(`/ai/related-books?isbn=${isbn}`)
-  aiSearch.value = true
-  console.log('recommendations:', response);
   recommendedBooks.value = response.books
   loading.value = false
 }

@@ -128,7 +128,6 @@
     "useScript": true,
     "useScriptClarity": true,
     "useScriptCloudflareWebAnalytics": true,
-    "useScriptCrisp": true,
     "useScriptFathomAnalytics": true,
     "useScriptGoogleAdsense": true,
     "useScriptGoogleAnalytics": true,
