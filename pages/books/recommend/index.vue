@@ -1,7 +1,7 @@
 <!-- pages/books/recommend/index.vue -->
 <template>
   <div class="flex flex-col items-center p-4">
-    <BookSearch v-if="!selectedBook" @search="fetchBooks" />
+    <BookSearch v-if="!selectedBook && !aiSearch" @search="fetchBooks" />
     <!-- Book results from search -->
     <BookSearchResults
       v-if="!selectedBook && !aiSearch"
@@ -28,6 +28,14 @@
       @toggle-description="toggleDescription"
       @find-similar="fetchRecommendations"
     />
+
+    <v-btn
+      v-if="aiSearch && !loading"
+      class="bg-primary"
+      @click="reset"
+    >
+      Search new book
+    </v-btn>
   </div>
 </template>
 
@@ -93,5 +101,13 @@ const clearSelection = () => {
 // Function to toggle the description view
 const toggleDescription = () => {
   showFullDescription.value = !showFullDescription.value
+}
+
+const reset = () =>{
+  selectedBook.value = null
+  aiSearch.value = false
+  hasSearched.value = false
+  books.value = []
+  recommendedBooks.value = []
 }
 </script>
