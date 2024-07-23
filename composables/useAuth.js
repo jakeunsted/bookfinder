@@ -3,7 +3,6 @@ import { useCookie } from '#app';
 export const useAuth = () => {
   const login = async (username, password) => {
     const config = useRuntimeConfig();
-    console.log('username', username);
     try {
       const response = await fetch(`${config.public.baseUrl}/user/login`, {
         method: 'POST',
@@ -12,7 +11,6 @@ export const useAuth = () => {
       });
 
       if (!response.ok) {
-        // Handle specific error cases based on response status
         if (response.status === 401) {
           throw new Error('Invalid credentials');
         } else if (response.status === 400) {
