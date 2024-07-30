@@ -30,6 +30,10 @@ class User extends Model {
       tableName: 'users',
     });
   };
+
+  static associate(models) {
+    this.hasOne(models.RefreshToken, { foreignKey: 'userId', as: 'refreshToken' });
+  }
 }
 
 module.exports = User;

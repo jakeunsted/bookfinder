@@ -1,30 +1,32 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const { jwtDecode } = await import('jwt-decode');
   const { useCookie } = await import('#app');
+  const { useAuth } = await import('~/composables/useAuth');
 
-  let token = useCookie('jwt_token').value;
+  const accessToken = useCookie('access_token').value;
+  const refreshToken = useCookie('refresh_token').value;
 
-  if (!token) {
-    console.log('No token found, redirecting to login');
+  if (!accessToken && !refreshToken) {
     return navigateTo('/login');
   }
 
   try {
-    const decoded = jwtDecode(token);
-    console.log('Decoded token:', decoded);
-    /**
-     * check if token is expired (decoded.exp)
-     */
-    if (decoded.exp < Date.now() / 1000) {
-      console.log('Token expired, redirecting to login');
-      return navigateTo('/books/recommend');
+    let decoded = accessToken ? jwtDecode(accessToken) : null;
+
+    if (!decoded || decoded.exp < Date.now() / 1000) {
+      if (!refreshToken) {
+        throw new Error('No refresh token available');
+      }
+
+      const { refreshAccessToken } = useAuth();
+      const newAccessToken = await refreshAccessToken();
+      decoded = jwtDecode(newAccessToken);
     }
-    console.log('account id from token:', decoded.id);
-    if (decoded) {
-      return;
-    }
+    
+    // Token is valid, allow navigation
+    return;
   } catch (error) {
-    console.error('Error decoding token:', error);
+    console.error('Error with token:', error);
     return navigateTo('/login');
   }
 });

@@ -36,6 +36,12 @@ app.listen(PORT, () => {
 });;
 
 /**
+ * Cron Tasks
+ */
+const scheduleTokenDeletion = require('./tasks/removeTokens');
+scheduleTokenDeletion();
+
+/**
  * Connect to the database
  */
 const { connectToDatabase } = require('./database/db')

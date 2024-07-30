@@ -9,12 +9,8 @@ const userService = require('../database/services/user.service');
  */
 router.post(
   '/login',
-  body('username')
-    .isString()
-    .withMessage('Username is required'),
-  body('password')
-    .isString()
-    .withMessage('Password is required'),
+  body('username').isString().withMessage('Username is required'),
+  body('password').isString().withMessage('Password is required'),
   async (req, res) => {
     const { username, password } = req.body;
 
@@ -24,13 +20,43 @@ router.post(
         throw new Error('Invalid credentials');
       }
       const payload = { id: validatedUser.id };
-      const token = passportConfig.generateToken(payload);
-      res.json({ token });
+      const accessToken = passportConfig.generateAccessToken(payload);
+      const refreshToken = passportConfig.generateRefreshToken(payload);
+      await userService.createRefreshToken(validatedUser.id, refreshToken);
+      res.json({ accessToken, refreshToken });
     } catch (error) {
       res.status(500).send(error.message);
     }
   }
 );
+
+/**
+ * Refresh token route to generate new JWT
+ */
+router.post('/refresh-token', async (req, res) => {
+  const refreshToken = passportConfig.getJwtFromHeader(req);
+
+  if (!refreshToken) {
+    return res.status(401).send('Refresh token not found');
+  }
+
+  try {
+    const decoded = passportConfig.verifyRefreshToken(refreshToken);
+
+    const existingToken = await userService.findRefreshToken(refreshToken);
+    
+    if (!existingToken) {
+      return res.status(403).send('Invalid refresh token');
+    }
+
+    const accessToken = passportConfig.generateAccessToken({ id: decoded.id });
+
+    res.json({ accessToken });
+  } catch (error) {
+    console.error('Error refreshing token:', error.message);
+    res.status(403).send('Invalid refresh token');
+  }
+});
 
 /**
  * Logout route to invalidate JWT
@@ -39,7 +65,10 @@ router.post(
   '/logout',
   passportConfig.authenticate,
   async (req, res) => {
-    passportConfig.invalidateToken(req);
+    const { refreshToken } = req.body;
+    if (refreshToken) {
+      await userService.deleteRefreshToken(refreshToken);
+    }
     res.json({ message: 'Logged out' });
   }
 );
@@ -101,7 +130,6 @@ router.get(
     const { id } = req.params;
     try {
       const user = await userService.getUserById(id);
-      console.log('user: ', user.dataValues);
       res.json(user.dataValues);
     } catch (error) {
       res.status(500).send(error.message);

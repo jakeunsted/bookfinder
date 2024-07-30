@@ -1,4 +1,5 @@
 const User = require('../models/user.model');
+const RefreshToken = require('../models/refreshToken.model');
 const bcrypt = require('bcrypt');
 
 /**
@@ -6,7 +7,6 @@ const bcrypt = require('bcrypt');
  * @param {number} id
  */
 async function getUserById(id) {
-  console.log('getUserById: ', id);
   const options = {
     attributes: {
       exclude: ['password']
@@ -30,7 +30,6 @@ async function getUserById(id) {
  * @param {number} id
  */
 async function getUserRoleById(id) {
-  console.log('getUserRoleById: ', id);
   const options = {
     attributes: {
       exclude: ['password']
@@ -98,11 +97,11 @@ async function verifyPassword(username, password) {
   try {
     const user = await User.findOne({ where: { username } });
     if (!user) {
-      throw new Error('Username is incorrect');
+      throw new Error('Invalid username or password');
     }
     const passwordResult = await bcrypt.compare(password, user.password);
     if (!passwordResult) {
-      throw new Error('Password is incorrect');
+      throw new Error('Invalid username or password');
     }
     return {
       id: user.id,
@@ -111,8 +110,38 @@ async function verifyPassword(username, password) {
       role: user.role
     };
   } catch (error) {
-    throw new Error(error);
+    console.error('Error verifying password:', error);
+    throw new Error('Internal server error');
   }
+}
+
+/**
+ * Create a refresh token in db
+ * @param {String} userId 
+ * @param {String} token 
+ */
+async function createRefreshToken(userId, token) {
+  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours refresh token
+  await RefreshToken.create({ userId, token, expiresAt });
+}
+
+/**
+ * Finds a refresh token by its token value.
+ * @param {string} token
+ * @returns {Promise<RefreshToken|null>} - A promise that resolves to the found refresh token, or null if not found.
+ */
+async function findRefreshToken(token) {
+  const refreshToken = await RefreshToken.findOne({ where: { token } });
+  return refreshToken;
+}
+
+/**
+ * Deletes a refresh token from the database.
+ * @param {string} token
+ * @returns {Promise<void>} - A promise that resolves when the refresh token is deleted.
+ */
+async function deleteRefreshToken(token) {
+  await RefreshToken.destroy({ where: { token } });
 }
 
 module.exports = {
@@ -120,5 +149,8 @@ module.exports = {
   getUserRoleById,
   createUser,
   deleteUserById,
-  verifyPassword
+  verifyPassword,
+  createRefreshToken,
+  findRefreshToken,
+  deleteRefreshToken
 }

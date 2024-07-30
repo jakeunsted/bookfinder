@@ -48,13 +48,39 @@ const authenticate = (req, res, next) => {
 };
 
 /**
- * Generate a JWT token
- * @param {*} payload 
- * @param {*} expiresIn 
- * @returns 
+ * Generates an access token using the provided payload.
+ * @param {object} payload - The payload to be signed.
+ * @returns {string} - The generated access token.
  */
-const generateToken = (payload, expiresIn = '6h') => {
-  return jwt.sign(payload, process.env.SECRET_KEY, { expiresIn });
+const generateAccessToken = (payload) => {
+  return jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '1hr' });
+};
+
+/**
+ * Generates a refresh token using the provided payload.
+ * @param {Object} payload - The payload to be signed in the refresh token.
+ * @returns {string} - The generated refresh token.
+ */
+const generateRefreshToken = (payload) => {
+  return jwt.sign(payload, process.env.REFRESH_SECRET_KEY, { expiresIn: '24hr' });
+};
+
+/**
+ * Verifies the refresh token.
+ * @param {string} token - The refresh token to verify.
+ * @returns {object} - The decoded refresh token payload.
+ */
+const verifyRefreshToken = (token) => {
+  return jwt.verify(token, process.env.REFRESH_SECRET_KEY);
+};
+
+/**
+ * Retrieves the JWT token from the request header.
+ * @param {Object} req - The request object.
+ * @returns {string} The JWT token extracted from the request header.
+ */
+const getJwtFromHeader = (req) => {
+  return ExtractJwt.fromAuthHeaderAsBearerToken()(req);
 };
 
 /**
@@ -68,6 +94,9 @@ const invalidateToken = (req) => {
 module.exports = {
   initialize: () => passport.initialize(),
   authenticate,
-  generateToken,
-  invalidateToken
+  invalidateToken,
+  generateAccessToken,
+  generateRefreshToken,
+  verifyRefreshToken,
+  getJwtFromHeader
 };

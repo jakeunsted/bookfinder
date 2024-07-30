@@ -21,12 +21,15 @@ async function connectToDatabase() {
     // init models
     const UserModel = require('./models/user.model');
     const BookModel = require('./models/books.model');
+    const RefreshToken = require('./models/refreshToken.model');
     UserModel.init(sequelize);
     BookModel.init(sequelize);
+    RefreshToken.init(sequelize);
     
     // Sync models
     await UserModel.sync();
     await BookModel.sync();
+    await RefreshToken.sync();
 
     console.log('Connected to database successfully');
   } catch (error) {
