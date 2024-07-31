@@ -32,8 +32,14 @@ export const useAuth = () => {
         throw new Error('No tokens received');
       }
 
-      useCookie('access_token').value = accessToken;
-      useCookie('refresh_token').value = refreshToken;
+      useCookie(
+        'access_token', 
+        process.env.COOKIE_OPTIONS
+      ).value = accessToken;
+      useCookie(
+        'refresh_token',
+        process.env.COOKIE_OPTIONS
+      ).value = refreshToken;
     } catch (error) {
       console.error('Login error:', error);
       throw error;
