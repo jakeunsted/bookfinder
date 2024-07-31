@@ -21,9 +21,11 @@ app.get('/health', (req, res) => {
 const booksRouter = require('./routes/books');
 const userRouter = require('./routes/user');
 const aiRouter = require('./routes/ai');
+const authRouter = require('./routes/auth');
 app.use('/books', booksRouter);
 app.use('/user', userRouter);
 app.use('/ai', aiRouter);
+app.use('/auth', authRouter);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

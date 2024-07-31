@@ -9,7 +9,7 @@ export const useAuth = () => {
     };
 
     try {
-      const response = await fetch(`${config.public.baseUrl}/user/login`, {
+      const response = await fetch(`${config.public.baseUrl}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -51,7 +51,7 @@ export const useAuth = () => {
     const refreshToken = useCookie('refresh_token').value;
 
     try {
-      await fetch(`${config.public.baseUrl}/user/logout`, {
+      await fetch(`${config.public.baseUrl}/auth/logout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ refreshToken }),
@@ -77,7 +77,7 @@ export const useAuth = () => {
     }
 
     try {
-      const response = await fetch(`${config.public.baseUrl}/user/refresh-token`, {
+      const response = await fetch(`${config.public.baseUrl}/auth/refresh-token`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
