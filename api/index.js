@@ -21,9 +21,11 @@ app.get('/health', (req, res) => {
 const booksRouter = require('./routes/books');
 const userRouter = require('./routes/user');
 const aiRouter = require('./routes/ai');
+const authRouter = require('./routes/auth');
 app.use('/books', booksRouter);
 app.use('/user', userRouter);
 app.use('/ai', aiRouter);
+app.use('/auth', authRouter);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -34,6 +36,12 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });;
+
+/**
+ * Cron Tasks
+ */
+const scheduleTokenDeletion = require('./tasks/removeTokens');
+scheduleTokenDeletion();
 
 /**
  * Connect to the database
