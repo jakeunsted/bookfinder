@@ -1,5 +1,5 @@
 <template>
-<div class="relative h-screen">
+<div class="relative h-24">
   <div class="absolute left-1/2 -translate-x-1/2 bottom-0 mb-15 z-10">
     <div class="flex items-center justify-center rounded-full w-16 h-16 bg-gray-600">
       <v-btn @click="onPlusClick" variant="text" class="rounded-circle h-16">
