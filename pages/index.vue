@@ -1,7 +1,6 @@
 <template>
   <div class="h-full">
-    <h1>You're logged in</h1>
-    <menuBar class="" />
+    <menuBar />
   </div>
 </template>
 
