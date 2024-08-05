@@ -1,6 +1,7 @@
 <template>
-  <div>
+  <div class="h-full">
     <h1>You're logged in</h1>
+    <menuBar class="" />
   </div>
 </template>
 
@@ -8,4 +9,6 @@
 definePageMeta({
   middleware: 'auth'
 });
+
+import menuBar from '@/components/navigation/menuBar.vue'
 </script>
