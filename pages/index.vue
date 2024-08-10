@@ -1,19 +1,29 @@
 <template>
   <div class="flex flex-col justify-items-center items-center mt-10">
-    <!-- Row one -->
     <div class="mb-5">
       <v-avatar color="primary" size="80">
         <span class="text-white">JU</span>
       </v-avatar>
     </div>
-    <!-- Row two -->
     <div class="flex flex-col items-center">
       <!-- users name -->
       <span>{{user.username}}</span>
       <span>Date Joined: {{user.signupDate}}</span>
     </div>
-    <!-- Row three -->
     <v-sheet :height="2" class="my-10 w-10/12 bg-grey"></v-sheet>
+
+    <!-- Show books otherwise show blank message about adding your first book-->
+    <div class="flex flex-row flex-wrap justify-center">
+      <div v-for="book in readBooks" :key="book.title" class="p-2">
+        <v-card class="max-w-44 min-w-44">
+          <v-img :src="book.image" height="150" class=""></v-img>
+          <v-card-text class="text-wrap text-center">
+            <p>{{book.title}}</p>
+            <p class="text-grey">{{book.dateRead}}</p>
+          </v-card-text>
+        </v-card>
+      </div>
+    </div>
   </div>
 </template> 
 
@@ -38,6 +48,36 @@ const user = ref({
   role: 'Admin',
   signupDate: '2024-06-01'
 })
+
+const readBooks = ref([
+  {
+    title: 'The Housemaid',
+    author: 'Freida McFadden',
+    description: `Every day I clean the Winchesters' beautiful house top to bottom. I collect their daughter from school...`,
+    pageCount: '336',
+    categories: ['Fiction', 'Thriller'],
+    image: 'http://books.google.com/books/content?id=dx5VzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api',
+    dateRead: '2024-06-01'
+  },
+  {
+    title: `The Housemaid's Secret`,
+    author: 'Freida McFadden',
+    description: `As he continues showing me their incredible penthouse apartment, I have a terrible feeling about the woman behind closed doors...`,
+    pageCount: '352',
+    categories: ['Fiction', 'Thriller'],
+    image: 'http://books.google.com/books/content?id=9WylzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api',
+    dateRead: '2024-06-01'
+  },
+  {
+    title: 'The Housemaid Is Watching',
+    author: 'Freida McFadden',
+    description: `"You must be our new neighbors!" Mrs. Lowell gushes and waves across the picket fence. I clutch my daughter's hand and smile back`,
+    pageCount: '400',
+    categories: ['Fiction', 'Thriller'],
+    image: 'http://books.google.com/books/content?id=gmR-0AEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api',
+    dateRead: '2024-06-01'
+  }
+])
 
 onMounted(() => {
   try {
