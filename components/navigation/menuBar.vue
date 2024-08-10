@@ -1,14 +1,18 @@
 <template>
   <div>
-    <!-- <div v-if="showDrawer" class="fixed inset-0 bg-black opacity-50 z-30" @click="onExitClick"></div> -->
-    
     <v-navigation-drawer 
       v-model="showDrawer"
       location="bottom"
-      :class="{ 'drawer w-5/6 left-1/2 transform -translate-x-1/2': true, 'z-40': showDrawer, '-bottom-96': !showDrawer }"
+      :class="{ 'drawer w-5/6 left-1/2 transform -translate-x-1/2 bg-background': true, 'z-40': showDrawer, '-bottom-96': !showDrawer }"
     >
       <v-container class="flex justify-center items-center">
-        <v-sheet :height="7" :width="100" class="bg-gray-400 z-50 rounded-full"></v-sheet>
+        <v-sheet 
+          v-touch:swipe.down="onExitClick"
+          :height="7"
+          :width="100"
+          color=""
+          class="bg-grey z-50 rounded-full"
+        ></v-sheet>
       </v-container>
       <v-list>
         <v-list-item v-for="item in addItems" :key="item.value" @click="handleItemClick(item)">
@@ -24,7 +28,7 @@
 
     <div class="relative h-24">
       <div class="absolute left-1/2 transform -translate-x-1/2 bottom-0 mb-15 z-10">
-        <div class="flex items-center justify-center rounded-full w-16 h-16 bg-gray-600">
+        <div class="flex items-center justify-center rounded-full w-16 h-16 bg-links">
           <v-btn 
             @click="onPlusClick" 
             variant="text"
@@ -34,7 +38,7 @@
           </v-btn>
         </div>
       </div>
-      <div class="absolute bottom-0 w-5/6 mb-8 left-1/2 transform -translate-x-1/2 flex justify-between items-center rounded-full py-2 px-8 bg-gray-400 z-0">
+      <div class="absolute bottom-0 w-5/6 mb-8 left-1/2 transform -translate-x-1/2 flex justify-between items-center rounded-full py-2 px-8 bg-primary z-0">
         <v-btn
           @click="onHomeClick"
           :ripple="false"
@@ -43,7 +47,7 @@
           icon="mdi-home" 
         />
         <v-btn
-          @click="onCreationClick"
+          @click="onSuggestClick"
           :ripple="false"
           variant="text"
           class="text-white text-2xl"
@@ -64,10 +68,10 @@ const onPlusClick = () => {
 };
 
 const onHomeClick = () => {
-  console.log('Home button clicked');
+  navigateTo('/');
 };
 
-const onCreationClick = () => {
+const onSuggestClick = () => {
   console.log('Creation button clicked');
 };
 
