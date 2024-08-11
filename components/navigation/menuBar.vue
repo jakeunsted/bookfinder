@@ -3,7 +3,10 @@
     <v-navigation-drawer 
       v-model="showDrawer"
       location="bottom"
-      :class="{ 'drawer w-5/6 left-1/2 transform -translate-x-1/2 bg-background': true, 'z-40': showDrawer, '-bottom-96': !showDrawer }"
+      :class="[
+        'drawer w-5/6 left-1/2 transform -translate-x-1/2 bg-background',
+        showDrawer ? 'z-40 bottom-0' : '-bottom-96'
+      ]"
     >
       <v-container class="flex justify-center items-center">
         <v-sheet 
@@ -111,5 +114,8 @@ const addItems = [
 }
 .drawer-closed {
   bottom: -100px !important;
+}
+.v-navigation-drawer__scrim {
+  position: fixed !important
 }
 </style>
