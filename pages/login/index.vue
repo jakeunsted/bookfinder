@@ -40,7 +40,7 @@ const router = useRouter();
 const onSubmit = async () => {
   try {
     await login(username.value, password.value);
-    router.push('/books/recommend');
+    navigateTo('/')
   } catch (error) {
     alert('Login failed: ' + error.message);
   }
