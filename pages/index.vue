@@ -13,17 +13,23 @@
     <v-sheet :height="2" class="my-10 w-10/12 bg-grey"></v-sheet>
 
     <!-- Show books otherwise show blank message about adding your first book-->
-    <div class="flex flex-row flex-wrap justify-center">
-      <div v-for="book in readBooks" :key="book.title" class="p-2">
-        <v-card class="max-w-44 min-w-44">
-          <v-img :src="book.image" height="150" class=""></v-img>
-          <v-card-text class="text-wrap text-center">
-            <p>{{book.title}}</p>
-            <p class="text-grey">{{book.dateRead}}</p>
-          </v-card-text>
-        </v-card>
+    <div v-if="readBooks.length">
+      <div class="flex flex-row flex-wrap justify-center">
+        <div v-for="book in readBooks" :key="book.title" class="p-2">
+          <v-card class="max-w-44 min-w-44 p-2">
+            <v-card-text class="text-wrap text-center">
+              <v-img :src="book.image" class="pb-2 max-h-50"></v-img>
+              <p>{{book.title}}</p>
+              <p class="text-grey">{{book.dateRead}}</p>
+            </v-card-text>
+          </v-card>
+        </div>
       </div>
     </div>
+    <div v-else>
+      <span>You haven't read any books yet. Add your first book!</span>
+    </div>
+    
   </div>
 </template> 
 
