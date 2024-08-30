@@ -19,17 +19,19 @@ async function connectToDatabase() {
   try {
     await sequelize.authenticate();
     // init models
-    const UserModel = require('./models/user.model');
-    const BookModel = require('./models/books.model');
-    const RefreshToken = require('./models/refreshToken.model');
-    UserModel.init(sequelize);
-    BookModel.init(sequelize);
-    RefreshToken.init(sequelize);
+    const User = require('./models/user.model');
+    const Book = require('./models/book.model');
+    const UsersBooks = require('./models/usersBooks.model');
+    const refreshToken = require('./models/refreshToken.model');
+
+    const models = { User, Book, UsersBooks, refreshToken };
+    Object.values(models).forEach(model => {
+      if (model.init) {
+        model.init(sequelize);
+      }
+    });
     
-    // Sync models
-    await UserModel.sync();
-    await BookModel.sync();
-    await RefreshToken.sync();
+    await sequelize.sync({ alter: true });
 
     console.log('Connected to database successfully');
   } catch (error) {

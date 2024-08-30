@@ -20,6 +20,10 @@ class Book extends Model {
         type: DataTypes.JSONB,
         allowNull: true
       },
+      tags: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        allowNull: true,
+      },
       createdById: {
         type: DataTypes.INTEGER,
         allowNull: false
@@ -29,6 +33,10 @@ class Book extends Model {
       modelName: 'Book',
       tableName: 'books',
     });
+  }
+
+  static associate(models) {
+    this.belongsToMany(models.User, { through: models.UsersBooks, as: 'users', foreignKey: 'bookId' });
   }
 }
 

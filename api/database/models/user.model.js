@@ -32,7 +32,8 @@ class User extends Model {
   };
 
   static associate(models) {
-    this.hasOne(models.RefreshToken, { foreignKey: 'userId', as: 'refreshToken' });
+    this.hasOne(models.RefreshToken, { foreignKey: 'userId', as: 'refreshToken', onDelete: 'CASCADE' });
+    this.belongsToMany(models.Book, { through: models.UsersBooks, as: 'books', foreignKey: 'userId' });
   }
 }
 

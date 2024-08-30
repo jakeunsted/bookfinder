@@ -1,4 +1,4 @@
-const Books = require('../models/books.model');
+const Books = require('../models/book.model');
 const { getBookByISBN } = require('../../modules/books');
 
 /**
