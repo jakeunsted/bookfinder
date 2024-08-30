@@ -22,7 +22,7 @@ class Book extends Model {
       },
       tags: {
         type: DataTypes.ARRAY(DataTypes.STRING),
-        allowNull: true,
+        allowNull: false,
       },
       createdById: {
         type: DataTypes.INTEGER,
