@@ -16,10 +16,6 @@ class Book extends Model {
         type: DataTypes.STRING,
         allowNull: false
       },
-      recommendations: {
-        type: DataTypes.JSONB,
-        allowNull: true
-      },
       tags: {
         type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: false,
@@ -37,6 +33,7 @@ class Book extends Model {
 
   static associate(models) {
     this.belongsToMany(models.User, { through: models.UsersBooks, as: 'users', foreignKey: 'bookId' });
+    this.hasOne(models.BookRecommendations, { foreignKey: 'bookId', as: 'recommendations' });
   }
 }
 
