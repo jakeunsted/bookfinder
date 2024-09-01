@@ -15,19 +15,38 @@ const sequelize = new Sequelize(process.env.DATABASE_NAME, process.env.DATABASE_
   logging: false
 })
 
+/**
+ * Loads and initializes models from the specified directory.
+ * @returns {Object} - An object containing the loaded models.
+ */
+function loadModels() {
+  const models = {};
+
+  fs.readdirSync(path.join(__dirname, 'models')).forEach((file) => {
+    if (file.endsWith('.js')) { 
+      const model = require(path.join(__dirname, 'models', file));
+      if (model.init) {
+        model.init(sequelize);
+        models[model.name] = model;
+      }
+    }
+  });
+
+  return models;
+}
+
+/**
+ * Connects to the database and loads the models.
+ * @returns {Promise<void>} A promise that resolves when the connection is established and models are loaded.
+ */
 async function connectToDatabase() {
   try {
     await sequelize.authenticate();
-    // init models
-    const User = require('./models/user.model');
-    const Book = require('./models/book.model');
-    const UsersBooks = require('./models/usersBooks.model');
-    const refreshToken = require('./models/refreshToken.model');
+    const models = loadModels();
 
-    const models = { User, Book, UsersBooks, refreshToken };
-    Object.values(models).forEach(model => {
-      if (model.init) {
-        model.init(sequelize);
+    Object.values(models).forEach((model) => {
+      if (model.associate) {
+        model.associate(models);
       }
     });
     
