@@ -22,10 +22,12 @@ const booksRouter = require('./routes/books');
 const userRouter = require('./routes/user');
 const aiRouter = require('./routes/ai');
 const authRouter = require('./routes/auth');
+const usersBooksRouter = require('./routes/usersBooks');
 app.use('/books', booksRouter);
 app.use('/user', userRouter);
 app.use('/ai', aiRouter);
 app.use('/auth', authRouter);
+app.use('/users-books', usersBooksRouter);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

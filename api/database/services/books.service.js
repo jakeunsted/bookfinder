@@ -1,4 +1,4 @@
-const Books = require('../models/books.model');
+const Books = require('../models/book.model');
 const { getBookByISBN } = require('../../modules/books');
 
 /**
@@ -23,12 +23,12 @@ async function checkForBook(isbn) {
 }
 
 /**
- * Add new book and recommendations to db
+ * Add new book to db
  * @param {String} isbn
- * @param {Array} recommendedBooks
+ * @param {Array} tags
  * @param {Number} userId
  */
-async function addBookRecord(isbn, recommendedBooks, userId) {
+async function addBookRecord(isbn, tags = [], userId) {
   const { title } = await getBookByISBN(isbn);
 
   /**
@@ -39,11 +39,13 @@ async function addBookRecord(isbn, recommendedBooks, userId) {
     return bookExists;
   }
 
+  // future: need to add quick google link to get data
+
   try {
     const book = await Books.create({
       title,
       isbn,
-      recommendations: recommendedBooks,
+      tags,
       createdById: userId
     });
     return book;
@@ -54,7 +56,7 @@ async function addBookRecord(isbn, recommendedBooks, userId) {
 
 /**
  * Delete a record of a book if it exists
- * @param {*} isbn 
+ * @param {string} isbn 
  * @returns 
  */
 async function deleteBookRecord(isbn) {
