@@ -1,7 +1,10 @@
 <!-- pages/books/recommend/index.vue -->
 <template>
   <div class="flex flex-col items-center p-4">
-    <BookSearch v-if="!selectedBook && !aiSearch" @search="fetchBooks" />
+    <BookSearch 
+      v-if="!selectedBook && !aiSearch" @search="fetchBooks" 
+      :loading="loading"
+    />
     <!-- Book results from search -->
     <BookSearchResults
       v-if="!selectedBook && !aiSearch"
@@ -40,7 +43,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+definePageMeta({
+  middleware: 'auth',
+  layout: 'search'
+})
 import BookSearch from '~/components/books/BookSearch.vue'
 import BookSearchResults from '~/components/books/BookSearchResults.vue'
 import BookDetail from '~/components/books/BookDetails.vue'

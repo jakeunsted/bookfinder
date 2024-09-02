@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.5s;
+  background-color: rgba(255, 0, 0, 0.5); /* Temporary background color */
+}
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+}

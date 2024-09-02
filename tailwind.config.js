@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  important: true,
   content: [
     "./components/**/*.{js,vue,ts}",
     "./layouts/**/*.vue",
@@ -8,14 +9,9 @@ export default {
     "./app.vue",
     "./error.vue",
   ],
+  plugins: [],
   theme: {
     extend: {},
-    colors: {
-      'primary': '#3FC0F3',
-      'secondary': '#001011',
-      'accent': '#0D9BD3'
-    }
   },
-  plugins: [],
 }
 

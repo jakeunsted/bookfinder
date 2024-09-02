@@ -40,7 +40,7 @@ const router = useRouter();
 const onSubmit = async () => {
   try {
     await login(username.value, password.value);
-    router.push('/books/recommend');
+    navigateTo('/')
   } catch (error) {
     alert('Login failed: ' + error.message);
   }
@@ -48,9 +48,5 @@ const onSubmit = async () => {
 </script>
 
 <style scoped>
-.fill-height {
-  background-image: url('/public/blurry-gradient-haikei.svg');
-  background-size: cover;
-  background-position: center;
-}
+
 </style>

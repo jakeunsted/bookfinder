@@ -1,7 +1,7 @@
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   css: ['~/assets/css/main.css'],
   postcss: {
     plugins: {
@@ -38,4 +38,10 @@ export default defineNuxtConfig({
     }
   },
   compatibilityDate: '2024-07-22',
+  app: {
+    pageTransition: {
+      name: 'page',
+      mode: 'out-in',
+    },
+  }
 })
