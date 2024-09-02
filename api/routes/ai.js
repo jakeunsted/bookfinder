@@ -5,7 +5,7 @@ const passportConfig = require('../passport-config');
 
 const { findRelatedBooks } = require('../modules/ai');
 const { getBookByISBN } = require('../modules/books');
-const { addBookRecord } = require('../database/services/books.service');
+const { addBookRecord } = require('../database/services/book.service');
 const { addBookRecommendations } = require('../database/services/bookRecommendations.service');
 
 /**

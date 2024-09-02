@@ -4,7 +4,7 @@
 const { OpenAI} = require('openai');
 require('dotenv').config()
 
-const { checkForBook } = require('../../database/services/books.service')
+const { checkForBook } = require('../../database/services/book.service')
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,

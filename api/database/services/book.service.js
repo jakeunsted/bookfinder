@@ -1,4 +1,4 @@
-const Books = require('../models/book.model');
+const Book = require('../models/book.model');
 const { getBookByISBN } = require('../../modules/books');
 
 /**
@@ -8,7 +8,7 @@ const { getBookByISBN } = require('../../modules/books');
  */
 async function checkForBook(isbn) {
   try {
-    const book = await Books.findOne({
+    const book = await Book.findOne({
       where: {
         isbn
       }
@@ -42,7 +42,7 @@ async function addBookRecord(isbn, tags = [], userId) {
   // future: need to add quick google link to get data
 
   try {
-    const book = await Books.create({
+    const book = await Book.create({
       title,
       isbn,
       tags,
@@ -61,7 +61,7 @@ async function addBookRecord(isbn, tags = [], userId) {
  */
 async function deleteBookRecord(isbn) {
   try {
-    const book = await Books.findOne({
+    const book = await Book.findOne({
       where: {
         isbn
       }
