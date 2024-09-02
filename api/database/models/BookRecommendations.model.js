@@ -28,7 +28,7 @@ class BookRecommendations extends Model {
   }
 
   static associate(models) {
-    this.belongsToOne(models.Book , { foreignKey: 'bookId', as: 'book' });
+    this.belongsTo(models.Book , { foreignKey: 'bookId', as: 'book' });
   }
 }
 

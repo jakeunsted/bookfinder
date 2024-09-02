@@ -6,6 +6,7 @@ const passportConfig = require('../passport-config');
 const { findRelatedBooks } = require('../modules/ai');
 const { getBookByISBN } = require('../modules/books');
 const { addBookRecord } = require('../database/services/books.service');
+const { addBookRecommendations } = require('../database/services/bookRecommendations.service');
 
 /**
  * GET route to find related books for given ISBN
@@ -42,7 +43,8 @@ router.get(
         .filter(result => result.status === 'fulfilled' && result.value !== null)
         .map(result => result.value);
 
-      await addBookRecord(isbn, response, userId);
+      const book = await addBookRecord(isbn, response, tags = [], userId);
+      await addBookRecommendations(book.id, books, userId);
       res.json({ books });
     } catch (error) {
       res.status(500).send('Error with related books: ' + error.message);
