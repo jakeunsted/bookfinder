@@ -1,4 +1,4 @@
-const UsersBooks = require('../models/usersBooks.model');
+const UsersBooks = require('../models/UsersBooks.model');
 
 /**
  * Get all books for a user
