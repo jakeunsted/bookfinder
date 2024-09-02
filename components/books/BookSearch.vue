@@ -5,12 +5,13 @@
       <v-text-field
         v-model="searchQuery"
         label="Search for books"
-        outlined
+        variant="solo"
         dense
+        clearable
         class="mb-4"
         @keyup.enter="searchBooks"
       >
-        <template #append>
+        <template #append-inner>
           <v-btn
             icon
             @click="searchBooks"
@@ -20,6 +21,16 @@
             <v-icon>mdi-magnify</v-icon>
           </v-btn>
         </template>
+
+        <template v-slot:loader>
+          <v-progress-linear
+            :active="loading"
+            color="primary"
+            :model-value="progress"
+            height="5"
+            indeterminate
+          ></v-progress-linear>
+        </template>
       </v-text-field>
     </div>
   </v-container>
@@ -27,6 +38,10 @@
 
 <script setup>
 import { ref, defineEmits } from 'vue'
+
+const props = defineProps({
+  loading: Boolean
+})
 
 const searchQuery = ref('')
 const emit = defineEmits(['search'])

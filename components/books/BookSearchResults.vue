@@ -1,10 +1,7 @@
 <template>
   <v-container class="w-full max-w-md">
     <div v-if="hasSearched">
-      <div v-if="loading" class="text-center">
-        <v-progress-linear indeterminate color="primary" />
-      </div>
-      <div v-else>
+      <div v-if="!loading">
         <div v-if="books.length === 0" class="text-center">
           No results found
         </div>

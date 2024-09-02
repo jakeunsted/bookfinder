@@ -16,7 +16,11 @@
     <div v-if="readBooks.length">
       <div class="flex flex-row flex-wrap justify-center">
         <div v-for="book in readBooks" :key="book.title" class="p-2">
-          <v-card class="max-w-44 min-w-44 p-2">
+          <v-card 
+            class="max-w-44 min-w-44 p-2"
+            rounded="xl"
+            elevation="10"
+          >
             <v-card-text class="text-wrap text-center">
               <v-img :src="book.image" class="pb-2 max-h-50"></v-img>
               <p>{{book.title}}</p>
@@ -36,7 +40,7 @@
 <script setup>
 definePageMeta({
   middleware: 'auth',
-  layout: 'profile'
+  layout: 'profile',
 });
 
 const loading = ref(true);
@@ -75,6 +79,15 @@ const readBooks = ref([
     dateRead: '2024-06-01'
   },
   {
+    title: `The Housemaid's Secret`,
+    author: 'Freida McFadden',
+    description: `As he continues showing me their incredible penthouse apartment, I have a terrible feeling about the woman behind closed doors...`,
+    pageCount: '352',
+    categories: ['Fiction', 'Thriller'],
+    image: 'http://books.google.com/books/content?id=9WylzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api',
+    dateRead: '2024-06-01'
+  },
+  {
     title: 'The Housemaid Is Watching',
     author: 'Freida McFadden',
     description: `"You must be our new neighbors!" Mrs. Lowell gushes and waves across the picket fence. I clutch my daughter's hand and smile back`,
@@ -87,7 +100,6 @@ const readBooks = ref([
 
 onMounted(() => {
   try {
-    console.log('loading home');
     // need to get user from store thats populated from JWT
 
     // const { user, error } = await useMyFetch(`/user/${route.params.id}`, {

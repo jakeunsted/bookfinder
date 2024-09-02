@@ -31,7 +31,8 @@ export default defineNuxtPlugin((app) => {
             focus: '#33B8EA', // 8
             border: '#9EDCFA', // 6
             interactiveComponent: '#B8E8FF', // 5
-            white: '#FCFCFD'
+            white: '#FCFCFD',
+            window: '#E7E8EC' // 3 grey
           },
         },
         dark: {
@@ -46,6 +47,7 @@ export default defineNuxtPlugin((app) => {
             border: '#005A5C', // 6
             interactiveComponent: '#004A4C', // 5
             white: '#FCFCFD',
+            window: '#222325' // 3 grey
           },
         },
         pink: {
@@ -59,7 +61,8 @@ export default defineNuxtPlugin((app) => {
             focus: '#E28CD2', // 8
             border: '#F3BBE7', // 6
             interactiveComponent: '#F9CBEF', // 5
-            white: '#FCFCFD'
+            white: '#FCFCFD',
+            window: '#E7E8EC' // 3 grey
           },
         },
       },

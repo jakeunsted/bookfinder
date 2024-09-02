@@ -35,13 +35,15 @@
           <v-btn 
             @click="onPlusClick" 
             variant="text"
-            class="rounded-circle h-16"
+            class="rounded-circle h-16 drop-shadow-lg"
           >
             <v-icon class="text-white text-4xl">mdi-plus</v-icon>
           </v-btn>
         </div>
       </div>
-      <div class="absolute bottom-0 w-5/6 mb-8 left-1/2 transform -translate-x-1/2 flex justify-between items-center rounded-full py-2 px-8 bg-primary z-0">
+      <div 
+        class="absolute bottom-0 w-5/6 mb-8 left-1/2 transform -translate-x-1/2 flex justify-between items-center rounded-full py-2 px-8 bg-primary z-0 drop-shadow-lg"
+      >
         <v-btn
           @click="onHomeClick"
           :ripple="false"
@@ -85,6 +87,13 @@ const onExitClick = () => {
 const handleItemClick = (item) => {
   console.log(`Item clicked: ${item.title}`);
   showDrawer.value = false;
+  if (item.value === 'search') {
+    navigateTo('/books/search');
+  } else if (item.value === 'scan') {
+    // navigateTo('/scan');
+  } else if (item.value === 'manual') {
+    // navigateTo('/add');
+  }
 };
 
 const addItems = [

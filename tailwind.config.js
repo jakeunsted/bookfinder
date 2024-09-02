@@ -10,5 +10,8 @@ export default {
     "./error.vue",
   ],
   plugins: [],
+  theme: {
+    extend: {},
+  },
 }
 

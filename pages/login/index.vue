@@ -48,9 +48,5 @@ const onSubmit = async () => {
 </script>
 
 <style scoped>
-.fill-height {
-  background-image: url('/public/blurry-gradient-haikei.svg');
-  background-size: cover;
-  background-position: center;
-}
+
 </style>
