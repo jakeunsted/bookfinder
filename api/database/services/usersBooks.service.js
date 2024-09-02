@@ -2,7 +2,7 @@ const UsersBooks = require('../models/UsersBooks.model');
 const Book = require('../models/Book.model');
 
 /**
- * Get all books for a user
+ * Get all books for a user, joined with Book to get all details
  * @param {number} userId
  * @returns {Array} books
  */
@@ -26,14 +26,53 @@ async function getBooksForUser(userId) {
 }
 
 /**
+ * Get a single book with details for a user
+ * @param {number} userId
+ * @param {number} bookId
+ */
+async function getBookForUser(userId, bookId) {
+  try {
+    const book = await UsersBooks.findOne({
+      where: {
+        userId,
+        bookId
+      },
+      include: [
+        {
+          model: Book,
+          as: 'book'
+        }
+      ]
+    });
+    return book;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+/**
  * Add a new book to a user
  * @param {number} userId
  * @param {number} bookId
+ * @param {number} userRating
+ * @param {Date} dateStarted
+ * @param {Date} dateFinished
+ * @param {string} userNotes
  * @returns {Object} book
  */
 async function addBookToUser(userId, bookId, userRating = null, dateStarted = null, dateFinished = null, userNotes = null) {
   if (userRating > 10) {
     throw new Error('User rating must be between 1 and 10');
+  }
+  if (dateStarted && dateFinished && dateStarted > dateFinished) {
+    throw new Error('Date started must be before date finished');
+  }
+  if (dateStarted && dateStarted > new Date()) {
+    throw new Error('Date started must be in the past');
+  }
+  const bookExists = await Book.findByPk(bookId);
+  if (!bookExists) {
+    throw new Error('Book does not exist');
   }
   try {
     const userBook = await UsersBooks.create({
@@ -63,5 +102,6 @@ async function addBookToUser(userId, bookId, userRating = null, dateStarted = nu
 
 module.exports = {
   getBooksForUser,
+  getBookForUser,
   addBookToUser
 }

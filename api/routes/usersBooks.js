@@ -25,7 +25,31 @@ router.get(
 );
 
 /**
- * Add a book to a user
+ * Get single book for a user.
+ * User to get the users data of the book.
+ */
+route.get(
+  '/:userId/:bookId',
+  passportConfig.authenticate,
+  param('userId')
+    .isInt()
+    .withMessage('User ID is required'),
+  param('bookId')
+    .isInt()
+    .withMessage('Book ID is required'),
+  async (req, res) => {
+    const { userId, bookId } = req.params;
+    try {
+      const book = await usersBooksService.getBookForUser(userId, bookId);
+      res.json(book);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  }
+);
+
+/**
+ * Save a book to a user
  * userId and bookId required in params
  */
 router.post(
