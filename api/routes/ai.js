@@ -43,8 +43,8 @@ router.get(
         .filter(result => result.status === 'fulfilled' && result.value !== null)
         .map(result => result.value);
 
-      const book = await addBookRecord(isbn, response, tags = [], userId);
-      await addBookRecommendations(book.id, books, userId);
+      // const book = await addBookRecord(isbn, response, tags = [], userId);
+      // await addBookRecommendations(book.id, books, userId);
       res.json({ books });
     } catch (error) {
       res.status(500).send('Error with related books: ' + error.message);

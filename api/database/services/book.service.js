@@ -2,6 +2,19 @@ const Book = require('../models/Book.model');
 const { getBookByISBN } = require('../../modules/books');
 
 /**
+ * Get book by book id
+ * @param {Number} bookId
+ */
+async function getBookById(bookId) {
+  try {
+    const book = await Book.findByPk(bookId);
+    return book;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+/**
  * Check for book and return if exists
  * @param {*} isbn 
  * @returns {Object} book
@@ -28,9 +41,7 @@ async function checkForBook(isbn) {
  * @param {Array} tags
  * @param {Number} userId
  */
-async function addBookRecord(isbn, tags = [], userId) {
-  const { title } = await getBookByISBN(isbn);
-
+async function addBookRecord(title, isbn, tags = [], userId, quickLink) {
   /**
    * Check if book already exists first
    */
@@ -46,7 +57,8 @@ async function addBookRecord(isbn, tags = [], userId) {
       title,
       isbn,
       tags,
-      createdById: userId
+      createdById: userId,
+      quickLink
     });
     return book;
   } catch (error) {
@@ -77,6 +89,7 @@ async function deleteBookRecord(isbn) {
 }
 
 module.exports = {
+  getBookById,
   addBookRecord,
   checkForBook,
   deleteBookRecord

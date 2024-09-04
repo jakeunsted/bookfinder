@@ -10,19 +10,23 @@ class Book extends Model {
       },
       title: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
       },
       isbn: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
       },
       tags: {
         type: DataTypes.ARRAY(DataTypes.STRING),
+        allowNull: true,
+      },
+      quickLink: {
+        type: DataTypes.STRING,
         allowNull: false,
       },
       createdById: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
       }
     }, {
       sequelize,

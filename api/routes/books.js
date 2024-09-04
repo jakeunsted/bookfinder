@@ -3,6 +3,7 @@ const { param, query, validationResult } = require('express-validator'); // Add 
 const router = express.Router();
 const passportConfig = require('../passport-config');
 const books = require('../modules/books');
+const bookService = require('../database/services/book.service');
 
 router.get(
   '/:isbn',
@@ -39,5 +40,20 @@ router.get(
     }
   }
 );
+
+router.post(
+  '/',
+  passportConfig.authenticate,
+  async (req, res) => {
+    const { title, isbn, tags = [], createdById, quickLink } = req.body;
+    try {
+      const book = await bookService.addBookRecord(title, isbn, tags, createdById, quickLink);
+      res.json(book);
+    } catch (error) {
+      console.error('error', error);
+      res.status(500).send('Error adding book');
+    }
+  }
+)
 
 module.exports = router;

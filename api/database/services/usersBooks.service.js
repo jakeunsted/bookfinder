@@ -1,5 +1,6 @@
 const UsersBooks = require('../models/UsersBooks.model');
 const Book = require('../models/Book.model');
+const bookModule = require('../../modules/books');
 
 /**
  * Get all books for a user, joined with Book to get all details
@@ -19,7 +20,17 @@ async function getBooksForUser(userId) {
         }
       ]
     });
-    return books;
+
+    // Fetch detailed book information from Google Books API for each book
+    const booksWithDetails = await Promise.all(books.map(async (userBook) => {
+      const bookDetails = await bookModule.getFromBookQuickLink(userBook.book.quickLink);
+      return {
+        ...userBook.toJSON(),
+        bookDetails
+      };
+    }));
+
+    return booksWithDetails;
   } catch (error) {
     throw new Error(error);
   }

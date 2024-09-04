@@ -79,7 +79,23 @@ async function searchBooksByTitle(partialName) {
   }
 }
 
+async function getFromBookQuickLink(quickLink) {
+  try {
+    const response = await axios.get(quickLink);
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.error(`Failed to fetch book details: ${response.statusText}`);
+      return {};
+    }
+  } catch (error) {
+    console.error('Error fetching book details from Google API:', error.message);
+    return {};
+  }
+}
+
 module.exports = {
   getBookByISBN,
-  searchBooksByTitle
+  searchBooksByTitle,
+  getFromBookQuickLink
 }
