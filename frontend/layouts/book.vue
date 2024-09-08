@@ -1,6 +1,6 @@
 <template>
   <closeBar />
-  <div class=" h-full bg-window">
+  <div class="h-full bg-window">
     <slot />
   </div>
 </template>
