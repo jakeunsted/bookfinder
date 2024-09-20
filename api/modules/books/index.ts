@@ -1,21 +1,35 @@
-const axios = require('axios');
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import axios from 'axios';
+
+interface Book {
+  title: string;
+  authors: string[];
+  description: string;
+  pageCount: number;
+  categories: string[];
+  image: string;
+  isbn?: {
+    isbn10: string | null;
+    isbn13: string | null;
+  };
+}
 
 /**
  * Search google api for book by ISBN
- * @param {String} isbn 
- * @returns 
+ * @param {string} isbn 
+ * @returns {Promise<Book>}
  */
-async function getBookByISBN(isbn) {
+export async function getBookByISBN(isbn: string): Promise<Book> {
   if (!isbn) {
     throw new Error('ISBN is required');
   }
 
-  let url = `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`;
+  const url = `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`;
 
   try {
     const response = await axios.get(url);
     const book = response.data.items[0];
-    const returnBook = {
+    const returnBook: Book = {
       title: book.volumeInfo.title,
       authors: book.volumeInfo.authors,
       description: book.volumeInfo.description,
@@ -32,24 +46,28 @@ async function getBookByISBN(isbn) {
 
 /**
  * Search for books by name/title
- * @param {String} partialName 
- * @returns 
+ * @param {string} partialName 
+ * @returns {Promise<Book[]>}
  */
-async function searchBooksByTitle(partialName) {
+export async function searchBooksByTitle(partialName: string): Promise<Book[]> {
   if (!partialName) {
     throw new Error('Partial name is required');
   }
 
-  let url = `https://www.googleapis.com/books/v1/volumes?q=intitle:${partialName}`;
-  const seenTitles = new Set();
+  const url = `https://www.googleapis.com/books/v1/volumes?q=intitle:${partialName}`;
+  const seenTitles = new Set<string>();
 
   try {
     const response = await axios.get(url);
-    const books = response.data.items
-      .map(book => {
+    const books: Book[] = response.data.items
+      .map((book: any) => {
         const identifiers = book.volumeInfo.industryIdentifiers || [];
-        const isbn10 = identifiers.find(identifier => identifier.type === 'ISBN_10')?.identifier ?? null;
-        const isbn13 = identifiers.find(identifier => identifier.type === 'ISBN_13')?.identifier ?? null;
+        const isbn10 = identifiers.find(
+          (identifier: any) => identifier.type === 'ISBN_10'
+        )?.identifier ?? null;
+        const isbn13 = identifiers.find(
+          (identifier: any) => identifier.type === 'ISBN_13'
+        )?.identifier ?? null;
 
         return {
           title: book.volumeInfo.title,
@@ -64,7 +82,7 @@ async function searchBooksByTitle(partialName) {
           }
         };
       })
-      .filter(book => {
+      .filter((book: Book) => {
         if (seenTitles.has(book.title)) {
           return false;
         }
@@ -79,7 +97,12 @@ async function searchBooksByTitle(partialName) {
   }
 }
 
-async function getFromBookQuickLink(quickLink) {
+/**
+ * Get book details from a quick link
+ * @param {string} quickLink 
+ * @returns {Promise<any>}
+ */
+export async function getFromBookQuickLink(quickLink: string): Promise<any> {
   try {
     const response = await axios.get(quickLink);
     if (response.status === 200) {
@@ -89,13 +112,15 @@ async function getFromBookQuickLink(quickLink) {
       return {};
     }
   } catch (error) {
-    console.error('Error fetching book details from Google API:', error.message);
+    console.error(
+      'Error fetching book details from Google API:', (error as Error).message
+    );
     return {};
   }
 }
 
-module.exports = {
-  getBookByISBN,
-  searchBooksByTitle,
-  getFromBookQuickLink
-}
+// export default {
+//   getBookByISBN,
+//   searchBooksByTitle,
+//   getFromBookQuickLink
+// }

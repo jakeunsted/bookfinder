@@ -1,9 +1,10 @@
-const express = require('express');
-const { param, query, validationResult } = require('express-validator'); // Add this line
+import express, { Request, Response } from 'express';
+import { param, query, validationResult } from 'express-validator';
+import * as passportConfig from '../passport-config.ts';
+import * as books from '../modules/books/index.ts';
+import { addBookRecord } from '../database/services/book.service.ts';
+
 const router = express.Router();
-const passportConfig = require('../passport-config');
-const books = require('../modules/books');
-const bookService = require('../database/services/book.service');
 
 router.get(
   '/:isbn',
@@ -11,9 +12,8 @@ router.get(
   param('isbn')
     .isISBN()
     .withMessage('Invalid ISBN'),
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const result = await books.getBookByISBN(req.params.isbn);
-    // console.log('express result', result);
     res.send(result);
   }
 );
@@ -24,15 +24,14 @@ router.get(
   query('title')
     .isString()
     .withMessage('Name query parameter is required'),
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
     try {
-      const result = await books.searchBooksByTitle(req.query.title);
-      // console.log('express result', result);
+      const result = await books.searchBooksByTitle(req.query.title as string);
       res.send(result);
     } catch (error) {
       console.log('error', error);
@@ -44,16 +43,22 @@ router.get(
 router.post(
   '/',
   passportConfig.authenticate,
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const { title, isbn, tags = [], createdById, quickLink } = req.body;
     try {
-      const book = await bookService.addBookRecord(title, isbn, tags, createdById, quickLink);
+      const book = await addBookRecord(
+        title,
+        isbn,
+        tags,
+        createdById,
+        quickLink
+      );
       res.json(book);
     } catch (error) {
       console.error('error', error);
       res.status(500).send('Error adding book');
     }
   }
-)
+);
 
-module.exports = router;
+export default router;

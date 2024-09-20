@@ -1,14 +1,16 @@
-const cron = require('node-cron');
-const refreshTokenService = require('../database/services/refreshToken.service');
+import cron from 'node-cron';
+import { 
+  deleteExpiredRefreshTokens
+} from '../database/services/refreshToken.service.ts';
 
 /**
  * Schedule to delete expired refresh tokens every hour
  */
-function scheduleTokenDeletion() {
+function scheduleTokenDeletion(): void {
   cron.schedule('0 0 * * *', async () => {
     try {
       const now = new Date();
-      await refreshTokenService.deleteExpiredRefreshTokens(now);
+      await deleteExpiredRefreshTokens(now);
       console.log('Expired refresh tokens deleted');
     } catch (error) {
       console.error('Error deleting expired refresh tokens:', error);
@@ -16,4 +18,4 @@ function scheduleTokenDeletion() {
   });
 }
 
-module.exports = scheduleTokenDeletion;
+export default scheduleTokenDeletion;
