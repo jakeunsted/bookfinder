@@ -1,9 +1,10 @@
-const express = require('express');
-const { param, body } = require('express-validator');
+import express, { Request, Response } from 'express';
+import { param, body } from 'express-validator';
+import * as passportConfig from '../passport-config.ts';
+import * as usersBooksService from '../database/services/usersBooks.service.ts';
+import * as bookService from '../database/services/book.service.ts';
+
 const router = express.Router();
-const passportConfig = require('../passport-config');
-const usersBooksService = require('../database/services/usersBooks.service');
-const bookService = require('../database/services/book.service');
 
 /**
  * Get all books for a user
@@ -14,13 +15,13 @@ router.get(
   param('userId')
     .isInt()
     .withMessage('User ID is required'),
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const { userId } = req.params;
     try {
-      const books = await usersBooksService.getBooksForUser(userId);
+      const books = await usersBooksService.getBooksForUser(Number(userId));
       res.json(books);
     } catch (error) {
-      res.status(500).send(error.message);
+      res.status(500).send((error as Error).message);
     }
   }
 );
@@ -38,13 +39,16 @@ router.get(
   param('bookId')
     .isInt()
     .withMessage('Book ID is required'),
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const { userId, bookId } = req.params;
     try {
-      const book = await usersBooksService.getBookForUser(userId, bookId);
+      const book = await usersBooksService.getBookForUser(
+        Number(userId),
+        Number(bookId)
+      );
       res.json(book);
     } catch (error) {
-      res.status(500).send(error.message);
+      res.status(500).send((error as Error).message);
     }
   }
 );
@@ -75,7 +79,7 @@ router.post(
   body('userNotes')
     .optional()
     .isString(),
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const { userId, bookId } = req.params;
     const { 
       userRating = null, 
@@ -85,19 +89,24 @@ router.post(
     } = req.body;
     try {
       // check if the book exists
-      const existingBook = await bookService.getBookById(bookId);
+      const existingBook = await bookService.getBookById(Number(bookId));
       if (!existingBook) {
         return res.status(404).send('Book does not exist');
       }
 
       const book = await usersBooksService.addBookToUser(
-        userId, bookId, userRating, dateStarted, dateFinished, userNotes
+        Number(userId),
+        Number(bookId),
+        userRating,
+        dateStarted,
+        dateFinished,
+        userNotes
       );
       res.json(book);
     } catch (error) {
-      res.status(500).send(error.message);
+      res.status(500).send((error as Error).message);
     }
   }
 );
 
-module.exports = router;
+export default router;
