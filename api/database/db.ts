@@ -4,15 +4,7 @@ import { BookRecommendations } from './models/BookRecommendations.model.ts';
 import { UsersBooks } from './models/UsersBooks.model.ts';
 import { RefreshToken } from './models/refreshToken.model.ts';
 import { User } from './models/user.model.ts';
-
-// Define Models interface
-export interface Models {
-  Book: typeof Book;
-  BookRecommendations: typeof BookRecommendations;
-  UsersBooks: typeof UsersBooks;
-  RefreshToken: typeof RefreshToken;
-  User: typeof User;
-}
+import { Models } from '../types/Models.types.ts';
 
 /**
  * Sequelize and db setup

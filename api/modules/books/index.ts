@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
+import * as GoogleBooks from '../../types/GoogleBooks.types.ts';
 
 interface Book {
   title: string;
@@ -8,6 +9,7 @@ interface Book {
   pageCount: number;
   categories: string[];
   image: string;
+  quickLink: string;
   isbn?: {
     isbn10: string | null;
     isbn13: string | null;
@@ -35,7 +37,8 @@ export async function getBookByISBN(isbn: string): Promise<Book> {
       description: book.volumeInfo.description,
       pageCount: book.volumeInfo.pageCount,
       categories: book.volumeInfo.categories,
-      image: book.volumeInfo.imageLinks.thumbnail
+      image: book.volumeInfo.imageLinks.thumbnail,
+      quickLink: book.selfLink,
     };
     return returnBook;
   } catch (error) {
@@ -102,21 +105,22 @@ export async function searchBooksByTitle(partialName: string): Promise<Book[]> {
  * @param {string} quickLink 
  * @returns {Promise<any>}
  */
-export async function getFromBookQuickLink(quickLink: string): Promise<any> {
+export async function getFromBookQuickLink(
+  quickLink: string
+): Promise<GoogleBooks.GoogleBooksApiResponse | undefined> {
   try {
     const response = await axios.get(quickLink);
     if (response.status === 200) {
       return response.data;
     } else {
       console.error(`Failed to fetch book details: ${response.statusText}`);
-      return {};
     }
   } catch (error) {
     console.error(
       'Error fetching book details from Google API:', (error as Error).message
     );
-    return {};
   }
+  return undefined;
 }
 
 // export default {
