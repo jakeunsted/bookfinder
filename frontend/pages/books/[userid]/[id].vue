@@ -71,13 +71,11 @@ const fetchBook = async (userId, bookId) => {
 }
 
 const updateTruncatedDescription = () => {
-  // Get the description (which might contain HTML) from the correct path in the book object
   const description = book.value?.book?.volumeInfo?.description || '';
 
-  // Convert the HTML description to plain text
   const plainTextDescription = htmlToText(description, {
-    wordwrap: false,         // Disable word wrapping for cleaner truncation
-    preserveNewlines: false, // Remove newlines for smoother truncation
+    wordwrap: false,
+    preserveNewlines: false,
   });
 
   // If showing the full description, use the plain text directly
