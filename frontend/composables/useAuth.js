@@ -26,10 +26,14 @@ export const useAuth = () => {
       }
 
       const data = await response.json();
-      const { accessToken, refreshToken } = data;
+      const { accessToken, refreshToken, user } = data;
 
       if (!accessToken || !refreshToken) {
         throw new Error('No tokens received');
+      }
+
+      if (!user) {
+        throw new Error('No user data');
       }
 
       useCookie(
@@ -40,6 +44,7 @@ export const useAuth = () => {
         'refresh_token',
         process.env.COOKIE_OPTIONS
       ).value = refreshToken;
+      reloadNuxtApp('/')
     } catch (error) {
       console.error('Login error:', error);
       throw error;
