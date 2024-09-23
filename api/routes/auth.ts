@@ -43,7 +43,7 @@ router.post(
       const accessToken: string = passportConfig.generateAccessToken(payload);
       const refreshToken: string = passportConfig.generateRefreshToken(payload);
       await createRefreshToken(validatedUser.id, refreshToken);
-      res.json({ accessToken, refreshToken });
+      res.json({ accessToken, refreshToken, user: validatedUser });
     } catch (error) {
       if (error instanceof Error) {
         res.status(500).send(error.message);
