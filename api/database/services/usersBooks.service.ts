@@ -30,6 +30,7 @@ interface UserBookDetails {
   dateStarted?: Date;
   dateFinished?: Date;
   userNotes?: string;
+  quickLink?: string;
 }
 
 /**
@@ -92,7 +93,7 @@ async function getBooksForUser(userId: number): Promise<UserBookDetails[]> {
  */
 async function getBookForUser(
   userId: number, bookId: number
-): Promise<UsersBooks | null> {
+): Promise<UserBookDetails | null> {
   try {
     const book = await UsersBooks.findOne({
       where: {
@@ -106,7 +107,27 @@ async function getBookForUser(
         }
       ]
     } as FindOptions);
-    return book;
+
+    if (!book) {
+      return null;
+    }
+
+    // Fetch detailed book information from Google Books API for the book
+    const bookWithDetails = book as UsersBooksType;
+
+    const bookDetails = await bookModule.getFromBookQuickLink(
+      bookWithDetails.book.quickLink
+    );
+
+    const bookWithDetailsResult: UserBookDetails = {
+      ...bookWithDetails.toJSON(),
+      book: {
+        ...bookWithDetails.book.toJSON(),
+        ...bookDetails
+      } as BookDetails
+    };
+
+    return bookWithDetailsResult;
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(error.message);
