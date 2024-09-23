@@ -11,15 +11,11 @@ import usersBooksRouter from './routes/usersBooks.ts';
 import scheduleTokenDeletion from './tasks/removeTokens.ts';
 import { connectToDatabase } from './database/db.ts';
 
-console.log('pre express');
-
 const app = express();
 
 app.use(passportConfig.initialize());
 
 app.use(express.json());
-
-console.log('pre cors');
 
 app.use(cors({
   origin: '*', // Allow requests from this origin
@@ -31,15 +27,11 @@ app.get('/health', (req: Request, res: Response) => {
   res.status(200).send('OK');
 });
 
-console.log('pre routes');
-
 app.use('/books', booksRouter);
 app.use('/user', userRouter);
 app.use('/ai', aiRouter);
 app.use('/auth', authRouter);
 app.use('/users-books', usersBooksRouter);
-
-console.log('post routes');
 
 app.use((err: Error, req: Request, res: Response) => {
   console.error(err.stack);
