@@ -26,10 +26,10 @@ interface UserBookDetails {
   book: BookDetails;
   userId: number;
   bookId: number;
-  userRating: number | null;
-  dateStarted: Date | null;
-  dateFinished: Date | null;
-  userNotes: string | null;
+  userRating?: number;
+  dateStarted?: Date;
+  dateFinished?: Date;
+  userNotes?: string;
 }
 
 /**
@@ -44,7 +44,7 @@ interface UsersBooksType extends UsersBooks {
  * @param {number} userId
  * @returns {Promise<UserBookDetails[]>} books
  */
-async function getBooksForUser(userId: number): Promise<BookDetails[]> {
+async function getBooksForUser(userId: number): Promise<UserBookDetails[]> {
   try {
     const books = await UsersBooks.findAll({
       where: {
@@ -61,17 +61,20 @@ async function getBooksForUser(userId: number): Promise<BookDetails[]> {
     // Fetch detailed book information from Google Books API for each book
     const booksWithDetails = await Promise.all(
       (books as UsersBooksType[]).map(async (userBook: UsersBooksType) => {
-        const bookDetails = await bookModule.getFromBookQuickLink(
-          userBook.book.quickLink
-        );
-        return {
-          ...userBook.toJSON(),
-          bookDetails
-        } as UserBookDetails;
+      const bookDetails = await bookModule.getFromBookQuickLink(
+        userBook.book.quickLink
+      );
+      return {
+        ...userBook.toJSON(),
+        book: {
+        ...userBook.book.toJSON(),
+        bookDetails
+        }
+      } as UserBookDetails;
       })
     );
 
-    return booksWithDetails.map((userBook) => userBook.book);
+    return booksWithDetails;
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(error.message);
