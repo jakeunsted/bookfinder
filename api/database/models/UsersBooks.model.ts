@@ -7,7 +7,7 @@ import {
 } from 'sequelize';
 import { User } from './user.model.ts';
 import { Book } from './Book.model.ts';
-import { Models } from '../db.ts';
+import { Models } from '../../types/Models.types.ts';
 
 export class UsersBooks extends Model {
   public id!: number;

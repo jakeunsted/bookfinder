@@ -6,7 +6,7 @@ import {
   Association 
 } from 'sequelize';
 import { User } from './user.model.ts';
-import { Models } from '../db.ts';
+import { Models } from '../../types/Models.types.ts';
 
 export class RefreshToken extends Model {
   public token!: string;

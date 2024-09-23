@@ -8,7 +8,7 @@ import {
 } from 'sequelize';
 import { RefreshToken } from './refreshToken.model.ts';
 import { Book } from './Book.model.ts';
-import { Models } from '../db.ts';
+import { Models } from '../../types/Models.types.ts';
 
 export class User extends Model {
   public id!: number;

@@ -6,7 +6,7 @@ import {
   BelongsToGetAssociationMixin 
 } from 'sequelize';
 import { Book } from './Book.model.ts';
-import { Models } from '../db.ts';
+import { Models } from '../../types/Models.types.ts';
 
 export class BookRecommendations extends Model {
   public id!: number;
