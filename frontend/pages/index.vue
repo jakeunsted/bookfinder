@@ -19,7 +19,7 @@
           <div v-for="book in readBooks" :key="book.book.id" class="p-2">
             <v-card class="max-w-44 min-w-44 p-2" rounded="xl" elevation="10">
               <v-card-text class="text-wrap text-center">
-                <v-img :src="book.bookDetails.volumeInfo.imageLinks?.thumbnail || book.image" class="pb-2 max-h-50"></v-img>
+                <v-img :src="book.book.bookDetails?.volumeInfo?.imageLinks?.thumbnail || book.image" class="pb-2 max-h-50"></v-img>
                 <p>{{ book.book.title }}</p>
                 <p class="text-grey">{{ new Date(book.dateFinished).toLocaleDateString() }}</p>
               </v-card-text>
@@ -68,8 +68,7 @@ onMounted(async () => {
     if (response.error) {
       console.error('Failed to fetch user books:', response.error);
     } else {
-      readBooks.value = response; // Update readBooks with the fetched data
-      console.log('response:', response);
+      readBooks.value = response;
       console.log('readBooks:', readBooks.value);
     }
   } catch (error) {
