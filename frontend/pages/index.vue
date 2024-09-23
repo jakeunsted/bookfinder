@@ -60,7 +60,6 @@ const readBooks = ref([]);
 const user = ref({});
 
 const goToBookDetails = (bookId) => {
-  console.log('show the book details:', bookId);
   navigateTo(`/books/${user.value.id}/${bookId}`);
 };
 

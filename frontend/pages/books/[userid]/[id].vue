@@ -80,7 +80,6 @@ const updateTruncatedDescription = () => {
 
 watch(book, (newBook) => {
   if (newBook) {
-    console.log('new book:', newBook);
     bookImage.value = newBook.book?.volumeInfo?.imageLinks?.thumbnail || defaultImage
     updateTruncatedDescription()
   }
