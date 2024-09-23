@@ -17,7 +17,12 @@
       <div v-if="readBooks.length">
         <div class="flex flex-row flex-wrap justify-center">
           <div v-for="book in readBooks" :key="book.book.id" class="p-2">
-            <v-card class="max-w-44 min-w-44 p-2" rounded="xl" elevation="10">
+            <v-card
+              class="max-w-44 min-w-44 p-2"
+              rounded="xl"
+              elevation="10"
+              @click="goToBookDetails(book.id)"
+            >
               <v-card-text class="text-wrap text-center">
                 <v-img :src="book.book.bookDetails?.volumeInfo?.imageLinks?.thumbnail || book.image" class="pb-2 max-h-50"></v-img>
                 <p>{{ book.book.title }}</p>
@@ -47,6 +52,7 @@ definePageMeta({
 });
 
 const loading = ref(true);
+const readBooks = ref([]); // Initialize readBooks as an empty array
 
 // Placeholder user data (replace with store or API)
 const user = ref({
@@ -57,8 +63,10 @@ const user = ref({
   signupDate: '2024-06-01'
 });
 
-// Initialize readBooks as an empty array
-const readBooks = ref([]);
+const goToBookDetails = (bookId) => {
+  console.log('show the book details:', bookId);
+  navigateTo(`/books/${user.value.id}/${bookId}`);
+};
 
 // Fetch user books on component mount
 onMounted(async () => {
