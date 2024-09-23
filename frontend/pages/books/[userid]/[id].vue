@@ -1,45 +1,81 @@
 <template>
-  <div class="w-full max-w-md text-center" v-if="book && !loading">
-    <div class="overflow-hidden">
-      <img :src="bookImage" alt="Book Cover" class="h-64 object-cover inline" />
-      <div class="p-4">
-        <h2 class="text-2xl font-bold">{{ book.title }}</h2>
-        <h3 v-if="book.authors && book.authors.length" class="text-lg">
-          {{ book.authors.join(', ') }}
-        </h3>
-        <p class="mt-2">
-          {{ truncatedDescription }}
-          <span v-if="!showFullDescription" class="primary cursor-pointer underline decoration-wavy" @click="toggleDescription">
-            Show More
-          </span>
-          <span v-if="showFullDescription" class="primary cursor-pointer underline decoration-wavy" @click="toggleDescription">
-            Show Less
-          </span>
-        </p>
-        <p class="mt-2"><strong>Page Count:</strong> {{ book.pageCount }}</p>
-        <p class="mt-2"><strong>Categories:</strong> {{ book.categories ? book.categories.join(', ') : 'N/A' }}</p>
-        <div class="flex justify-center grid">
-          <v-btn v-if="!aiSearch" @click="findRecommendations" class="bg-primary my-4">Find Similar</v-btn>
-          <v-btn @click="clearSelection" class="bg-primary">Back to Search</v-btn>
-        </div>
+  <div class="w-full text-center p-4" v-if="book && !loading">
+    <!-- Image section with title, author and page count -->
+     <div class="flex mb-5">
+        <v-card
+        class="max-w-36"
+        rounded="xl"
+        elevation="10"
+        border="xl"
+      >
+        <img :src="bookImage" alt="Book Cover" class="object-cover inline" />
+      </v-card>
+      <div>
+        <v-card flat="true" color="transparent" class="text-left">
+          <v-card-item>
+            <v-card-title class="text-wrap pb-2">
+              {{ bookDetails.title }}
+            </v-card-title>
+            <v-card-text class="p-0">
+              {{ bookDetails.volumeInfo.authors[0] }}
+            </v-card-text>
+            <v-card-text class="p-0">
+              {{ bookDetails.volumeInfo.pageCount }} Pages
+            </v-card-text>
+          </v-card-item>
+        </v-card>
       </div>
     </div>
+
+    <!-- Categories -->
+    <h1 class="text-left text-xl">Categories</h1>
+    <div 
+      class="flex flex-wrap"
+    >
+      <v-chip
+        v-for="category in categories"
+        :key="category"
+        class="m-1"
+        color="primary"
+        rounded="xl"
+        label
+      >
+        {{ category }}
+      </v-chip>
+    </div>
+
+    <!-- Description -->
+    <h1 class="text-left text-xl">Description</h1>
+    <v-card flat="true" color="transparent" class="text-left">
+      <v-card-text>
+      <p v-if="truncatedDescription">
+        {{ truncatedDescription }}
+        <span
+        v-if="truncatedDescription.length > 200"
+        @click="toggleDescription" class="text-blue-500 cursor-pointer"
+        >
+        {{ showFullDescription ? 'show less' : 'show more' }}
+        </span>
+      </p>
+      <p v-else>No description available</p>
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 
 <script setup>
 definePageMeta({
-  middleware: 'auth'
+  middleware: 'auth',
+  layout: 'book',
 });
 
-// import { ref, watch, onMounted } from 'vue'
-// import { useRoute, useRouter } from 'vue-router'
 import { htmlToText } from 'html-to-text'
 
 const route = useRoute()
-const router = useRouter()
 
 const book = ref(null)
+const bookDetails = ref(null)
+const categories = ref([])
 const showFullDescription = ref(false)
 const aiSearch = ref(false)
 const loading = ref(true)
@@ -51,10 +87,6 @@ const truncatedDescription = ref('')
 const toggleDescription = () => {
   showFullDescription.value = !showFullDescription.value
   updateTruncatedDescription()
-}
-
-const clearSelection = () => {
-  router.back() // go back to previous page
 }
 
 const findRecommendations = () => {
@@ -89,11 +121,25 @@ const updateTruncatedDescription = () => {
   }
 };
 
+const generateCategories = () => {
+  const uniqueCategories = new Set();
+
+  bookDetails.value.volumeInfo.categories.forEach(categoryString => {
+    const splitCategories = categoryString.split('/').map(cat => cat.trim());
+    splitCategories.forEach(cat => uniqueCategories.add(cat));
+  });
+
+  categories.value = Array.from(uniqueCategories).slice(0, 5);
+  console.log('categories:', categories.value);
+};
+
 
 watch(book, (newBook) => {
   if (newBook) {
     bookImage.value = newBook.book?.volumeInfo?.imageLinks?.thumbnail || defaultImage
+    bookDetails.value = newBook.book
     updateTruncatedDescription()
+    generateCategories()
   }
 })
 
@@ -101,6 +147,7 @@ onMounted(async () => {
   const bookId = route.params.id
   const userId = route.params.userid
   await fetchBook(userId, bookId)
+  console.log('book:', book.value);
   loading.value = false
 })
 </script>
