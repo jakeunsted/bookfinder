@@ -12,6 +12,9 @@ export default defineNuxtConfig({
   build: {
     transpile: ['vuetify'],
   },
+  alias: {
+    pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
+  },
   modules: [
     (_options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', (config) => {
@@ -20,6 +23,7 @@ export default defineNuxtConfig({
       })
     },
     './modules/eslintrc.js',
+    '@pinia/nuxt',
   ],
   vite: {
     vue: {

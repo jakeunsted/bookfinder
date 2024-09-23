@@ -13,6 +13,8 @@
     "@mdi/font": "^7.4.47",
     "@nuxt/eslint-config": "^0.3.13",
     "@nuxtjs/axios": "^5.13.6",
+    "@pinia/nuxt": "^0.5.4",
+    "html-to-text": "^9.0.5",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
     "nuxt": "^3.12.2",

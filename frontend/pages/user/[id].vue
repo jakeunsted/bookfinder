@@ -35,7 +35,6 @@ const loadingUser = ref(true)
 
 onMounted(async () => {
   const route = useRoute()
-  console.log('route params:', route.params)
   
   try {
     const { user, error } = await useMyFetch(`/user/${route.params.id}`, {

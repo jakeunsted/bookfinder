@@ -1,19 +1,19 @@
-const User = require('../models/user.model');
-const RefreshToken = require('../models/refreshToken.model');
-const bcrypt = require('bcrypt');
+import bcrypt from 'bcrypt';
+import { User } from '../models/user.model.ts';
+import { RefreshToken } from '../models/refreshToken.model.ts';
 
 /**
  * get user by id
  * @param {number} id
  */
-async function getUserById(id) {
+export async function getUserById(id: number): Promise<User | null> {
   const options = {
     attributes: {
       exclude: ['password']
     },
     raw: false
-  }
-  
+  };
+
   try {
     const user = await User.findByPk(id, options);
     if (!user) {
@@ -21,21 +21,25 @@ async function getUserById(id) {
     }
     return user;
   } catch (error) {
-    throw new Error(error);
-  };
-};
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error('An unknown error occurred');
+    }
+  }
+}
 
 /**
  * get users role by id
  * @param {number} id
  */
-async function getUserRoleById(id) {
+export async function getUserRoleById(id: number): Promise<string> {
   const options = {
     attributes: {
       exclude: ['password']
     },
     raw: false
-  }
+  };
 
   try {
     const user = await User.findByPk(id, options);
@@ -44,8 +48,12 @@ async function getUserRoleById(id) {
     }
     return user.role;
   } catch (error) {
-    throw new Error(error);
-  };
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error('An unknown error occurred');
+    }
+  }
 }
 
 /**
@@ -55,7 +63,12 @@ async function getUserRoleById(id) {
  * @param {string} email
  * @param {string} role
  */
-async function createUser(username, password, email, role) {
+export async function createUser(
+  username: string, 
+  password: string, 
+  email: string, 
+  role: string
+): Promise<User> {
   try {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -68,15 +81,19 @@ async function createUser(username, password, email, role) {
     });
     return user;
   } catch (error) {
-    throw new Error(error);
-  };
-};
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error('An unknown error occurred');
+    }
+  }
+}
 
 /**
  * Delete a user by id
  * @param {number} id
  */
-async function deleteUserById(id) {
+export async function deleteUserById(id: number): Promise<void> {
   try {
     const user = await User.findByPk(id);
     if (!user) {
@@ -84,16 +101,23 @@ async function deleteUserById(id) {
     }
     await user.destroy();
   } catch (error) {
-    throw new Error(error);
-  };
-};
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error('An unknown error occurred');
+    }
+  }
+}
 
 /**
  * Verify password for a user
  * @param {string} username
  * @param {string} password - unhashed password
  */
-async function verifyPassword(username, password) {
+export async function verifyPassword(
+  username: string, 
+  password: string
+): Promise<{ id: number, username: string, email: string, role: string }> {
   try {
     const user = await User.findOne({ where: { username } });
     if (!user) {
@@ -117,20 +141,28 @@ async function verifyPassword(username, password) {
 
 /**
  * Create a refresh token in db
- * @param {String} userId 
- * @param {String} token 
+ * @param {number} userId 
+ * @param {string} token 
  */
-async function createRefreshToken(userId, token) {
-  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours refresh token
+export async function createRefreshToken(
+  userId: number, 
+  token: string
+): Promise<void> {
+  const expiresAt = new Date(
+    Date.now() + 24 * 60 * 60 * 1000
+  ); // 24 hours refresh token
   await RefreshToken.create({ userId, token, expiresAt });
 }
 
 /**
  * Finds a refresh token by its token value.
  * @param {string} token
- * @returns {Promise<RefreshToken|null>} - A promise that resolves to the found refresh token, or null if not found.
+ * @returns {Promise<RefreshToken | null>} - A promise that resolves to the 
+ * found refresh token, or null if not found.
  */
-async function findRefreshToken(token) {
+export async function findRefreshToken(
+  token: string
+): Promise<RefreshToken | null> {
   const refreshToken = await RefreshToken.findOne({ where: { token } });
   return refreshToken;
 }
@@ -138,19 +170,9 @@ async function findRefreshToken(token) {
 /**
  * Deletes a refresh token from the database.
  * @param {string} token
- * @returns {Promise<void>} - A promise that resolves when the refresh token is deleted.
+ * @returns {Promise<void>} - A promise that resolves when the refresh token
+ * is deleted.
  */
-async function deleteRefreshToken(token) {
+export async function deleteRefreshToken(token: string): Promise<void> {
   await RefreshToken.destroy({ where: { token } });
-}
-
-module.exports = {
-  getUserById,
-  getUserRoleById,
-  createUser,
-  deleteUserById,
-  verifyPassword,
-  createRefreshToken,
-  findRefreshToken,
-  deleteRefreshToken
 }

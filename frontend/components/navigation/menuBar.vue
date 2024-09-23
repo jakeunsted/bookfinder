@@ -85,7 +85,6 @@ const onExitClick = () => {
 };
 
 const handleItemClick = (item) => {
-  console.log(`Item clicked: ${item.title}`);
   showDrawer.value = false;
   if (item.value === 'search') {
     navigateTo('/books/search');
