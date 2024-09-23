@@ -32,8 +32,9 @@ definePageMeta({
   middleware: 'auth'
 });
 
-import { ref, watch, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+// import { ref, watch, onMounted } from 'vue'
+// import { useRoute, useRouter } from 'vue-router'
+import { htmlToText } from 'html-to-text'
 
 const route = useRoute()
 const router = useRouter()
@@ -70,13 +71,26 @@ const fetchBook = async (userId, bookId) => {
 }
 
 const updateTruncatedDescription = () => {
-  if (showFullDescription.value || !book.value) {
-    truncatedDescription.value = book.value?.description || ''
+  // Get the description (which might contain HTML) from the correct path in the book object
+  const description = book.value?.book?.volumeInfo?.description || '';
+
+  // Convert the HTML description to plain text
+  const plainTextDescription = htmlToText(description, {
+    wordwrap: false,         // Disable word wrapping for cleaner truncation
+    preserveNewlines: false, // Remove newlines for smoother truncation
+  });
+
+  // If showing the full description, use the plain text directly
+  if (showFullDescription.value) {
+    truncatedDescription.value = plainTextDescription;
   } else {
-    const description = book.value?.description || ''
-    truncatedDescription.value = description.length > 200 ? `${description.slice(0, 200)}...` : description
+    // Truncate if the plain text description exceeds 200 characters
+    truncatedDescription.value = plainTextDescription.length > 200 
+      ? `${plainTextDescription.slice(0, 200)}...` 
+      : plainTextDescription;
   }
-}
+};
+
 
 watch(book, (newBook) => {
   if (newBook) {
