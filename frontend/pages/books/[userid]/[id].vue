@@ -28,6 +28,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  middleware: 'auth'
+});
+
 import { ref, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 

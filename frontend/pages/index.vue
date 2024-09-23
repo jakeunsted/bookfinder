@@ -1,19 +1,21 @@
 <template>
-  <div class="flex flex-col justify-items-center items-center mt-10">
-    <div class="mb-5">
-      <v-avatar color="primary" size="80">
-        <span class="text-white">JU</span>
-      </v-avatar>
-    </div>
-    <div class="flex flex-col items-center">
-      <!-- users name -->
-      <span>{{ user.username }}</span>
-      <span>Date Joined: {{ user.signupDate }}</span>
-    </div>
-    <v-sheet :height="2" class="my-10 w-10/12 bg-grey"></v-sheet>
+  <div v-if="!userLoading">
+    <div class="flex flex-col justify-items-center items-center mt-10">
+      <div class="mb-5">
+        <v-avatar color="primary" size="80">
+          <span class="text-white">JU</span>
+        </v-avatar>
+      </div>
+      <div class="flex flex-col items-center">
+        <!-- users name -->
+        <span>{{ user.username }}</span>
+        <span>Date Joined: {{ new Date(user.createdAt).toLocaleDateString('en-GB') }}</span>
+      </div>
+      <v-sheet :height="2" class="my-10 w-10/12 bg-grey"></v-sheet>
+  </div>
 
     <!-- Show books otherwise show blank message about adding your first book-->
-    <div v-if="!loading">
+    <div v-if="!booksLoading">
       <div v-if="readBooks.length">
         <div class="flex flex-row flex-wrap justify-center">
           <div v-for="book in readBooks" :key="book.book.id" class="p-2">
@@ -43,46 +45,47 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useMyFetch } from '@/composables/useMyFetch';
+import { useBookStore } from '@/stores/useBookStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 definePageMeta({
   middleware: 'auth',
   layout: 'profile',
 });
 
-const loading = ref(true);
-const readBooks = ref([]); // Initialize readBooks as an empty array
+const booksLoading = ref(true);
+const userLoading = ref(true);
+const readBooks = ref([]);
 
-// Placeholder user data (replace with store or API)
-const user = ref({
-  id: 1,
-  username: 'Jakeunsted',
-  email: 'jake.unsted@gmail.com',
-  role: 'Admin',
-  signupDate: '2024-06-01'
-});
+const user = ref({});
 
 const goToBookDetails = (bookId) => {
   console.log('show the book details:', bookId);
   navigateTo(`/books/${user.value.id}/${bookId}`);
 };
 
+/**
+ * watch for user.id to be set
+ */
+watch(user, async () => {
+  userLoading.value = false;
+});
+  
+
 // Fetch user books on component mount
 onMounted(async () => {
   try {
-    const response = await useMyFetch(`/users-books/${1}`);
-
-    if (response.error) {
-      console.error('Failed to fetch user books:', response.error);
-    } else {
-      readBooks.value = response;
-      console.log('readBooks:', readBooks.value);
+    const bookStore = await useBookStore();
+    const authStore = await useAuthStore();
+    user.value = authStore.getUser();
+    readBooks.value = await bookStore.getAllBooks
+    if (!readBooks.value.length) {
+      readBooks.value = await bookStore.fetchBooks(user.value.id);
     }
   } catch (error) {
     console.error('An error occurred while fetching user books:', error);
   } finally {
-    loading.value = false;
+    booksLoading.value = false;
   }
 });
 </script>
