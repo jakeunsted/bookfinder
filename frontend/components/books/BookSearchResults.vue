@@ -7,17 +7,13 @@
         </div>
         <div v-else>
           <v-row dense>
-            <v-col
-              v-for="book in books"
-              :key="book.title"
-              cols="12"
-            >
-              <v-card 
-                @click="selectBook(book)" 
+            <v-col v-for="book in books" :key="book.id || book.title" cols="12">
+              <v-card
+                @click="selectBook(book)"
                 class="d-flex align-center cursor-pointer"
               >
                 <img
-                  :src="book.image || '~/assets/default_book.jpg'"
+                  :src="book.image || defaultImage"
                   alt="Book Cover"
                   class="h-16 pl-4"
                 />
@@ -26,7 +22,7 @@
                     {{ book.title }}
                   </div>
                   <div 
-                    v-if="book.authors && book.authors.length" 
+                    v-if="book.authors && book.authors.length"
                     class="text-sm"
                   >
                     {{ book.authors[0] }}
@@ -42,13 +38,25 @@
 </template>
 
 <script setup>
-import { defineEmits } from 'vue';
-
-// const props = defineProps({
-//   books: Array,
-//   loading: Boolean,
-//   hasSearched: Boolean,
-// });
+const props = defineProps({
+  books: {
+    type: Array,
+    required: true,
+  },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
+  hasSearched: {
+    type: Boolean,
+    default: false,
+  },
+  defaultImage: {
+    type: String,
+    default: '/assets/default_book.jpg',
+  },
+});
+const { books, loading, hasSearched, defaultImage } = toRefs(props);
 
 const emit = defineEmits(['select']);
 
