@@ -14,7 +14,7 @@
         <v-card flat=true color="transparent" class="text-left">
           <v-card-item>
             <v-card-title class="text-wrap pb-2">
-              {{ bookDetails.title }}
+              {{ bookDetails.volumeInfo.title }}
             </v-card-title>
             <v-card-text class="p-0">
               {{ bookDetails.volumeInfo.authors[0] }}
@@ -97,7 +97,6 @@ const toggleDescription = () => {
 
 const fetchBook = async (userId, bookId) => {
   const bookFromStore = bookStore.getBookById(bookId);
-  console.log('bookFromStore:', bookFromStore);
   if (bookFromStore) {
     book.value = bookFromStore;
     return;
@@ -158,7 +157,6 @@ onMounted(async () => {
   const bookId = route.params.id;
   const userId = route.params.userid;
   await fetchBook(userId, bookId);
-  console.log('book:', book.value);
   loading.value = false;
 });
 </script>
