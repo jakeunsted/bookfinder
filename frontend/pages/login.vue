@@ -37,7 +37,7 @@ const { login } = useAuth();
 const onSubmit = async () => {
   try {
     await login(username.value, password.value);
-    navigateTo('/');
+    // navigateTo('/');
   } catch (error) {
     alert('Login failed: ' + error.message);
   }
