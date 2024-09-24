@@ -1,6 +1,6 @@
 import { useAuthStore } from '~/stores/useAuthStore';
 
-export default defineNuxtRouteMiddleware(async (to, from) => {
+export default defineNuxtRouteMiddleware(async () => {
   const { jwtDecode } = await import('jwt-decode');
   const { useCookie } = await import('#app');
   const { useAuth } = await import('~/composables/useAuth');

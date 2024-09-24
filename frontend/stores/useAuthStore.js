@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -32,6 +32,7 @@ export const useAuthStore = defineStore('auth', {
         this.user = response.user;
       } catch (error) {
         this.user = null;
+        console.error('Error with token:', error);
         navigateTo('/login');
       }
     },
@@ -51,6 +52,6 @@ export const useAuthStore = defineStore('auth', {
      */
     saveUserData(user) {
       this.user = user;
-    }
+    },
   },
-})
+});

@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
 
 export const useBookStore = defineStore('book', {
   state: () => ({
@@ -9,8 +9,10 @@ export const useBookStore = defineStore('book', {
   actions: {
     /**
      * Fetches books for a specific user.
-     * @param {string} userId - The ID of the user whose books are to be fetched.
-     * @returns {Promise<void>} - A promise that resolves when the books have been fetched.
+     * @param {string} userId - The ID of the user whose books are to be
+     * fetched.
+     * @returns {Promise<void>} - A promise that resolves when the books 
+     * have been fetched.
      * @throws {Error} - Throws an error if the fetch operation fails.
      */
     async fetchBooks(userId) {
@@ -30,6 +32,6 @@ export const useBookStore = defineStore('book', {
     getBookById: (state) => (id) => {
       return state.books.find(book => book.id === id);
     },
-    getAllBooks: (state) => { return state.books; }
-  }
+    getAllBooks: (state) => { return state.books; },
+  },
 });

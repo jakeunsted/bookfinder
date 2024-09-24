@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-import menuBar from '@/components/navigation/menuBar.vue'
+import menuBar from '@/components/navigation/menuBar.vue';
 
-const menuBarPages = ['/', '/:id']
+// const menuBarPages = ['/', '/:id'];
 </script>

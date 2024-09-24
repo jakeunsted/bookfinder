@@ -18,7 +18,11 @@
         ></v-sheet>
       </v-container>
       <v-list>
-        <v-list-item v-for="item in addItems" :key="item.value" @click="handleItemClick(item)">
+        <v-list-item 
+          v-for="item in addItems" 
+          :key="item.value" 
+          @click="handleItemClick(item)"
+        >
           <template v-slot:prepend>
             <span class="mr-2">
               <v-icon>{{ item.icon }}</v-icon>
@@ -30,8 +34,13 @@
     </v-navigation-drawer>
 
     <div class="relative h-24">
-      <div class="absolute left-1/2 transform -translate-x-1/2 bottom-0 mb-15 z-10">
-        <div class="flex items-center justify-center rounded-full w-16 h-16 bg-links">
+      <div 
+        class="absolute left-1/2 transform -translate-x-1/2 bottom-0 mb-15 z-10"
+      >
+        <div 
+          class="flex items-center justify-center rounded-full 
+            w-16 h-16 bg-links"
+        >
           <v-btn 
             @click="onPlusClick" 
             variant="text"
@@ -42,7 +51,9 @@
         </div>
       </div>
       <div 
-        class="absolute bottom-0 w-5/6 mb-8 left-1/2 transform -translate-x-1/2 flex justify-between items-center rounded-full py-2 px-8 bg-primary z-0 drop-shadow-lg"
+        class="absolute bottom-0 w-5/6 mb-8 left-1/2 transform 
+          -translate-x-1/2 flex justify-between items-center 
+          rounded-full py-2 px-8 bg-primary z-0 drop-shadow-lg"
       >
         <v-btn
           @click="onHomeClick"
@@ -99,18 +110,18 @@ const addItems = [
   {
     title: 'Search by title',
     value: 'search',
-    icon: 'mdi-magnify'
+    icon: 'mdi-magnify',
   },
   {
     title: 'Scan barcode',
     value: 'scan',
-    icon: 'mdi-barcode-scan'
+    icon: 'mdi-barcode-scan',
   },
   {
     title: 'Add book manually',
     value: 'manual',
-    icon: 'mdi-book-plus'
-  }
+    icon: 'mdi-book-plus',
+  },
 ];
 </script>
 

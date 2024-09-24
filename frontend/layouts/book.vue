@@ -6,5 +6,5 @@
 </template>
 
 <script setup>
-import closeBar from '@/components/navigation/closeBar.vue'
+import closeBar from '@/components/navigation/closeBar.vue';
 </script>

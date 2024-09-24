@@ -1,10 +1,6 @@
-<template>
-
-</template>
-
 <script setup>
 definePageMeta({
-  middleware: 'auth'
+  middleware: 'auth',
 });
 
 const { logout } = useAuth();

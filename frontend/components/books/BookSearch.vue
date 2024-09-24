@@ -37,18 +37,18 @@
 </template>
 
 <script setup>
-import { ref, defineEmits } from 'vue'
+import { ref, defineEmits } from 'vue';
 
-const props = defineProps({
-  loading: Boolean
-})
+// const props = defineProps({
+//   loading: Boolean,
+// });
 
-const searchQuery = ref('')
-const emit = defineEmits(['search'])
+const searchQuery = ref('');
+const emit = defineEmits(['search']);
 
 const searchBooks = () => {
   if (searchQuery.value.trim() !== '') {
-    emit('search', searchQuery.value)
+    emit('search', searchQuery.value);
   }
-}
+};
 </script>

@@ -12,7 +12,10 @@
               :key="book.title"
               cols="12"
             >
-              <v-card @click="selectBook(book)" class="d-flex align-center cursor-pointer">
+              <v-card 
+                @click="selectBook(book)" 
+                class="d-flex align-center cursor-pointer"
+              >
                 <img
                   :src="book.image || '~/assets/default_book.jpg'"
                   alt="Book Cover"
@@ -22,7 +25,10 @@
                   <div class="text-lg font-semibold">
                     {{ book.title }}
                   </div>
-                  <div v-if="book.authors && book.authors.length" class="text-sm">
+                  <div 
+                    v-if="book.authors && book.authors.length" 
+                    class="text-sm"
+                  >
                     {{ book.authors[0] }}
                   </div>
                 </v-card-text>
@@ -36,17 +42,17 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue'
+import { defineEmits } from 'vue';
 
-const props = defineProps({
-  books: Array,
-  loading: Boolean,
-  hasSearched: Boolean
-})
+// const props = defineProps({
+//   books: Array,
+//   loading: Boolean,
+//   hasSearched: Boolean,
+// });
 
-const emit = defineEmits(['select'])
+const emit = defineEmits(['select']);
 
 const selectBook = (book) => {
-  emit('select', book)
-}
+  emit('select', book);
+};
 </script>

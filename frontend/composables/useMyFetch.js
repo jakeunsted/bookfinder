@@ -10,13 +10,13 @@ export const useMyFetch = async (path, options = {}, useAuthHeader = true) => {
     const headers = {
       'Content-Type': 'application/json',
       ...(useAuthHeader && token ? { 'Authorization': `Bearer ${token}` } : {}),
-      ...options.headers
+      ...options.headers,
     };
 
     const fetchOptions = {
       method: 'GET',
       headers,
-      ...options
+      ...options,
     };
     try {
       const response = await fetch(url, fetchOptions);

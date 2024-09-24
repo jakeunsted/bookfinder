@@ -9,6 +9,6 @@
 
 <script setup>
 const navigateBack = () => {
-  navigateTo('/')
-}
+  navigateTo('/');
+};
 </script>

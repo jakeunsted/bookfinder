@@ -20,25 +20,25 @@
 </template>
 
 <script setup>
-import { defineProps, computed } from 'vue'
+import { defineProps, computed } from 'vue';
 
 const props = defineProps({
   user: {
     type: Object,
-    required: true
-  }
-})
+    required: true,
+  },
+});
 
 const formattedSignupDate = computed(() => {
-  const date = new Date(props.user.signupDate)
+  const date = new Date(props.user.signupDate);
   return date.toLocaleDateString(undefined, {
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
-  })
-})
+    day: 'numeric',
+  });
+});
 
 const capitalizedRole = computed(() => {
-  return props.user.role.charAt(0).toUpperCase() + props.user.role.slice(1)
-})
+  return props.user.role.charAt(0).toUpperCase() + props.user.role.slice(1);
+});
 </script>

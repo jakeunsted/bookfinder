@@ -9,10 +9,13 @@
       <div class="flex flex-col items-center">
         <!-- users name -->
         <span>{{ user.username }}</span>
-        <span>Date Joined: {{ new Date(user.createdAt).toLocaleDateString('en-GB') }}</span>
+        <span>
+          Date Joined: 
+          {{ new Date(user.createdAt).toLocaleDateString('en-GB') }}
+        </span>
       </div>
       <v-sheet :height="2" class="my-10 w-10/12 bg-grey"></v-sheet>
-  </div>
+    </div>
 
     <!-- Show books otherwise show blank message about adding your first book-->
     <div v-if="!booksLoading">
@@ -26,9 +29,16 @@
               @click="goToBookDetails(book.id)"
             >
               <v-card-text class="text-wrap text-center">
-                <v-img :src="book.book.bookDetails?.volumeInfo?.imageLinks?.thumbnail || book.image" class="pb-2 max-h-50"></v-img>
+                <v-img 
+                  :src="book.book.bookDetails?.
+                    volumeInfo?.imageLinks?.thumbnail || 
+                    book.image" 
+                  class="pb-2 max-h-50"
+                ></v-img>
                 <p>{{ book.book.title }}</p>
-                <p class="text-grey">{{ new Date(book.dateFinished).toLocaleDateString() }}</p>
+                <p class="text-grey">
+                  {{ new Date(book.dateFinished).toLocaleDateString() }}
+                </p>
               </v-card-text>
             </v-card>
           </div>
@@ -77,7 +87,7 @@ onMounted(async () => {
     const bookStore = await useBookStore();
     const authStore = await useAuthStore();
     user.value = authStore.getUser();
-    readBooks.value = await bookStore.getAllBooks
+    readBooks.value = await bookStore.getAllBooks;
     if (!readBooks.value.length) {
       readBooks.value = await bookStore.fetchBooks(user.value.id);
     }

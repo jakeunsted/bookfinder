@@ -5,6 +5,6 @@
 <script setup>
 definePageMeta({
   middleware: 'auth',
-  layout: 'book'
-})
+  layout: 'book',
+});
 </script>

@@ -1,8 +1,8 @@
 <template>
   <div class="w-full text-center p-4" v-if="book && !loading">
     <!-- Image section with title, author and page count -->
-     <div class="flex mb-5">
-        <v-card
+    <div class="flex mb-5">
+      <v-card
         class="max-w-36"
         rounded="xl"
         elevation="10"
@@ -48,16 +48,16 @@
     <h1 class="text-left text-xl">Description</h1>
     <v-card flat="true" color="transparent" class="text-left">
       <v-card-text>
-      <p v-if="truncatedDescription">
-        {{ truncatedDescription }}
-        <span
-        v-if="truncatedDescription.length > 200"
-        @click="toggleDescription" class="text-blue-500 cursor-pointer"
-        >
-        {{ showFullDescription ? 'show less' : 'show more' }}
-        </span>
-      </p>
-      <p v-else>No description available</p>
+        <p v-if="truncatedDescription">
+          {{ truncatedDescription }}
+          <span
+            v-if="truncatedDescription.length > 200"
+            @click="toggleDescription" class="text-blue-500 cursor-pointer"
+          >
+            {{ showFullDescription ? 'show less' : 'show more' }}
+          </span>
+        </p>
+        <p v-else>No description available</p>
       </v-card-text>
     </v-card>
   </div>
@@ -69,38 +69,38 @@ definePageMeta({
   layout: 'book',
 });
 
-import { htmlToText } from 'html-to-text'
+import { htmlToText } from 'html-to-text';
 
-const route = useRoute()
+const route = useRoute();
 
-const book = ref(null)
-const bookDetails = ref(null)
-const categories = ref([])
-const showFullDescription = ref(false)
-const aiSearch = ref(false)
-const loading = ref(true)
+const book = ref(null);
+const bookDetails = ref(null);
+const categories = ref([]);
+const showFullDescription = ref(false);
+// const aiSearch = ref(false);
+const loading = ref(true);
 
-const defaultImage = '../../assets/default_book.jpg'
-const bookImage = ref(defaultImage)
-const truncatedDescription = ref('')
+const defaultImage = '../../assets/default_book.jpg';
+const bookImage = ref(defaultImage);
+const truncatedDescription = ref('');
 
 const toggleDescription = () => {
-  showFullDescription.value = !showFullDescription.value
-  updateTruncatedDescription()
-}
+  showFullDescription.value = !showFullDescription.value;
+  updateTruncatedDescription();
+};
 
-const findRecommendations = () => {
-  console.log('not done yet');
-}
+// const findRecommendations = () => {
+//   console.log('not done yet');
+// };
 
 const fetchBook = async (userId, bookId) => {
   try {
-    const response = await useMyFetch(`/users-books/${userId}/${bookId}`)
-    book.value = response
+    const response = await useMyFetch(`/users-books/${userId}/${bookId}`);
+    book.value = response;
   } catch (error) {
-    console.error('Failed to fetch book:', error)
+    console.error('Failed to fetch book:', error);
   }
-}
+};
 
 const updateTruncatedDescription = () => {
   const description = book.value?.book?.volumeInfo?.description || '';
@@ -136,18 +136,19 @@ const generateCategories = () => {
 
 watch(book, (newBook) => {
   if (newBook) {
-    bookImage.value = newBook.book?.volumeInfo?.imageLinks?.thumbnail || defaultImage
-    bookDetails.value = newBook.book
-    updateTruncatedDescription()
-    generateCategories()
+    bookImage.value = 
+      newBook.book?.volumeInfo?.imageLinks?.thumbnail || defaultImage;
+    bookDetails.value = newBook.book;
+    updateTruncatedDescription();
+    generateCategories();
   }
-})
+});
 
 onMounted(async () => {
-  const bookId = route.params.id
-  const userId = route.params.userid
-  await fetchBook(userId, bookId)
+  const bookId = route.params.id;
+  const userId = route.params.userid;
+  await fetchBook(userId, bookId);
   console.log('book:', book.value);
-  loading.value = false
-})
+  loading.value = false;
+});
 </script>

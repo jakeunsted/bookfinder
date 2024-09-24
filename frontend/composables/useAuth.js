@@ -38,13 +38,13 @@ export const useAuth = () => {
 
       useCookie(
         'access_token', 
-        process.env.COOKIE_OPTIONS
+        process.env.COOKIE_OPTIONS,
       ).value = accessToken;
       useCookie(
         'refresh_token',
-        process.env.COOKIE_OPTIONS
+        process.env.COOKIE_OPTIONS,
       ).value = refreshToken;
-      reloadNuxtApp('/')
+      reloadNuxtApp('/');
     } catch (error) {
       console.error('Login error:', error);
       throw error;
@@ -82,13 +82,14 @@ export const useAuth = () => {
     }
 
     try {
-      const response = await fetch(`${config.public.baseUrl}/auth/refresh-token`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${refreshToken}`
-        },
-      });
+      const response = 
+        await fetch(`${config.public.baseUrl}/auth/refresh-token`, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${refreshToken}`,
+          },
+        });
 
       if (!response.ok) {
         logout();
@@ -107,7 +108,7 @@ export const useAuth = () => {
       return accessToken;
     } catch (error) {
       console.error('Refresh token error:', error);
-      logout()
+      logout();
       throw error;
     }
   };
