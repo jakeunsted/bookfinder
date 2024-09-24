@@ -44,7 +44,7 @@ export const useAuth = () => {
         'refresh_token',
         process.env.COOKIE_OPTIONS,
       ).value = refreshToken;
-      reloadNuxtApp('/');
+      reloadNuxtApp({ path: '/' });
     } catch (error) {
       console.error('Login error:', error);
       throw error;
