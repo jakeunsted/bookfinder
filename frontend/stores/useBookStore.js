@@ -29,9 +29,13 @@ export const useBookStore = defineStore('book', {
     },
   },
   getters: {
-    getBookById: (state) => (id) => {
-      return state.books.find(book => book.id === id);
-    },
     getAllBooks: (state) => { return state.books; },
+    getBookById: (state) => (id) => {
+      const userBook = state.books.find((userBook) => {
+        return userBook.id === parseInt(id);
+      });
+      console.log('book with id:', userBook);
+      return userBook;
+    },
   },
 });

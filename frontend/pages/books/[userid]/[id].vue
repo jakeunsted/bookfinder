@@ -11,7 +11,7 @@
         <img :src="bookImage" alt="Book Cover" class="object-cover inline" />
       </v-card>
       <div>
-        <v-card flat="true" color="transparent" class="text-left">
+        <v-card flat=true color="transparent" class="text-left">
           <v-card-item>
             <v-card-title class="text-wrap pb-2">
               {{ bookDetails.title }}
@@ -70,8 +70,10 @@ definePageMeta({
 });
 
 import { htmlToText } from 'html-to-text';
+import { useBookStore } from '@/stores/useBookStore';
 
 const route = useRoute();
+const bookStore = useBookStore();
 
 const book = ref(null);
 const bookDetails = ref(null);
@@ -94,16 +96,23 @@ const toggleDescription = () => {
 // };
 
 const fetchBook = async (userId, bookId) => {
-  try {
-    const response = await useMyFetch(`/users-books/${userId}/${bookId}`);
-    book.value = response;
-  } catch (error) {
-    console.error('Failed to fetch book:', error);
+  const bookFromStore = bookStore.getBookById(bookId);
+  console.log('bookFromStore:', bookFromStore);
+  if (bookFromStore) {
+    book.value = bookFromStore;
+    return;
+  } else {
+    try {
+      const response = await useMyFetch(`/users-books/${userId}/${bookId}`);
+      book.value = response;
+    } catch (error) {
+      console.error('Failed to fetch book:', error);
+    }
   }
 };
 
 const updateTruncatedDescription = () => {
-  const description = book.value?.book?.volumeInfo?.description || '';
+  const description = bookDetails.value?.volumeInfo?.description || '';
 
   const plainTextDescription = htmlToText(description, {
     wordwrap: false,
@@ -137,8 +146,9 @@ const generateCategories = () => {
 watch(book, (newBook) => {
   if (newBook) {
     bookImage.value = 
-      newBook.book?.volumeInfo?.imageLinks?.thumbnail || defaultImage;
-    bookDetails.value = newBook.book;
+      newBook.book?.bookDetails?.volumeInfo?.imageLinks?.thumbnail 
+      || defaultImage;
+    bookDetails.value = newBook.book.bookDetails;
     updateTruncatedDescription();
     generateCategories();
   }
