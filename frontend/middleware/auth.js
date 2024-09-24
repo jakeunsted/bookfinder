@@ -14,8 +14,12 @@ export default defineNuxtRouteMiddleware(async () => {
 
   const authStore = useAuthStore();
   const bookStore = useBookStore();
-  await authStore.initialise();
-  await bookStore.fetchBooks(authStore.getUser().id);
+  if (!authStore.getUser()) {
+    await authStore.initialise();
+  }
+  if (!bookStore.getAllBooks.length) {
+    await bookStore.fetchBooks(authStore.getUser().id);
+  }
 
   try {
     let decoded = accessToken ? jwtDecode(accessToken) : null;
