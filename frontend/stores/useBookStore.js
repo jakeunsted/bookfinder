@@ -34,7 +34,6 @@ export const useBookStore = defineStore('book', {
       const userBook = state.books.find((userBook) => {
         return userBook.id === parseInt(id);
       });
-      console.log('book with id:', userBook);
       return userBook;
     },
   },

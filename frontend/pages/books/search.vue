@@ -1,62 +1,65 @@
 <template>
-  <div class="flex flex-col items-center p-4">
-    <!-- Search Bar -->
-    <BookSearch
-      v-if="!selectedBook && !aiSearch"
-      @search="fetchBooks"
-      :loading="loading"
-    />
-
-    <!-- Book results from search -->
-    <BookSearchResults
-      v-if="!selectedBook && !aiSearch"
-      :books="books"
-      :loading="loading"
-      :hasSearched="hasSearched"
-      @select="selectBook"
-    />
-
-    <!-- Book results from AI recommendations -->
-    <BookSearchResults
-      v-if="!selectedBook && aiSearch"
-      :books="recommendedBooks"
-      :loading="loading"
-      :hasSearched="hasSearched"
-      @select="selectBook"
-    />
-
-    <!-- Book details when clicking into -->
-    <div v-if="selectedBook">
-      <BookDetails
-        :bookDetails="selectedBookDetails"
-        :defaultImage="defaultImage"
+  <closeBar @closeBarClicked="handleCloseBarClick" />
+  <div class=" h-full bg-window">
+    <div class="flex flex-col items-center p-4">
+      <!-- Search Bar -->
+      <BookSearch
+        v-if="!selectedBook && !aiSearch"
+        @search="fetchBooks"
         :loading="loading"
-      >
-        <template #additional-info>
-          <!-- Buttons specific to this page -->
-          <v-btn @click="clearSelection" class="mt-4" color="primary">
-            Back to Search
-          </v-btn>
-          <v-btn @click="fetchRecommendations" class="mt-4" color="secondary">
-            Find Similar Books
-          </v-btn>
-        </template>
-      </BookDetails>
-    </div>
+      />
 
-    <!-- Reset button when AI search is active -->
-    <v-btn v-if="aiSearch && !loading" class="bg-primary" @click="reset">
-      Search new book
-    </v-btn>
+      <!-- Book results from search -->
+      <BookSearchResults
+        v-if="!selectedBook && !aiSearch"
+        :books="books"
+        :loading="loading"
+        :hasSearched="hasSearched"
+        @select="selectBook"
+      />
+
+      <!-- Book results from AI recommendations -->
+      <BookSearchResults
+        v-if="!selectedBook && aiSearch"
+        :books="recommendedBooks"
+        :loading="loading"
+        :hasSearched="hasSearched"
+        @select="selectBook"
+      />
+
+      <!-- Book details when clicking into -->
+      <div v-if="selectedBook">
+        <BookDetails
+          :bookDetails="selectedBookDetails"
+          :defaultImage="defaultImage"
+          :loading="loading"
+        >
+          <template #additional-info>
+            <!-- Buttons specific to this page -->
+            <v-btn @click="clearSelection" class="mt-4" color="primary">
+              Back to Search
+            </v-btn>
+            <v-btn @click="fetchRecommendations" class="mt-4" color="secondary">
+              Find Similar Books
+            </v-btn>
+          </template>
+        </BookDetails>
+      </div>
+
+      <!-- Reset button when AI search is active -->
+      <v-btn v-if="aiSearch && !loading" class="bg-primary" @click="reset">
+        Search new book
+      </v-btn>
+    </div>
   </div>
 </template>
 
 <script setup>
 definePageMeta({
   middleware: 'auth',
-  layout: 'search',
 });
 
+import CloseBar from '~/components/navigation/CloseBar.vue';
 import BookSearch from '~/components/books/BookSearch.vue';
 import BookSearchResults from '~/components/books/BookSearchResults.vue';
 import BookDetails from '~/components/books/BookDetails.vue'; 
@@ -124,7 +127,6 @@ const selectBook = (book) => {
 
 // Function to transform book data to match BookDetails component structure
 const transformBookDetails = (book) => {
-  console.log('transform pre book', book);
   selectedBookDetails.value = {
     volumeInfo: {
       title: book.title || 'No Title Available',
@@ -137,13 +139,20 @@ const transformBookDetails = (book) => {
       categories: book.categories || [],
     },
   };
-  console.log(selectedBookDetails.value);
 };
 
 // Function to clear the selected book and go back to search
 const clearSelection = () => {
   selectedBook.value = null;
   selectedBookDetails.value = null;
+};
+
+const handleCloseBarClick = () => {
+  if (selectedBook.value) {
+    clearSelection();
+  } else {
+    navigateTo('/');
+  }
 };
 
 // Function to reset the search

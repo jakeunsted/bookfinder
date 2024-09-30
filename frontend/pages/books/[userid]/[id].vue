@@ -46,7 +46,6 @@ onMounted(async () => {
   await fetchBook(userId, bookId);
   if (book.value) {
     bookDetails.value = book.value?.book?.bookDetails;
-    console.log('Book Details:', bookDetails.value);
   }
   loading.value = false;
 });
