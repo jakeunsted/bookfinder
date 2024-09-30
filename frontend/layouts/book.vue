@@ -1,5 +1,5 @@
 <template>
-  <CloseBar />
+  <CloseBar @closeBarClicked="goBack" />
   <div class="h-full bg-window">
     <slot />
   </div>
@@ -7,4 +7,8 @@
 
 <script setup>
 import CloseBar from '~/components/navigation/CloseBar.vue';
+
+const goBack = () => {
+  window.history.back();
+};
 </script>
