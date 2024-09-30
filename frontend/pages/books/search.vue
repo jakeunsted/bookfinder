@@ -44,6 +44,16 @@
             </v-btn>
           </template>
         </BookDetails>
+        <MenuBar
+          class="fixed w-full bottom-0 left-0"
+          :centerIcon="'mdi-play'"
+          :leftIcon="'mdi-content-save'"
+          :rightIcon="'mdi-creation'"
+          @left-click="saveBook"
+          @right-click="fetchRecommendations"
+          :menuItems="[]"
+          @menu-item-click="null"
+        />
       </div>
 
       <!-- Reset button when AI search is active -->
@@ -60,6 +70,7 @@ definePageMeta({
 });
 
 import CloseBar from '~/components/navigation/CloseBar.vue';
+import MenuBar from '~/components/navigation/MenuBar.vue';
 import BookSearch from '~/components/books/BookSearch.vue';
 import BookSearchResults from '~/components/books/BookSearchResults.vue';
 import BookDetails from '~/components/books/BookDetails.vue'; 
@@ -87,6 +98,7 @@ const fetchBooks = async (query) => {
   aiSearch.value = false;
 
   try {
+    console.log('fetch books');
     const response = 
       await useMyFetch(`/books/?title=${encodeURIComponent(query)}`);
     books.value = response;

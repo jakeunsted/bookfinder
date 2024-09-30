@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import MenuBar from '~/components/navigation/menuBar.vue';
+import MenuBar from '~/components/navigation/MenuBar.vue';
 
 // Define your menu items
 const addItems = [
