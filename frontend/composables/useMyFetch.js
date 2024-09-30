@@ -14,9 +14,9 @@ export const useMyFetch = async (path, options = {}, useAuthHeader = true) => {
     };
 
     const fetchOptions = {
-      method: 'GET',
+      method: options.method || 'GET',
       headers,
-      ...options,
+      body: JSON.stringify(options.body),
     };
     try {
       const response = await fetch(url, fetchOptions);

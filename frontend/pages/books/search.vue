@@ -51,8 +51,8 @@
           :rightIcon="'mdi-creation'"
           @left-click="saveBook"
           @right-click="fetchRecommendations"
-          :menuItems="[]"
-          @menu-item-click="null"
+          :menuItems="startItems"
+          @menu-item-click="handleStartItemClick"
         />
       </div>
 
@@ -76,6 +76,9 @@ import BookSearchResults from '~/components/books/BookSearchResults.vue';
 import BookDetails from '~/components/books/BookDetails.vue'; 
 import { useMyFetch } from '~/composables/useMyFetch';
 
+const authStore = useAuthStore();
+const bookStore = useBookStore();
+
 const books = ref([]);
 const recommendedBooks = ref([]);
 const loading = ref(false);
@@ -83,7 +86,72 @@ const hasSearched = ref(false);
 const selectedBook = ref(null);
 const selectedBookDetails = ref(null);
 const aiSearch = ref(false);
+const user = await authStore.getUser();
 const defaultImage = '/assets/default_book.jpg';
+
+// Menu Bar Items
+const startItems = [
+  {
+    title: 'Start book now',
+    value: 'start',
+    icon: 'mdi-bookmark-plus',
+  },
+  {
+    title: 'Already read',
+    value: 'read',
+    icon: 'mdi-book-check-outline',
+  },
+];
+
+const handleStartItemClick = (item) => {
+  if (item.value === 'start') {
+    startBook();
+  } else if (item.value === 'read') {
+    // markAsRead();
+    window.alert('Completed read not implemented yet');
+  }
+};
+
+const startBook = async () => {
+  const book = selectedBook.value;
+  if (!book) return;
+  try {
+    const body = {
+      title: book.title,
+      isbn: book?.isbn?.isbn13 || book?.isbn?.isbn10,
+      tags: book.categories,
+      createdById: user.id,
+      quickLink: book.quickLink,
+    };
+    const addBookToDb = await useMyFetch('/books', {
+      method: 'post',
+      body: body,
+    });
+    if (!addBookToDb) {
+      console.error('Failed to add book to database');
+      return;
+    }
+    console.log('Book added:', addBookToDb);
+    const addBookToUser = await useMyFetch(
+      `/users-books/${user.id}/${addBookToDb.id}`, {
+        method: 'post',
+        body: {
+          dateStarted: new Date(),
+        },
+      },
+    );
+    if (!addBookToUser) {
+      console.error('Failed to add book to user');
+      return;
+    }
+    console.log('Book started:', addBookToUser);
+
+    // reload bookStore
+    await bookStore.fetchBooks(user.id);
+  } catch (error) {
+    console.error('Failed to start book:', error);
+  }
+};
 
 // Function to fetch books
 const fetchBooks = async (query) => {
@@ -134,6 +202,7 @@ const fetchRecommendations = async () => {
 // Function to select a book and show details
 const selectBook = (book) => {
   selectedBook.value = book;
+  console.log('selected book:', selectedBook.value);
   transformBookDetails(book);
 };
 

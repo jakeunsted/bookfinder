@@ -79,6 +79,7 @@ export async function searchBooksByTitle(partialName: string): Promise<Book[]> {
           pageCount: book.volumeInfo.pageCount,
           categories: book.volumeInfo.categories,
           image: book.volumeInfo.imageLinks?.thumbnail ?? 'nothing',
+          quickLink: book.selfLink,
           isbn: {
             isbn10,
             isbn13

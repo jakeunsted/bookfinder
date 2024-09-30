@@ -37,7 +37,11 @@
                 ></v-img>
                 <p>{{ book.book.title }}</p>
                 <p class="text-grey">
-                  {{ new Date(book.dateFinished).toLocaleDateString() }}
+                  {{ 
+                    new Date(book.dateFinished ||
+                      book.dateStarted ||
+                      book.createdAt).toLocaleDateString()
+                  }}
                 </p>
               </v-card-text>
             </v-card>

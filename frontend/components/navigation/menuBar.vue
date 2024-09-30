@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="sticky bottom-0">
     <!-- Navigation Drawer -->
     <v-navigation-drawer
       v-model="showDrawer"
