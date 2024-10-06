@@ -117,7 +117,7 @@ watch(user, async () => {
   userLoading.value = false;
 });
 
-const snackbar = ref(true);
+const snackbar = ref(false);
 const snackbarMessage = ref('');
 const snackbarColor = ref('success');
 const snackbarTimeout = ref(3000);
