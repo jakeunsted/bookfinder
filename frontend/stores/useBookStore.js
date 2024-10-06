@@ -7,6 +7,15 @@ export const useBookStore = defineStore('book', {
     error: null,
   }),
   actions: {
+    // Bits to do
+    /**
+     * Need to sort books into:
+     * 1. Read (book.dateFinished)
+     * 2. Currently reading (book.dateStarted && !book.dateFinished)
+     * 3. Want to read (!book.dateStarted && !book.dateFinished)
+     * Will then need to have a getter for each of these.
+     */
+
     /**
      * Fetches books for a specific user.
      * @param {string} userId - The ID of the user whose books are to be
