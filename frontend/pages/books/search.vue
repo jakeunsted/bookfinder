@@ -1,7 +1,7 @@
 <template>
   <closeBar @closeBarClicked="handleCloseBarClick" />
-  <div class=" h-full bg-window">
-    <div class="flex flex-col items-center p-4">
+  <div class="h-full bg-window">
+    <div class="h-full flex flex-col items-center p-4">
       <!-- Search Bar -->
       <BookSearch
         v-if="!selectedBook && !aiSearch"
@@ -44,16 +44,6 @@
             </v-btn>
           </template>
         </BookDetails>
-        <MenuBar
-          class="fixed w-full bottom-0 left-0"
-          :centerIcon="'mdi-play'"
-          :leftIcon="'mdi-content-save'"
-          :rightIcon="'mdi-creation'"
-          @left-click="saveBook"
-          @right-click="fetchRecommendations"
-          :menuItems="startItems"
-          @menu-item-click="handleStartItemClick"
-        />
       </div>
 
       <!-- Reset button when AI search is active -->
@@ -61,6 +51,15 @@
         Search new book
       </v-btn>
     </div>
+    <MenuBar v-if="selectedBook"
+             :centerIcon="'mdi-play'"
+             :leftIcon="'mdi-content-save'"
+             :rightIcon="'mdi-creation'"
+             @left-click="saveBook"
+             @right-click="fetchRecommendations"
+             :menuItems="startItems"
+             @menu-item-click="handleStartItemClick"
+    />
   </div>
 </template>
 
@@ -112,6 +111,9 @@ const handleStartItemClick = (item) => {
   }
 };
 
+/**
+ * Save book to user as started reading
+ */
 const startBook = async () => {
   const book = selectedBook.value;
   if (!book) return;
@@ -148,6 +150,9 @@ const startBook = async () => {
 
     // reload bookStore
     await bookStore.fetchBooks(user.id);
+
+    // Go back to home page with query param
+    navigateTo({ path: '/', query: { toast: 'book-started' } });
   } catch (error) {
     console.error('Failed to start book:', error);
   }
