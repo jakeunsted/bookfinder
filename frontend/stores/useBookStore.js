@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
 
 export const useBookStore = defineStore('book', {
   state: () => ({
@@ -7,10 +7,21 @@ export const useBookStore = defineStore('book', {
     error: null,
   }),
   actions: {
+    // Bits to do
+    /**
+     * Need to sort books into:
+     * 1. Read (book.dateFinished)
+     * 2. Currently reading (book.dateStarted && !book.dateFinished)
+     * 3. Want to read (!book.dateStarted && !book.dateFinished)
+     * Will then need to have a getter for each of these.
+     */
+
     /**
      * Fetches books for a specific user.
-     * @param {string} userId - The ID of the user whose books are to be fetched.
-     * @returns {Promise<void>} - A promise that resolves when the books have been fetched.
+     * @param {string} userId - The ID of the user whose books are to be
+     * fetched.
+     * @returns {Promise<void>} - A promise that resolves when the books 
+     * have been fetched.
      * @throws {Error} - Throws an error if the fetch operation fails.
      */
     async fetchBooks(userId) {
@@ -27,9 +38,12 @@ export const useBookStore = defineStore('book', {
     },
   },
   getters: {
+    getAllBooks: (state) => { return state.books; },
     getBookById: (state) => (id) => {
-      return state.books.find(book => book.id === id);
+      const userBook = state.books.find((userBook) => {
+        return userBook.id === parseInt(id);
+      });
+      return userBook;
     },
-    getAllBooks: (state) => { return state.books; }
-  }
+  },
 });

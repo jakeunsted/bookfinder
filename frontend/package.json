@@ -4,14 +4,14 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev": "nuxt dev --host",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint": "eslint"
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
-    "@nuxt/eslint-config": "^0.3.13",
     "@nuxtjs/axios": "^5.13.6",
     "@pinia/nuxt": "^0.5.4",
     "html-to-text": "^9.0.5",
@@ -22,11 +22,12 @@
     "vue3-touch-events": "^4.1.8"
   },
   "devDependencies": {
-    "@eslint/js": "^9.9.0",
+    "@eslint/js": "^9.11.1",
     "@nuxt/eslint": "^0.5.0",
+    "@nuxt/eslint-config": "^0.3.13",
     "autoprefixer": "^10.4.20",
-    "eslint": "^9.9.0",
-    "eslint-plugin-vue": "^9.27.0",
+    "eslint": "^9.11.1",
+    "eslint-plugin-vue": "^9.28.0",
     "globals": "^15.9.0",
     "postcss": "^8.4.41",
     "sass": "^1.77.8",

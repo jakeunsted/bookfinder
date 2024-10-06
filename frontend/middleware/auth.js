@@ -1,6 +1,6 @@
 import { useAuthStore } from '~/stores/useAuthStore';
 
-export default defineNuxtRouteMiddleware(async (to, from) => {
+export default defineNuxtRouteMiddleware(async () => {
   const { jwtDecode } = await import('jwt-decode');
   const { useCookie } = await import('#app');
   const { useAuth } = await import('~/composables/useAuth');
@@ -14,8 +14,12 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   const authStore = useAuthStore();
   const bookStore = useBookStore();
-  await authStore.initialise();
-  await bookStore.fetchBooks(authStore.getUser().id);
+  if (!authStore.getUser()) {
+    await authStore.initialise();
+  }
+  if (!bookStore.getAllBooks.length) {
+    await bookStore.fetchBooks(authStore.getUser().id);
+  }
 
   try {
     let decoded = accessToken ? jwtDecode(accessToken) : null;

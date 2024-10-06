@@ -28,19 +28,16 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
 import { useAuth } from '~/composables/useAuth';
-import { useRouter } from 'vue-router';
 
 const username = ref('');
 const password = ref('');
 const { login } = useAuth();
-const router = useRouter();
 
 const onSubmit = async () => {
   try {
     await login(username.value, password.value);
-    navigateTo('/')
+    // navigateTo('/');
   } catch (error) {
     alert('Login failed: ' + error.message);
   }

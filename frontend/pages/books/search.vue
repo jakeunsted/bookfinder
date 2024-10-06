@@ -1,119 +1,253 @@
-<!-- pages/books/recommend/index.vue -->
 <template>
-  <div class="flex flex-col items-center p-4">
-    <BookSearch 
-      v-if="!selectedBook && !aiSearch" @search="fetchBooks" 
-      :loading="loading"
-    />
-    <!-- Book results from search -->
-    <BookSearchResults
-      v-if="!selectedBook && !aiSearch"
-      :books="books"
-      :loading="loading"
-      :hasSearched="hasSearched"
-      @select="selectBook"
-    />
-    <!-- Book results from AI recommendations -->
-    <BookSearchResults
-      v-if="!selectedBook && aiSearch"
-      :books="recommendedBooks"
-      :loading="loading"
-      :hasSearched="hasSearched"
-      @select="selectBook"
-    />
-    <!-- Book details when clicking into -->
-    <BookDetail
-      v-if="selectedBook"
-      :book="selectedBook"
-      :showFullDescription="showFullDescription"
-      :aiSearch="aiSearch"
-      @clear="clearSelection"
-      @toggle-description="toggleDescription"
-      @find-similar="fetchRecommendations"
-    />
+  <closeBar @closeBarClicked="handleCloseBarClick" />
+  <div class="h-full bg-window">
+    <div class="h-full flex flex-col items-center p-4">
+      <!-- Search Bar -->
+      <BookSearch
+        v-if="!selectedBook && !aiSearch"
+        @search="fetchBooks"
+        :loading="loading"
+      />
 
-    <v-btn
-      v-if="aiSearch && !loading"
-      class="bg-primary"
-      @click="reset"
-    >
-      Search new book
-    </v-btn>
+      <!-- Book results from search -->
+      <BookSearchResults
+        v-if="!selectedBook && !aiSearch"
+        :books="books"
+        :loading="loading"
+        :hasSearched="hasSearched"
+        @select="selectBook"
+      />
+
+      <!-- Book results from AI recommendations -->
+      <BookSearchResults
+        v-if="!selectedBook && aiSearch"
+        :books="recommendedBooks"
+        :loading="loading"
+        :hasSearched="hasSearched"
+        @select="selectBook"
+      />
+
+      <!-- Book details when clicking into -->
+      <div v-if="selectedBook">
+        <BookDetails
+          :bookDetails="selectedBookDetails"
+          :defaultImage="defaultImage"
+          :loading="loading"
+        >
+          <template #additional-info>
+            <!-- Buttons specific to this page -->
+            <v-btn @click="clearSelection" class="mt-4" color="primary">
+              Back to Search
+            </v-btn>
+            <v-btn @click="fetchRecommendations" class="mt-4" color="secondary">
+              Find Similar Books
+            </v-btn>
+          </template>
+        </BookDetails>
+      </div>
+
+      <!-- Reset button when AI search is active -->
+      <v-btn v-if="aiSearch && !loading" class="bg-primary" @click="reset">
+        Search new book
+      </v-btn>
+    </div>
+    <MenuBar v-if="selectedBook"
+             :centerIcon="'mdi-play'"
+             :leftIcon="'mdi-content-save'"
+             :rightIcon="'mdi-creation'"
+             @left-click="saveBook"
+             @right-click="fetchRecommendations"
+             :menuItems="startItems"
+             @menu-item-click="handleStartItemClick"
+    />
   </div>
 </template>
 
 <script setup>
 definePageMeta({
   middleware: 'auth',
-  layout: 'search'
-})
-import BookSearch from '~/components/books/BookSearch.vue'
-import BookSearchResults from '~/components/books/BookSearchResults.vue'
-import BookDetail from '~/components/books/BookDetails.vue'
-import { useMyFetch } from '~/composables/useMyFetch'
+});
 
-const books = ref([])
-const recommendedBooks = ref([])
-const loading = ref(false)
-const hasSearched = ref(false)
-const selectedBook = ref(null)
-const showFullDescription = ref(false)
-const aiSearch = ref(false)
+import CloseBar from '~/components/navigation/CloseBar.vue';
+import MenuBar from '~/components/navigation/MenuBar.vue';
+import BookSearch from '~/components/books/BookSearch.vue';
+import BookSearchResults from '~/components/books/BookSearchResults.vue';
+import BookDetails from '~/components/books/BookDetails.vue'; 
+import { useMyFetch } from '~/composables/useMyFetch';
+
+const authStore = useAuthStore();
+const bookStore = useBookStore();
+
+const books = ref([]);
+const recommendedBooks = ref([]);
+const loading = ref(false);
+const hasSearched = ref(false);
+const selectedBook = ref(null);
+const selectedBookDetails = ref(null);
+const aiSearch = ref(false);
+const user = await authStore.getUser();
+const defaultImage = '/assets/default_book.jpg';
+
+// Menu Bar Items
+const startItems = [
+  {
+    title: 'Start book now',
+    value: 'start',
+    icon: 'mdi-bookmark-plus',
+  },
+  {
+    title: 'Already read',
+    value: 'read',
+    icon: 'mdi-book-check-outline',
+  },
+];
+
+const handleStartItemClick = (item) => {
+  if (item.value === 'start') {
+    startBook();
+  } else if (item.value === 'read') {
+    // markAsRead();
+    window.alert('Completed read not implemented yet');
+  }
+};
+
+/**
+ * Save book to user as started reading
+ */
+const startBook = async () => {
+  const book = selectedBook.value;
+  if (!book) return;
+  try {
+    const body = {
+      title: book.title,
+      isbn: book?.isbn?.isbn13 || book?.isbn?.isbn10,
+      tags: book.categories,
+      createdById: user.id,
+      quickLink: book.quickLink,
+    };
+    const addBookToDb = await useMyFetch('/books', {
+      method: 'post',
+      body: body,
+    });
+    if (!addBookToDb) {
+      console.error('Failed to add book to database');
+      return;
+    }
+    console.log('Book added:', addBookToDb);
+    const addBookToUser = await useMyFetch(
+      `/users-books/${user.id}/${addBookToDb.id}`, {
+        method: 'post',
+        body: {
+          dateStarted: new Date(),
+        },
+      },
+    );
+    if (!addBookToUser) {
+      console.error('Failed to add book to user');
+      return;
+    }
+    console.log('Book started:', addBookToUser);
+
+    // reload bookStore
+    await bookStore.fetchBooks(user.id);
+
+    // Go back to home page with query param
+    navigateTo({ path: '/', query: { toast: 'book-started' } });
+  } catch (error) {
+    console.error('Failed to start book:', error);
+  }
+};
 
 // Function to fetch books
 const fetchBooks = async (query) => {
   if (query.trim() === '') {
-    books.value = []
-    recommendedBooks.value = []
-    return
+    books.value = [];
+    recommendedBooks.value = [];
+    return;
   }
 
-  loading.value = true
-  hasSearched.value = true
-  aiSearch.value = false
+  loading.value = true;
+  hasSearched.value = true;
+  aiSearch.value = false;
 
   try {
-    const response = await useMyFetch(`/books/?title=${encodeURIComponent(query)}`)
-    books.value = response
+    console.log('fetch books');
+    const response = 
+      await useMyFetch(`/books/?title=${encodeURIComponent(query)}`);
+    books.value = response;
   } catch (error) {
-    console.error('Failed to fetch books:', error)
-    books.value = []
+    console.error('Failed to fetch books:', error);
+    books.value = [];
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
+// Function to fetch AI recommendations
 const fetchRecommendations = async () => {
-  const isbn = selectedBook.value.isbn.isbn13 || selectedBook.value.isbn.isbn10
-  selectedBook.value = null
-  loading.value = true
-  aiSearch.value = true
+  const isbn = 
+    selectedBook.value.isbn?.isbn13 || 
+    selectedBook.value.isbn?.isbn10;
+  selectedBook.value = null;
+  selectedBookDetails.value = null;
+  loading.value = true;
+  aiSearch.value = true;
 
-  const response = await useMyFetch(`/ai/related-books?isbn=${isbn}`)
-  recommendedBooks.value = response.books
-  loading.value = false
-}
+  try {
+    const response = await useMyFetch(`/ai/related-books?isbn=${isbn}`);
+    recommendedBooks.value = response.books;
+  } catch (error) {
+    console.error('Failed to fetch recommendations:', error);
+    recommendedBooks.value = [];
+  } finally {
+    loading.value = false;
+  }
+};
 
 // Function to select a book and show details
 const selectBook = (book) => {
-  selectedBook.value = book
-}
+  selectedBook.value = book;
+  console.log('selected book:', selectedBook.value);
+  transformBookDetails(book);
+};
+
+// Function to transform book data to match BookDetails component structure
+const transformBookDetails = (book) => {
+  selectedBookDetails.value = {
+    volumeInfo: {
+      title: book.title || 'No Title Available',
+      authors: book.authors || ['Unknown Author'],
+      description: book.description || 'No description available',
+      imageLinks: {
+        thumbnail: book.image || defaultImage,
+      },
+      pageCount: book.pageCount || 'Page Count Not Available',
+      categories: book.categories || [],
+    },
+  };
+};
 
 // Function to clear the selected book and go back to search
 const clearSelection = () => {
-  selectedBook.value = null
-}
+  selectedBook.value = null;
+  selectedBookDetails.value = null;
+};
 
-// Function to toggle the description view
-const toggleDescription = () => {
-  showFullDescription.value = !showFullDescription.value
-}
+const handleCloseBarClick = () => {
+  if (selectedBook.value) {
+    clearSelection();
+  } else {
+    navigateTo('/');
+  }
+};
 
-const reset = () =>{
-  selectedBook.value = null
-  aiSearch.value = false
-  hasSearched.value = false
-  books.value = []
-  recommendedBooks.value = []
-}
+// Function to reset the search
+const reset = () => {
+  selectedBook.value = null;
+  selectedBookDetails.value = null;
+  aiSearch.value = false;
+  hasSearched.value = false;
+  books.value = [];
+  recommendedBooks.value = [];
+};
 </script>

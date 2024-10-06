@@ -12,10 +12,10 @@
         @keyup.enter="searchBooks"
       >
         <template #append-inner>
-          <v-btn
-            icon
-            @click="searchBooks"
-            aria-label="Search"
+          <v-btn 
+            icon 
+            @click="searchBooks" 
+            aria-label="Search" 
             class="bg-primary"
           >
             <v-icon>mdi-magnify</v-icon>
@@ -26,7 +26,6 @@
           <v-progress-linear
             :active="loading"
             color="primary"
-            :model-value="progress"
             height="5"
             indeterminate
           ></v-progress-linear>
@@ -37,18 +36,22 @@
 </template>
 
 <script setup>
-import { ref, defineEmits } from 'vue'
+import { ref, defineEmits, defineProps } from 'vue';
 
 const props = defineProps({
-  loading: Boolean
-})
+  loading: {
+    type: Boolean,
+    default: false,
+  },
+});
+const { loading } = toRefs(props);
 
-const searchQuery = ref('')
-const emit = defineEmits(['search'])
+const searchQuery = ref('');
+const emit = defineEmits(['search']);
 
 const searchBooks = () => {
   if (searchQuery.value.trim() !== '') {
-    emit('search', searchQuery.value)
+    emit('search', searchQuery.value);
   }
-}
+};
 </script>
