@@ -7,7 +7,7 @@ import {
  * Schedule to delete expired refresh tokens every hour
  */
 function scheduleTokenDeletion(): void {
-  cron.schedule('0 0 * * *', async () => {
+  cron.schedule('0 */6 * * *', async () => {
     try {
       const now = new Date();
       await deleteExpiredRefreshTokens(now);
