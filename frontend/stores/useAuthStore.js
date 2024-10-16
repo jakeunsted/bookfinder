@@ -29,11 +29,17 @@ export const useAuthStore = defineStore('auth', {
     async verify() {
       try {
         const response = await useMyFetch('/auth/check-status');
-        this.user = response.user;
+        if (response) {
+          this.user = response.user;
+        } else {
+          this.user = null;
+        }
       } catch (error) {
         this.user = null;
         console.error('Error with token:', error);
-        navigateTo('/login');
+        if (process.client) {
+          navigateTo('/login');
+        }
       }
     },
 

@@ -89,7 +89,13 @@ export const generateRefreshToken = (payload: object): string => {
  * @returns {object} - The decoded refresh token payload.
  */
 export const verifyRefreshToken = (token: string): object => {
-  return jwt.verify(token, process.env.REFRESH_SECRET_KEY as string) as object;
+  const decoded = jwt.verify(
+    token, process.env.REFRESH_SECRET_KEY as string
+  ) as object;
+  if (typeof decoded === 'object' && 'id' in decoded) {
+    return { id: decoded.id };
+  }
+  throw new Error('Invalid token payload');
 };
 
 /**

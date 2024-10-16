@@ -68,19 +68,19 @@ router.post(
   }
 
   try {
-    const decoded: TokenPayload = passportConfig.
-      verifyRefreshToken(refreshToken) as TokenPayload;
+    const decoded = 
+      passportConfig.verifyRefreshToken(refreshToken) as { id: number };
 
     const existingToken: RefreshToken | null = await 
       findRefreshToken(refreshToken);
     
     if (!existingToken) {
       res.status(403).send('Invalid refresh token');
-      return
+      return;
     }
 
-    const accessToken: string = passportConfig.
-      generateAccessToken({ id: decoded.id });
+    const accessToken: string = 
+      passportConfig.generateAccessToken({ id: decoded.id });
 
     res.json({ accessToken });
   } catch (error) {

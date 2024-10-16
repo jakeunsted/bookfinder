@@ -92,7 +92,6 @@ export const useAuth = () => {
         });
 
       if (!response.ok) {
-        logout();
         throw new Error('Failed to refresh token');
       }
 
@@ -100,7 +99,6 @@ export const useAuth = () => {
       const { accessToken } = data;
 
       if (!accessToken) {
-        logout();
         throw new Error('No access token received');
       }
 

@@ -6,7 +6,6 @@ export const useMyFetch = async (path, options = {}, useAuthHeader = true) => {
   const { logout, refreshAccessToken } = useAuth();
 
   const fetchWithToken = async (token) => {
-    // add auth headers if useAuthHeader is true
     const headers = {
       'Content-Type': 'application/json',
       ...(useAuthHeader && token ? { 'Authorization': `Bearer ${token}` } : {}),
@@ -18,12 +17,24 @@ export const useMyFetch = async (path, options = {}, useAuthHeader = true) => {
       headers,
       body: JSON.stringify(options.body),
     };
+
     try {
       const response = await fetch(url, fetchOptions);
 
       if (response.status === 401) {
-        logout();
-        return navigateTo('/login');
+        if (process.client) {
+          // Attempt to refresh the token
+          const newToken = await refreshAccessToken();
+          if (newToken) {
+            return await fetchWithToken(newToken);
+          } else {
+            logout();
+            return navigateTo('/login');
+          }
+        } else {
+          // Handle SSR 401 error
+          return null;
+        }
       }
 
       if (!response.ok) {
@@ -45,13 +56,12 @@ export const useMyFetch = async (path, options = {}, useAuthHeader = true) => {
   };
 
   try {
-    let token = useCookie('access_token').value;
+    let token = null;
+    if (process.client) {
+      token = useCookie('access_token').value;
+    }
     return await fetchWithToken(token);
   } catch (error) {
-    if (error.message === 'Unauthorized') {
-      const token = await refreshAccessToken();
-      return await fetchWithToken(token);
-    }
     console.error('Fetch error:', error);
     throw error;
   }
