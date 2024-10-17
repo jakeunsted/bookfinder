@@ -5,6 +5,9 @@
       :defaultImage="defaultImage"
       :loading="loading"
     />
+    <UserBookDetails
+      :book="book"
+    />
   </div>
 </template>
 
@@ -16,6 +19,7 @@ definePageMeta({
 
 import { useBookStore } from '@/stores/useBookStore';
 import BookDetails from '@/components/books/BookDetails.vue';
+import UserBookDetails from '~/components/books/UserBookDetails.vue';
 
 const route = useRoute();
 const bookStore = useBookStore();
@@ -45,6 +49,7 @@ onMounted(async () => {
   const userId = route.params.userid;
   await fetchBook(userId, bookId);
   if (book.value) {
+    console.log('book:', book.value);
     bookDetails.value = book.value?.book?.bookDetails;
   }
   loading.value = false;
