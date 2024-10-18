@@ -96,6 +96,7 @@ const formattedEndDate = computed(() => {
 
 watch(() => book.value.userRating, (newRating, oldRating) => {
   if (newRating !== oldRating) {
+    book.value.userRating = newRating;
     saveChanges();
   }
 });
@@ -109,7 +110,7 @@ const saveChanges = async () => {
         dateStarted: book?.value?.dateStarted,
         dateFinished: book?.value?.dateFinished,
         userNotes: book?.value?.userNotes,
-        userReview: book?.value?.userRating,
+        userRating: book?.value?.userRating,
       },
     },
   );
