@@ -1,5 +1,17 @@
 <template>
   <div class="w-full p-4">
+    <v-snackbar
+      v-model="snackbar"
+      color="success"
+      timeout="3000"
+      location="top"
+    >
+      Book updated successfully!
+      <template #action="{ attrs }">
+        <v-btn text v-bind="attrs" @click="snackbar = false">Close</v-btn>
+      </template>
+    </v-snackbar>
+
     <DateField
       :date="book.dateStarted"
       label="Date Started"
@@ -74,6 +86,7 @@ const props = defineProps({
 });
 const { book } = toRefs(props);
 const editingReview = ref(false);
+const snackbar = ref(false);
 
 watch(() => book.value.userRating, (newRating, oldRating) => {
   if (newRating !== oldRating) {
@@ -101,6 +114,8 @@ const saveChanges = async () => {
   );
   if (!updatedBook) {
     console.error('failed to update book');
+  } else {
+    snackbar.value = true;
   }
   book.value = updatedBook;
   editingReview.value = false;
