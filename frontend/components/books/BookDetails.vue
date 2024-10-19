@@ -39,7 +39,7 @@
 
     <!-- Description -->
     <h1 class="text-left text-xl">Description</h1>
-    <v-card :flat="true" color="transparent" class="text-left">
+    <v-card :flat="true" color="grey5" rounded="xl" class="text-left">
       <v-card-text>
         <p v-if="truncatedDescription">
           {{ truncatedDescription }}

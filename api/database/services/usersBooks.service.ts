@@ -198,8 +198,73 @@ async function addBookToUser(
   }
 }
 
+/**
+ * Update an existing user book entry
+ * @param {number} userId
+ * @param {number} bookId
+ * @param {number | null} userRating
+ * @param {Date | null} dateStarted
+ * @param {Date | null} dateFinished
+ * @param {string | null} userNotes
+ * @returns {Promise<UsersBooksType>} book
+ */
+async function updateUserBook(
+  userId: number,
+  bookId: number,
+  userRating: number | null = null,
+  dateStarted: Date | null = null,
+  dateFinished: Date | null = null,
+  userNotes: string | null = null
+): Promise<UsersBooksType> {
+  if (userRating !== null && (userRating < 1 || userRating > 10)) {
+    throw new Error('User rating must be between 1 and 10');
+  }
+  if (dateStarted && dateFinished && dateStarted > dateFinished) {
+    throw new Error('Date started must be before date finished');
+  }
+  if (dateStarted && dateStarted > new Date()) {
+    throw new Error('Date started must be in the past');
+  }
+
+  try {
+    const userBook = await UsersBooks.findOne({
+      where: { userId, bookId }
+    });
+
+    if (!userBook) {
+      throw new Error('Book not found for this user');
+    }
+
+    await userBook.update({
+      userRating,
+      dateStarted,
+      dateFinished,
+      userNotes
+    });
+
+    const updatedBook = await UsersBooks.findOne({
+      where: { id: userBook.id },
+      include: [
+        {
+          model: Book,
+          as: 'book'
+        }
+      ]
+    } as FindOptions);
+
+    return updatedBook as UsersBooksType;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error('An unknown error occurred');
+    }
+  }
+}
+
 export {
   getBooksForUser,
   getBookForUser,
-  addBookToUser
+  addBookToUser,
+  updateUserBook
 };

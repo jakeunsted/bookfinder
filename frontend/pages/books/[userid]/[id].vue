@@ -5,6 +5,9 @@
       :defaultImage="defaultImage"
       :loading="loading"
     />
+    <UserBookDetails
+      :book="book"
+    />
   </div>
 </template>
 
@@ -16,6 +19,7 @@ definePageMeta({
 
 import { useBookStore } from '@/stores/useBookStore';
 import BookDetails from '@/components/books/BookDetails.vue';
+import UserBookDetails from '@/components/books/UserBookDetails.vue';
 
 const route = useRoute();
 const bookStore = useBookStore();

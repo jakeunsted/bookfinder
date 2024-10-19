@@ -12,10 +12,11 @@ export const useMyFetch = async (path, options = {}, useAuthHeader = true) => {
       ...options.headers,
     };
 
-    const fetchOptions = {
+    let fetchOptions = {};
+    fetchOptions = {
       method: options.method || 'GET',
       headers,
-      body: JSON.stringify(options.body),
+      ...(options.body && { body: JSON.stringify(options.body) }),
     };
 
     try {
