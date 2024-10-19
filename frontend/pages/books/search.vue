@@ -139,7 +139,6 @@ const startBook = async () => {
       console.error('Failed to add book to database');
       return;
     }
-    console.log('Book added:', addBookToDb);
     const addBookToUser = await useMyFetch(
       `/users-books/${user.id}/${addBookToDb.id}`, {
         method: 'post',
@@ -152,7 +151,6 @@ const startBook = async () => {
       console.error('Failed to add book to user');
       return;
     }
-    console.log('Book started:', addBookToUser);
 
     // reload bookStore
     await bookStore.fetchBooks(user.id);
@@ -177,7 +175,6 @@ const fetchBooks = async (query) => {
   aiSearch.value = false;
 
   try {
-    console.log('fetch books');
     const response = 
       await useMyFetch(`/books/?title=${encodeURIComponent(query)}`);
     books.value = response;
@@ -213,7 +210,6 @@ const fetchRecommendations = async () => {
 // Function to select a book and show details
 const selectBook = (book) => {
   selectedBook.value = book;
-  console.log('selected book:', selectedBook.value);
   transformBookDetails(book);
 };
 

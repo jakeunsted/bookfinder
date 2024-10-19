@@ -19,9 +19,6 @@ export const useMyFetch = async (path, options = {}, useAuthHeader = true) => {
       ...(options.body && { body: JSON.stringify(options.body) }),
     };
 
-    console.log('method:', options.method);
-    console.log('fetchOptions', fetchOptions);
-
     try {
       const response = await fetch(url, fetchOptions);
 
@@ -40,8 +37,6 @@ export const useMyFetch = async (path, options = {}, useAuthHeader = true) => {
           return null;
         }
       }
-
-      console.log('response', response);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
