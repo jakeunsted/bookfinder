@@ -56,14 +56,15 @@
           Search new book
         </v-btn>
       </div>
-      <MenuBar v-if="selectedBook"
-               :centerIcon="'mdi-play'"
-               :leftIcon="'mdi-content-save'"
-               :rightIcon="'mdi-creation'"
-               @left-click="saveBook"
-               @right-click="fetchRecommendations"
-               :menuItems="startItems"
-               @menu-item-click="handleStartItemClick"
+      <MenuBar 
+        v-if="selectedBook"
+        :centerIcon="'mdi-play'"
+        :leftIcon="'mdi-content-save'"
+        :rightIcon="'mdi-creation'"
+        @left-click="saveBook"
+        @right-click="fetchRecommendations"
+        :menuItems="startItems"
+        @menu-item-click="handleStartItemClick"
       />
     </div>
   </div>
