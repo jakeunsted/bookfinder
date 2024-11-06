@@ -1,0 +1,7 @@
+{
+  "name": "NextChapter Ai",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue"
+}

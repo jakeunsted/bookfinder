@@ -1,90 +1,103 @@
 <template>
-  <div>
-    <v-snackbar
-      v-model="snackbar"
-      :timeout="snackbarTimeout"
-      :color="snackbarColor"
-      rounded="pill"
-      location="top"
-    >
-      {{ snackbarMessage }}
-      <template v-slot:actions>
-        <v-btn
-          color="white"
-          variant="text"
-          @click="snackbar = false"
-        >
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
+  <ion-page class="overflow-auto pb-64"> 
+    <div>
+      <v-snackbar
+        v-model="snackbar"
+        :timeout="snackbarTimeout"
+        :color="snackbarColor"
+        rounded="pill"
+        location="top"
+      >
+        {{ snackbarMessage }}
+        <template v-slot:actions>
+          <v-btn
+            color="white"
+            variant="text"
+            @click="snackbar = false"
+          >
+            Close
+          </v-btn>
+        </template>
+      </v-snackbar>
   
-    <div v-if="!userLoading">
-      <div class="flex flex-col justify-items-center items-center mt-10">
-        <div class="mb-5">
-          <v-avatar color="primary" size="80">
-            <span class="text-white">JU</span>
-          </v-avatar>
+      <div v-if="!userLoading">
+        <div class="flex flex-col justify-items-center items-center mt-10">
+          <div class="mb-5">
+            <v-avatar color="primary" size="80">
+              <span class="text-white">JU</span>
+            </v-avatar>
+          </div>
+          <div class="flex flex-col items-center">
+            <!-- users name -->
+            <span>{{ user.username }}</span>
+            <span>
+              Date Joined: 
+              {{ new Date(user.createdAt).toLocaleDateString('en-GB') }}
+            </span>
+          </div>
+          <v-sheet :height="2" class="my-10 w-10/12 bg-grey"></v-sheet>
         </div>
-        <div class="flex flex-col items-center">
-          <!-- users name -->
-          <span>{{ user.username }}</span>
-          <span>
-            Date Joined: 
-            {{ new Date(user.createdAt).toLocaleDateString('en-GB') }}
-          </span>
-        </div>
-        <v-sheet :height="2" class="my-10 w-10/12 bg-grey"></v-sheet>
-      </div>
 
-      <!-- Show books otherwise show blank message about 
-           adding your first book -->
-      <div v-if="!booksLoading">
-        <div v-if="readBooks.length">
-          <div class="flex flex-row flex-wrap justify-center">
-            <div v-for="book in readBooks" :key="book.book.id" class="p-2">
-              <v-card
-                class="max-w-44 min-w-44 p-2"
-                rounded="xl"
-                elevation="10"
-                @click="goToBookDetails(book.id)"
-              >
-                <v-card-text class="text-wrap text-center">
-                  <v-img 
-                    :src="book.book.bookDetails?.
-                      volumeInfo?.imageLinks?.thumbnail || 
-                      book.image" 
-                    class="pb-2 max-h-50"
-                  ></v-img>
-                  <p>{{ book.book.title }}</p>
-                  <p class="text-grey">
-                    {{ 
-                      new Date(book.dateFinished ||
-                        book.dateStarted ||
-                        book.createdAt).toLocaleDateString()
-                    }}
-                  </p>
-                </v-card-text>
-              </v-card>
-            </div>
+        <!-- Show books otherwise show blank message about 
+          adding your first book -->
+        <div v-if="!booksLoading">
+          <div v-if="readBooks.length">
+            <masonry-wall
+              :items="readBooks"
+              :ssr-columns="1"
+              :column-width="160"
+              :gap="16"
+              class="px-8"
+            >
+              <template #default="{ item }">
+                <v-card
+                  class="p-2"
+                  rounded="xl"
+                  elevation="10"
+                  @click="goToBookDetails(item.id)"
+                >
+                  <v-card-text class="text-wrap text-center">
+                    <v-img 
+                      :src="
+                        item.book.bookDetails?.
+                          volumeInfo?.imageLinks?.thumbnail || 
+                          item.image
+                      " 
+                      class="pb-2 max-h-50"
+                    ></v-img>
+                    <p>{{ item.book.title }}</p>
+                    <p class="text-grey">
+                      {{ 
+                        new Date(
+                          item.dateFinished || 
+                            item.dateStarted || 
+                            item.createdAt
+                        ).toLocaleDateString()
+                      }}
+                    </p>
+                  </v-card-text>
+                </v-card>
+              </template>
+            </masonry-wall>
+          </div>
+          <div v-else>
+            <span>You haven't read any books yet. Add your first book!</span>
           </div>
         </div>
         <div v-else>
-          <span>You haven't read any books yet. Add your first book!</span>
+          <v-progress-circular
+            indeterminate color="primary"
+          />
         </div>
       </div>
-      <div v-else>
-        <v-progress-circular
-          indeterminate color="primary"
-        />
-      </div>
     </div>
-  </div>
+  </ion-page>
 </template>
 
 <script setup>
 import { useBookStore } from '@/stores/useBookStore';
 import { useAuthStore } from '@/stores/useAuthStore';
+import MasonryWall from '@yeger/vue-masonry-wall';
 
 definePageMeta({
   middleware: 'auth',
@@ -102,13 +115,6 @@ const user = ref({});
 const goToBookDetails = (bookId) => {
   navigateTo(`/books/${user.value.id}/${bookId}`);
 };
-
-// Need three sections
-/**
- * 1. Books currently reading (not finished)
- * 2. Books not started and not finished
- * 3. Books finished
- */
 
 /**
  * watch for user.id to be set

@@ -1,14 +1,17 @@
 <template>
-  <div v-if="!loading">
-    <BookDetails
-      :bookDetails="bookDetails"
-      :defaultImage="defaultImage"
-      :loading="loading"
-    />
-    <UserBookDetails
-      :book="book"
-    />
-  </div>
+  <ion-page class="overflow-auto" :style="{'margin-top': marginAbove}">
+    <div v-if="!loading">
+      <BookDetails
+        :bookDetails="bookDetails"
+        :defaultImage="defaultImage"
+        :loading="loading"
+      />
+      <UserBookDetails
+        :book="book"
+        class="pb-32"
+      />
+    </div>
+  </ion-page>
 </template>
 
 <script setup>
@@ -23,6 +26,7 @@ import UserBookDetails from '@/components/books/UserBookDetails.vue';
 
 const route = useRoute();
 const bookStore = useBookStore();
+const { marginAbove } = useDevicePadding();
 
 const book = ref(null);
 const bookDetails = ref({});

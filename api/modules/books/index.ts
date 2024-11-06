@@ -21,7 +21,7 @@ interface Book {
  * @param {string} isbn 
  * @returns {Promise<Book>}
  */
-export async function getBookByISBN(isbn: string): Promise<Book> {
+export async function getBookByISBN(isbn: string): Promise<Book | null> {
   if (!isbn) {
     throw new Error('ISBN is required');
   }
@@ -30,20 +30,26 @@ export async function getBookByISBN(isbn: string): Promise<Book> {
 
   try {
     const response = await axios.get(url);
-    const book = response.data.items[0];
-    const returnBook: Book = {
-      title: book.volumeInfo.title,
-      authors: book.volumeInfo.authors,
-      description: book.volumeInfo.description,
-      pageCount: book.volumeInfo.pageCount,
-      categories: book.volumeInfo.categories,
-      image: book.volumeInfo.imageLinks.thumbnail,
-      quickLink: book.selfLink,
-    };
-    return returnBook;
+    if (response.data.totalItems === 0) {
+      return null;
+    }
+    const book = response?.data?.items[0];
+    if (book) {
+      const returnBook: Book = {
+        title: book.volumeInfo.title,
+        authors: book.volumeInfo.authors,
+        description: book.volumeInfo.description,
+        pageCount: book.volumeInfo.pageCount,
+        categories: book.volumeInfo.categories,
+        image: book?.volumeInfo?.imageLinks?.thumbnail,
+        quickLink: book.selfLink,
+      };
+      return returnBook;
+    }
+    return null;
   } catch (error) {
-    console.error('error', error);
-    throw error;
+    console.error('Error getting book by ISBN', error);
+    return null
   }
 }
 

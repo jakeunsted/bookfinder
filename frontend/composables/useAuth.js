@@ -1,4 +1,4 @@
-import { useCookie } from '#app';
+import { Preferences } from '@capacitor/preferences';
 
 export const useAuth = () => {
   const login = async (username, password) => {
@@ -6,7 +6,7 @@ export const useAuth = () => {
 
     if (!username || !password) {
       throw new Error('Username and password are required');
-    };
+    }
 
     try {
       const response = await fetch(`${config.public.baseUrl}/auth/login`, {
@@ -36,14 +36,8 @@ export const useAuth = () => {
         throw new Error('No user data');
       }
 
-      useCookie(
-        'access_token', 
-        process.env.COOKIE_OPTIONS,
-      ).value = accessToken;
-      useCookie(
-        'refresh_token',
-        process.env.COOKIE_OPTIONS,
-      ).value = refreshToken;
+      await Preferences.set({ key: 'access_token', value: accessToken });
+      await Preferences.set({ key: 'refresh_token', value: refreshToken });
       reloadNuxtApp({ path: '/' });
     } catch (error) {
       console.error('Login error:', error);
@@ -53,7 +47,9 @@ export const useAuth = () => {
 
   const logout = async () => {
     const config = useRuntimeConfig();
-    const refreshToken = useCookie('refresh_token').value;
+    const refreshToken = (
+      await Preferences.get({ key: 'refresh_token' })
+    ).value;
 
     try {
       await fetch(`${config.public.baseUrl}/auth/logout`, {
@@ -65,8 +61,8 @@ export const useAuth = () => {
       console.error('Logout error:', error);
     }
 
-    useCookie('access_token').value = null;
-    useCookie('refresh_token').value = null;
+    await Preferences.remove({ key: 'access_token' });
+    await Preferences.remove({ key: 'refresh_token' });
 
     // Redirect to login page
     return navigateTo('/login');
@@ -74,7 +70,9 @@ export const useAuth = () => {
 
   const refreshAccessToken = async () => {
     const config = useRuntimeConfig();
-    const refreshToken = useCookie('refresh_token').value;
+    const refreshToken = (
+      await Preferences.get({ key: 'refresh_token' })
+    ).value;
 
     if (!refreshToken) {
       logout();
@@ -82,8 +80,9 @@ export const useAuth = () => {
     }
 
     try {
-      const response = 
-        await fetch(`${config.public.baseUrl}/auth/refresh-token`, {
+      const response = await fetch(
+        `${config.public.baseUrl}/auth/refresh-token`,
+        {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
@@ -102,7 +101,7 @@ export const useAuth = () => {
         throw new Error('No access token received');
       }
 
-      useCookie('access_token').value = accessToken;
+      await Preferences.set({ key: 'access_token', value: accessToken });
       return accessToken;
     } catch (error) {
       console.error('Refresh token error:', error);

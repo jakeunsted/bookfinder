@@ -32,7 +32,8 @@ export async function checkForBookRecommendations(
  */
 export async function addBookRecommendations(
   bookId: number,
-  recommendations: object[]
+  recommendations: object[],
+  createdById: number
 ): Promise<BookRecommendations> {
   /**
    * Check if book recommendations already exists
@@ -46,6 +47,7 @@ export async function addBookRecommendations(
     const bookRecommendations = await BookRecommendations.create({
       bookId,
       recommendations,
+      createdById
     });
     return bookRecommendations;
   } catch (error) {

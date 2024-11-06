@@ -1,4 +1,5 @@
 import { useAuth } from '~/composables/useAuth';
+import { Preferences } from '@capacitor/preferences';
 
 export const useMyFetch = async (path, options = {}, useAuthHeader = true) => {
   const config = useRuntimeConfig();
@@ -59,7 +60,8 @@ export const useMyFetch = async (path, options = {}, useAuthHeader = true) => {
   try {
     let token = null;
     if (process.client) {
-      token = useCookie('access_token').value;
+      const accessToken = await Preferences.get({ key: 'access_token' });
+      token = accessToken.value;
     }
     return await fetchWithToken(token);
   } catch (error) {

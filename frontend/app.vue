@@ -1,11 +1,15 @@
 <template>
-  <v-app>
+  <v-app :style="{'margin-top': marginAbove}">
     <NuxtLoadingIndicator />
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
   </v-app>
 </template>
+
+<script setup>
+const { marginAbove } = useDevicePadding();
+</script>
 
 <style>
 .page-enter-active,
