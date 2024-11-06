@@ -1,8 +1,8 @@
 <template>
-  <ion-page>
+  <ion-page class="overflow-auto overscroll-none bg-window">
     <closeBar @closeBarClicked="handleCloseBarClick" />
-    <div class="h-full bg-window">
-      <div class="h-full flex flex-col items-center p-4">
+    <div class="h-full flex flex-col flex-grow"> 
+      <div class="flex flex-col flex-grow items-center p-4">
         <!-- Search Bar -->
         <BookSearch
           v-if="!selectedBook && !aiSearch"

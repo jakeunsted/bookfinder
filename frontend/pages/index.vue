@@ -1,5 +1,5 @@
 <template>
-  <ion-page class="overflow-auto"> 
+  <ion-page class="overflow-auto pb-64"> 
     <div>
       <v-snackbar
         v-model="snackbar"
