@@ -42,33 +42,43 @@
           adding your first book -->
         <div v-if="!booksLoading">
           <div v-if="readBooks.length">
-            <div class="flex flex-row flex-wrap justify-center">
-              <div v-for="book in readBooks" :key="book.book.id" class="p-2">
+            <masonry-wall
+              :items="readBooks"
+              :ssr-columns="1"
+              :column-width="160"
+              :gap="16"
+              class="px-8"
+            >
+              <template #default="{ item }">
                 <v-card
-                  class="max-w-44 min-w-44 p-2"
+                  class="p-2"
                   rounded="xl"
                   elevation="10"
-                  @click="goToBookDetails(book.id)"
+                  @click="goToBookDetails(item.id)"
                 >
                   <v-card-text class="text-wrap text-center">
                     <v-img 
-                      :src="book.book.bookDetails?.
-                        volumeInfo?.imageLinks?.thumbnail || 
-                        book.image" 
+                      :src="
+                        item.book.bookDetails?.
+                          volumeInfo?.imageLinks?.thumbnail || 
+                          item.image
+                      " 
                       class="pb-2 max-h-50"
                     ></v-img>
-                    <p>{{ book.book.title }}</p>
+                    <p>{{ item.book.title }}</p>
                     <p class="text-grey">
                       {{ 
-                        new Date(book.dateFinished ||
-                          book.dateStarted ||
-                          book.createdAt).toLocaleDateString()
+                        new Date(
+                          item.dateFinished || 
+                            item.dateStarted || 
+                            item.createdAt
+                        ).toLocaleDateString()
                       }}
                     </p>
                   </v-card-text>
                 </v-card>
-              </div>
-            </div>
+              </template>
+            </masonry-wall>
           </div>
           <div v-else>
             <span>You haven't read any books yet. Add your first book!</span>
@@ -87,6 +97,7 @@
 <script setup>
 import { useBookStore } from '@/stores/useBookStore';
 import { useAuthStore } from '@/stores/useAuthStore';
+import MasonryWall from '@yeger/vue-masonry-wall';
 
 definePageMeta({
   middleware: 'auth',
