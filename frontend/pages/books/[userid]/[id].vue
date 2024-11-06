@@ -1,16 +1,14 @@
 <template>
-  <ion-page>
-    <div v-if="!loading">
-      <BookDetails
-        :bookDetails="bookDetails"
-        :defaultImage="defaultImage"
-        :loading="loading"
-      />
-      <UserBookDetails
-        :book="book"
-      />
-    </div>
-  </ion-page>
+  <div v-if="!loading">
+    <BookDetails
+      :bookDetails="bookDetails"
+      :defaultImage="defaultImage"
+      :loading="loading"
+    />
+    <UserBookDetails
+      :book="book"
+    />
+  </div>
 </template>
 
 <script setup>
