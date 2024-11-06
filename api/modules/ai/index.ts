@@ -4,7 +4,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import { OpenAI } from 'openai';
-import { checkForBook } from '../../database/services/book.service.ts';
 
 interface OpenAIResponse {
   choices: {
@@ -24,18 +23,11 @@ const openai = new OpenAI({
  * a given ISBN number. It should return a list of ISBN 
  * numbers of similar books.
  */
-export const findRelatedBooks = async (isbn: string): Promise<string[]> => {
+export const findRelatedBooks = async (
+  isbn: string, title: string, author: string
+): Promise<string[]> => {
   if (!isbn) {
     throw new Error('ISBN is required');
-  }
-
-  /**
-   * Check if book has already been searched before in DB
-   */
-  const bookExists = await checkForBook(isbn);
-  if (bookExists) {
-    return bookExists.recommendations ? 
-      bookExists.recommendations as unknown as string[] : [];
   }
 
   const response: OpenAIResponse = await openai.chat.completions.create({
@@ -45,13 +37,15 @@ export const findRelatedBooks = async (isbn: string): Promise<string[]> => {
       content: `
         You are a chatbot designed to recommend books similar 
         to the one provided.
-        I will give you an ISBN number, you will give me a 
+        I will give you an ISBN number, book title and author, 
+        you will give me a 
         maximum of 10 recommended book ISBNs.
         Only return the valid ISBN numbers of the books. 
         Do not say any other words.
         Return in a JSON format, like 
-        {"one": "1234567890", "two": "1234567890", 
+        {"one": "1", "two": "2", 
         ... }.
+        The ISBN is ${isbn}, the book is named ${title} by ${author}
       `,
     }],
   });

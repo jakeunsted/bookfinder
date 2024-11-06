@@ -6,6 +6,11 @@
     </NuxtLayout>
   </v-app>
 </template>
+<!-- <template>
+  <ion-app>
+    <ion-router-outlet /> 
+  </ion-app>
+</template> -->
 
 <style>
 .page-enter-active,

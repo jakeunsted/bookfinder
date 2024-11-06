@@ -1,73 +1,75 @@
 <template>
-  <div>
-    <closeBar @closeBarClicked="handleCloseBarClick" />
-    <div class="h-full bg-window">
-      <div class="h-full flex flex-col items-center p-4">
-        <!-- Search Bar -->
-        <BookSearch
-          v-if="!selectedBook && !aiSearch"
-          @search="fetchBooks"
-          :loading="loading"
-        />
-
-        <!-- Book results from search -->
-        <BookSearchResults
-          v-if="!selectedBook && !aiSearch"
-          :books="books"
-          :loading="loading"
-          :hasSearched="hasSearched"
-          @select="selectBook"
-        />
-
-        <!-- Book results from AI recommendations -->
-        <BookSearchResults
-          v-if="!selectedBook && aiSearch"
-          :books="recommendedBooks"
-          :loading="loading"
-          :hasSearched="hasSearched"
-          @select="selectBook"
-        />
-
-        <!-- Book details when clicking into -->
-        <div v-if="selectedBook">
-          <BookDetails
-            :bookDetails="selectedBookDetails"
-            :defaultImage="defaultImage"
+  <ion-page>
+    <div>
+      <closeBar @closeBarClicked="handleCloseBarClick" />
+      <div class="h-full bg-window">
+        <div class="h-full flex flex-col items-center p-4">
+          <!-- Search Bar -->
+          <BookSearch
+            v-if="!selectedBook && !aiSearch"
+            @search="fetchBooks"
             :loading="loading"
-          >
-            <template #additional-info>
-              <!-- Buttons specific to this page -->
-              <v-btn @click="clearSelection" class="mt-4" color="primary">
-                Back to Search
-              </v-btn>
-              <v-btn 
-                @click="fetchRecommendations" 
-                class="mt-4" 
-                color="secondary"
-              >
-                Find Similar Books
-              </v-btn>
-            </template>
-          </BookDetails>
-        </div>
+          />
 
-        <!-- Reset button when AI search is active -->
-        <v-btn v-if="aiSearch && !loading" class="bg-primary" @click="reset">
-          Search new book
-        </v-btn>
+          <!-- Book results from search -->
+          <BookSearchResults
+            v-if="!selectedBook && !aiSearch"
+            :books="books"
+            :loading="loading"
+            :hasSearched="hasSearched"
+            @select="selectBook"
+          />
+
+          <!-- Book results from AI recommendations -->
+          <BookSearchResults
+            v-if="!selectedBook && aiSearch"
+            :books="recommendedBooks"
+            :loading="loading"
+            :hasSearched="hasSearched"
+            @select="selectBook"
+          />
+
+          <!-- Book details when clicking into -->
+          <div v-if="selectedBook">
+            <BookDetails
+              :bookDetails="selectedBookDetails"
+              :defaultImage="defaultImage"
+              :loading="loading"
+            >
+              <template #additional-info>
+                <!-- Buttons specific to this page -->
+                <v-btn @click="clearSelection" class="mt-4" color="primary">
+                  Back to Search
+                </v-btn>
+                <v-btn 
+                  @click="fetchRecommendations" 
+                  class="mt-4" 
+                  color="secondary"
+                >
+                  Find Similar Books
+                </v-btn>
+              </template>
+            </BookDetails>
+          </div>
+
+          <!-- Reset button when AI search is active -->
+          <v-btn v-if="aiSearch && !loading" class="bg-primary" @click="reset">
+            Search new book
+          </v-btn>
+        </div>
+        <MenuBar 
+          v-if="selectedBook"
+          :centerIcon="'mdi-play'"
+          :leftIcon="'mdi-content-save'"
+          :rightIcon="'mdi-creation'"
+          @left-click="saveBook"
+          @right-click="fetchRecommendations"
+          :menuItems="startItems"
+          @menu-item-click="handleStartItemClick"
+        />
       </div>
-      <MenuBar 
-        v-if="selectedBook"
-        :centerIcon="'mdi-play'"
-        :leftIcon="'mdi-content-save'"
-        :rightIcon="'mdi-creation'"
-        @left-click="saveBook"
-        @right-click="fetchRecommendations"
-        :menuItems="startItems"
-        @menu-item-click="handleStartItemClick"
-      />
     </div>
-  </div>
+  </ion-page>
 </template>
 
 <script setup>
@@ -77,10 +79,10 @@ definePageMeta({
 
 import CloseBar from '@/components/navigation/closeBar.vue';
 import MenuBar from '@/components/navigation/menuBar.vue';
-import BookSearch from '~/components/books/BookSearch.vue';
-import BookSearchResults from '~/components/books/BookSearchResults.vue';
-import BookDetails from '~/components/books/BookDetails.vue'; 
-import { useMyFetch } from '~/composables/useMyFetch';
+import BookSearch from '@/components/books/BookSearch.vue';
+import BookSearchResults from '@/components/books/BookSearchResults.vue';
+import BookDetails from '@/components/books/BookDetails.vue'; 
+// import { useMyFetch } from '~/composables/useMyFetch';
 
 const authStore = useAuthStore();
 const bookStore = useBookStore();
@@ -192,13 +194,21 @@ const fetchRecommendations = async () => {
   const isbn = 
     selectedBook.value.isbn?.isbn13 || 
     selectedBook.value.isbn?.isbn10;
+  const body = {
+    book: selectedBook.value,
+  };
+  const { title, authors } = selectedBook.value;
   selectedBook.value = null;
   selectedBookDetails.value = null;
   loading.value = true;
   aiSearch.value = true;
 
   try {
-    const response = await useMyFetch(`/ai/related-books?isbn=${isbn}`);
+    const response = await useMyFetch(
+      `/ai/related-books?isbn=${isbn}&title=${title}&author=${authors[0]}`, {
+        method: 'POST',
+        body: body,
+      });
     recommendedBooks.value = response.books;
   } catch (error) {
     console.error('Failed to fetch recommendations:', error);
@@ -211,6 +221,7 @@ const fetchRecommendations = async () => {
 // Function to select a book and show details
 const selectBook = (book) => {
   selectedBook.value = book;
+  console.log('selectedBook.value:', selectedBook.value);
   transformBookDetails(book);
 };
 

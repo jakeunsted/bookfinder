@@ -1,17 +1,19 @@
 <template>
-  <v-container>
-    <div v-if="loadingUser">
-      <v-progress-linear
-        v-if="loadingUser"
-        indeterminate
-        color="primary"
-      />
-    </div>
-    <div v-else>
-      <UserBlock :user="userData" class="d-flex justify-center" />
-      <v-divider></v-divider>
-    </div>
-  </v-container>
+  <ion-page>
+    <v-container>
+      <div v-if="loadingUser">
+        <v-progress-linear
+          v-if="loadingUser"
+          indeterminate
+          color="primary"
+        />
+      </div>
+      <div v-else>
+        <UserBlock :user="userData" class="d-flex justify-center" />
+        <v-divider></v-divider>
+      </div>
+    </v-container>
+  </ion-page>
 </template>
 
 <script setup>

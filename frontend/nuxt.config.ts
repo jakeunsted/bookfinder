@@ -3,6 +3,7 @@ import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 export default defineNuxtConfig({
   devtools: { enabled: false },
   css: ['~/assets/css/main.css'],
+  ssr: false,
   postcss: {
     plugins: {
       tailwindcss: {},
@@ -24,6 +25,7 @@ export default defineNuxtConfig({
     },
     './modules/eslintrc.js',
     '@pinia/nuxt',
+    '@nuxtjs/ionic',
   ],
   vite: {
     vue: {
