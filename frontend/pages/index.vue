@@ -1,5 +1,5 @@
 <template>
-  <ion-page> 
+  <ion-page class="overflow-auto"> 
     <div>
       <v-snackbar
         v-model="snackbar"
@@ -39,7 +39,7 @@
         </div>
 
         <!-- Show books otherwise show blank message about 
-           adding your first book -->
+          adding your first book -->
         <div v-if="!booksLoading">
           <div v-if="readBooks.length">
             <div class="flex flex-row flex-wrap justify-center">
