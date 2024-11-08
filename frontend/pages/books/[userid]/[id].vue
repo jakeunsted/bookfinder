@@ -1,5 +1,5 @@
 <template>
-  <ion-page class="overflow-auto" :style="{'margin-top': marginAbove}">
+  <ion-page class="overflow-auto mt-16" :style="{'margin-top': marginAbove}">
     <div v-if="!loading">
       <BookDetails
         :bookDetails="bookDetails"
