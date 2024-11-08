@@ -35,15 +35,26 @@
               {{ new Date(user.createdAt).toLocaleDateString('en-GB') }}
             </span>
           </div>
-          <v-sheet :height="2" class="my-10 w-10/12 bg-grey"></v-sheet>
+          <v-sheet :height="2" class="my-5 w-10/12 bg-grey"></v-sheet>
         </div>
+
+        <v-tabs
+          v-model="tab"
+          align-tabs="center"
+          slider-color="primary"
+          class="mb-5"
+        >
+          <v-tab value="read">Read</v-tab>
+          <v-tab value="currently-reading">Currently Reading</v-tab>
+          <v-tab value="to-read">To Read</v-tab>
+        </v-tabs>
 
         <!-- Show books otherwise show blank message about 
           adding your first book -->
         <div v-if="!booksLoading">
-          <div v-if="readBooks.length">
+          <div v-if="filteredBooks.length">
             <masonry-wall
-              :items="readBooks"
+              :items="filteredBooks"
               :ssr-columns="1"
               :column-width="160"
               :gap="16"
@@ -66,14 +77,17 @@
                       class="pb-2 max-h-50"
                     ></v-img>
                     <p>{{ item.book.title }}</p>
-                    <p class="text-grey">
-                      {{ 
-                        new Date(
-                          item.dateFinished || 
-                            item.dateStarted || 
-                            item.createdAt
-                        ).toLocaleDateString()
-                      }}
+                    <p class="text-grey" v-if="item.dateFinished">
+                      Finished -  
+                      {{ new Date(item.dateFinished).toLocaleDateString() }}
+                    </p>
+                    <p class="text-grey" v-else-if="item.dateStarted">
+                      Started -  
+                      {{ new Date(item.dateStarted).toLocaleDateString() }}
+                    </p>
+                    <p class="text-grey" v-else>
+                      Added - 
+                      {{ new Date(item.createdAt).toLocaleDateString() }}
                     </p>
                   </v-card-text>
                 </v-card>
@@ -106,11 +120,27 @@ definePageMeta({
 
 const route = useRoute();
 
+const tab = ref('currently-reading');
 const booksLoading = ref(true);
 const userLoading = ref(true);
+const allBooks = ref([]);
 const readBooks = ref([]);
-
+const currentlyReadingBooks = ref([]);
+const toReadBooks = ref([]);
 const user = ref({});
+
+const filteredBooks = computed(() => {
+  if (tab.value === 'read') {
+    return readBooks.value;
+  }
+  if (tab.value === 'currently-reading') {
+    return currentlyReadingBooks.value;
+  }
+  if (tab.value === 'to-read') {
+    return toReadBooks.value;
+  }
+  return [];
+});
 
 const goToBookDetails = (bookId) => {
   navigateTo(`/books/${user.value.id}/${bookId}`);
@@ -150,10 +180,13 @@ onMounted(async () => {
     const bookStore = await useBookStore();
     const authStore = await useAuthStore();
     user.value = authStore.getUser();
-    readBooks.value = await bookStore.getAllBooks;
-    if (!readBooks.value.length) {
-      readBooks.value = await bookStore.fetchBooks(user.value.id);
+    allBooks.value = await bookStore.getAllBooks;
+    if (!allBooks.value.length) {
+      allBooks.value = await bookStore.fetchBooks(user.value.id);
     }
+    readBooks.value = bookStore.getReadBooks;
+    currentlyReadingBooks.value = bookStore.getCurrentlyReadingBooks;
+    toReadBooks.value = bookStore.getWantToReadBooks;
   } catch (error) {
     console.error('An error occurred while fetching user books:', error);
   } finally {

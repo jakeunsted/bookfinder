@@ -39,6 +39,21 @@ export const useBookStore = defineStore('book', {
   },
   getters: {
     getAllBooks: (state) => { return state.books; },
+    getReadBooks: (state) => {
+      return state.books.filter(
+        (book) => book.dateFinished,
+      );
+    },
+    getCurrentlyReadingBooks: (state) => {
+      return state.books.filter(
+        (book) => book.dateStarted && !book.dateFinished,
+      );
+    },
+    getWantToReadBooks: (state) => {
+      return state.books.filter(
+        (book) => !book.dateStarted && !book.dateFinished,
+      );
+    },
     getBookById: (state) => (id) => {
       const userBook = state.books.find((userBook) => {
         return userBook.id === parseInt(id);
