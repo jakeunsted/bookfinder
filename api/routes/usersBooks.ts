@@ -81,10 +81,10 @@ router.post(
     .withMessage('User rating must be between 1 and 10'),
   body('dateStarted')
     .optional()
-    .isDate(),
+    .isString(),
   body('dateFinished')
     .optional()
-    .isDate(),
+    .isString(),
   body('userNotes')
     .optional()
     .isString(),
@@ -188,6 +188,30 @@ router.patch(
       } else {
         return res.status(500).send('An unknown error occurred');
       }
+    }
+  }
+)
+
+router.delete(
+  '/:userId/:bookId',
+  passportConfig.authenticate,
+  param('userId')
+    .isInt()
+    .withMessage('User ID is required'),
+  param('bookId')
+    .isInt()
+    .withMessage('Book ID is required'),
+  async (req: Request, res: Response) => {
+    const { userId, bookId } = req.params;
+    try {
+      await usersBooksService.deleteBookFromUser(
+        Number(userId),
+        Number(bookId)
+      );
+      console.log('deleted book, bookId', bookId);
+      res.status(200).send({ message: 'Book deleted' });
+    } catch (error) {
+      res.status(500).send((error as Error).message);
     }
   }
 )
