@@ -262,9 +262,36 @@ async function updateUserBook(
   }
 }
 
+/**
+ * Delete a book from a user
+ * @param {number} userId
+ * @param {number} bookId - the id of the book row to delete
+ * @returns {Promise<void>}
+ */
+async function deleteBookFromUser(
+  userId: number,
+  bookId: number
+): Promise<void> {
+  try {
+    const result = await UsersBooks.destroy({
+      where: { userId, id: bookId }
+    });
+    if (!result) {
+      throw new Error('Book not found');
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error('An unknown error occurred');
+    }
+  }
+}
+
 export {
   getBooksForUser,
   getBookForUser,
   addBookToUser,
-  updateUserBook
+  updateUserBook,
+  deleteBookFromUser,
 };
