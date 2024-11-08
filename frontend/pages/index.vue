@@ -149,6 +149,8 @@ definePageMeta({
 
 const route = useRoute();
 
+const { deleteBook } = useBookFunctions();
+
 const tab = ref('currently-reading');
 const booksLoading = ref(true);
 const userLoading = ref(true);
@@ -218,8 +220,23 @@ const quickItems = computed(() => {
   }
 });
 
-const handleItemClick = (item) => {
-  showBottomDrawer.value = false;
+const handleItemClick = async (item) => {
+  switch (item.value) {
+    case 'delete': {
+      await deleteBook(user.value.id, selectedBook.value.id);
+      reloadNuxtApp({ path: '/?toast=book-deleted' });
+      break;
+    }
+    case 'similar': {
+      break;
+    }
+    case 'read': {
+      break;
+    }
+    case 'start': {
+      break;
+    }
+  }
 };
 
 const filteredBooks = computed(() => {
@@ -296,8 +313,7 @@ const showToast = (message, color = 'success') => {
   snackbarColor.value = color;
   snackbar.value = true;
 };
-  
-// Fetch user books on component mount
+
 onMounted(async () => {
   let toastMsg = route?.query?.toast;
   if (toastMsg) {
@@ -307,8 +323,15 @@ onMounted(async () => {
     if (toastMsg === 'book-read') {
       showToast('Book has been marked as read!');
     }
+    if (toastMsg === 'book-saved') {
+      showToast('Book has been saved!');
+    }
+    if (toastMsg === 'book-deleted') {
+      showToast('Book has been deleted!');
+    }
   }
-      
+  navigateTo({ path: '/', query: {} });
+
   try {
     const bookStore = await useBookStore();
     const authStore = await useAuthStore();
