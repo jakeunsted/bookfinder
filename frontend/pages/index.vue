@@ -1,6 +1,6 @@
 <template>
-  <ion-page class="overflow-auto pb-64"> 
-    <div>
+  <ion-page class="overflow-auto pb-64">
+    <div class="z-[40]">
       <v-snackbar
         v-model="snackbar"
         :timeout="snackbarTimeout"
@@ -19,7 +19,6 @@
           </v-btn>
         </template>
       </v-snackbar>
-  
       <div v-if="!userLoading">
         <div class="flex flex-col justify-items-center items-center mt-10">
           <div class="mb-5">
@@ -28,7 +27,6 @@
             </v-avatar>
           </div>
           <div class="flex flex-col items-center">
-            <!-- users name -->
             <span>{{ user.username }}</span>
             <span>
               Date Joined: 
@@ -44,13 +42,11 @@
           slider-color="primary"
           class="mb-5"
         >
-          <v-tab value="read">Read</v-tab>
-          <v-tab value="currently-reading">Currently Reading</v-tab>
           <v-tab value="to-read">To Read</v-tab>
+          <v-tab value="currently-reading">Currently Reading</v-tab>
+          <v-tab value="read">Read</v-tab>
         </v-tabs>
 
-        <!-- Show books otherwise show blank message about 
-          adding your first book -->
         <div v-if="!booksLoading">
           <div v-if="filteredBooks.length">
             <masonry-wall
@@ -62,10 +58,13 @@
             >
               <template #default="{ item }">
                 <v-card
-                  class="p-2"
+                  class="p-2 hover:cursor-pointer hover:bg-gray-100"
                   rounded="xl"
                   elevation="10"
-                  @click="goToBookDetails(item.id)"
+                  @mousedown="startHold(item.id, $event)" 
+                  @mouseup="endHold(item.id)"
+                  @touchstart="startHold(item.id, $event)" 
+                  @touchend="endHold(item.id)"
                 >
                   <v-card-text class="text-wrap text-center">
                     <v-img 
@@ -103,6 +102,36 @@
             indeterminate color="primary"
           />
         </div>
+
+        <v-dialog
+          v-model="showQuickActions"
+          class="backdrop-blur"
+        >
+          <v-card rounded="xl">
+            <v-card-text class="text-wrap text-center">
+              <v-img
+                :src="selectedBook.book.bookDetails?.
+                  volumeInfo?.imageLinks?.thumbnail || 
+                  selectedBook.image
+                "
+                class="pb-2 max-h-36"
+              />
+              <p>{{ selectedBook.book.title }}</p>
+            </v-card-text>
+            <v-list>
+              <v-list-item
+                v-for="item in quickItems"
+                :key="item.value"
+                @click="handleItemClick(item)"
+              >
+                <v-list-item-title>
+                  <v-icon>{{ item.icon }}</v-icon>
+                  {{ item.title }}
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-card>
+        </v-dialog>
       </div>
     </div>
   </ion-page>
@@ -128,6 +157,70 @@ const readBooks = ref([]);
 const currentlyReadingBooks = ref([]);
 const toReadBooks = ref([]);
 const user = ref({});
+const selectedBook = ref({});
+const showQuickActions = ref(false);
+let holdTimeout = null;
+let holdLength = 0;
+
+const quickItems = computed(() => {
+  switch (tab.value) {
+    case 'currently-reading':
+      return [
+        {
+          title: 'Delete book from library',
+          value: 'delete',
+          icon: 'mdi-trash-can-outline',
+        },
+        {
+          title: 'Find similar books',
+          value: 'similar',
+          icon: 'mdi-creation',
+        },
+        {
+          title: 'Mark as read',
+          value: 'read',
+          icon: 'mdi-check',
+        },
+      ];
+    case 'to-read':
+      return [
+        {
+          title: 'Delete book from library',
+          value: 'delete',
+          icon: 'mdi-trash-can-outline',
+        },
+        {
+          title: 'Find similar books',
+          value: 'similar',
+          icon: 'mdi-creation',
+        },
+        {
+          title: 'Start reading',
+          value: 'start',
+          icon: 'mdi-book-open-page-variant',
+        },
+      ];
+    case 'read':
+      return [
+        {
+          title: 'Delete book from library',
+          value: 'delete',
+          icon: 'mdi-trash-can-outline',
+        },
+        {
+          title: 'Find similar books',
+          value: 'similar',
+          icon: 'mdi-creation',
+        },
+      ];
+    default:
+      return [];
+  }
+});
+
+const handleItemClick = (item) => {
+  showBottomDrawer.value = false;
+};
 
 const filteredBooks = computed(() => {
   if (tab.value === 'read') {
@@ -144,6 +237,46 @@ const filteredBooks = computed(() => {
 
 const goToBookDetails = (bookId) => {
   navigateTo(`/books/${user.value.id}/${bookId}`);
+};
+
+const openQuickActions = (bookId) => {
+  selectedBook.value = allBooks.value.find(book => book.id === bookId);
+  showQuickActions.value = true;
+};
+
+watch(showQuickActions, (newVal) => {
+  if (!newVal) {
+    setTimeout(() => {
+      selectedBook.value = null;
+    }, 500);
+  }
+});
+
+const handleClick = (bookId) => {
+  goToBookDetails(bookId);
+};
+
+const startHold = (bookId, event) => {
+  event.preventDefault();
+  holdLength = 0;
+  holdTimeout = setInterval(() => {
+    holdLength += 100;
+  }, 100);
+  setTimeout(() => {
+    clearInterval(holdTimeout);
+    openQuickActions(bookId);
+  }, 500);
+};
+
+const endHold = (bookId) => {
+  if (holdLength < 100) {
+    handleClick(bookId);
+  }
+  if (holdTimeout) {
+    clearInterval(holdTimeout);
+  }
+  holdLength = 0;
+  holdTimeout = null;
 };
 
 /**
