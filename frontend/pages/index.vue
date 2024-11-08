@@ -149,7 +149,7 @@ definePageMeta({
 
 const route = useRoute();
 
-const { deleteBook } = useBookFunctions();
+const { deleteBook, markAsRead, startReading } = useBookFunctions();
 
 const tab = ref('currently-reading');
 const booksLoading = ref(true);
@@ -228,12 +228,17 @@ const handleItemClick = async (item) => {
       break;
     }
     case 'similar': {
+      window.alert('Similar books not implemented yet');
       break;
     }
-    case 'read': {
+    case 'read': { 
+      await markAsRead(user.value.id, selectedBook.value.id);
+      reloadNuxtApp({ path: '/?toast=book-read' });
       break;
     }
     case 'start': {
+      await startReading(user.value.id, selectedBook.value.id);
+      reloadNuxtApp({ path: '/?toast=book-started' });
       break;
     }
   }

@@ -98,7 +98,7 @@ async function getBookForUser(
     const book = await UsersBooks.findOne({
       where: {
         userId,
-        bookId
+        id: bookId
       },
       include: [
         {
@@ -228,7 +228,7 @@ async function updateUserBook(
 
   try {
     const userBook = await UsersBooks.findOne({
-      where: { userId, bookId }
+      where: { userId, id: bookId }
     });
 
     if (!userBook) {
