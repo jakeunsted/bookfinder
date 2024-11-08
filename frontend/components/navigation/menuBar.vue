@@ -14,7 +14,7 @@
           v-touch:swipe.down="onExitClick"
           :height="7"
           :width="100"
-          class="bg-grey rounded-full"
+          class="bg-grey z-50 rounded-full"
         ></v-sheet>
       </v-container>
       <v-list>
@@ -34,7 +34,7 @@
     </v-navigation-drawer>
 
     <!-- Bottom Navigation Bar -->
-    <div class="fixed bottom-0 w-full h-24">
+    <div class="relative h-24">
       <!-- Floating Action Button -->
       <div
         class="absolute left-1/2 transform -translate-x-1/2 bottom-0 mb-15 z-10"
