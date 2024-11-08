@@ -119,6 +119,47 @@ const handleStartItemClick = (item) => {
 };
 
 /**
+ * Save book to user with no dateStarted
+ */
+const saveBook = async () => {
+  const book = selectedBook.value;
+  if (!book) return;
+  try {
+    const body = {
+      title: book.title,
+      isbn: book?.isbn?.isbn13 || book?.isbn?.isbn10,
+      tags: book.categories,
+      createdById: user.id,
+      quickLink: book.quickLink,
+    };
+    const addBookToDb = await useMyFetch('/books', {
+      method: 'post',
+      body: body,
+    });
+    if (!addBookToDb) {
+      console.error('Failed to add book to database');
+      return;
+    }
+    const addBookToUser = await useMyFetch(
+      `/users-books/${user.id}/${addBookToDb.id}`, {
+        method: 'post',
+      },
+    );
+    if (!addBookToUser) {
+      console.error('Failed to add book to user');
+      return;
+    }
+    // reload bookStore
+    await bookStore.fetchBooks(user.id);
+
+    // Go back to home page with query param
+    navigateTo({ path: '/', query: { toast: 'book-saved' } });
+  } catch (error) {
+    console.error('Failed to save book:', error);
+  }
+};
+
+/**
  * Save book to user as started reading
  */
 const startBook = async () => {
