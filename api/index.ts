@@ -1,6 +1,8 @@
 import dotenv from 'dotenv'; 
 dotenv.config();
 import express, { Request, Response } from 'express';
+import swaggerjsdoc from 'swagger-jsdoc'
+import swaggerUi from 'swagger-ui-express'
 import * as passportConfig from './passport-config.ts';
 import cors from 'cors';
 import booksRouter from './routes/books.ts';
@@ -18,10 +20,31 @@ app.use(passportConfig.initialize());
 app.use(express.json());
 
 app.use(cors({
-  origin: '*', // Allow requests from this origin
-  methods: ['GET', 'POST', 'PATCH', 'DELETE'], // Allow these HTTP methods
-  allowedHeaders: ['Content-Type', 'Authorization'] // Allow these headers
+  origin: '*',
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'NextChapterAI API',
+      version: '1.0.0',
+    },
+    servers: [
+      {
+        url: 'http://localhost:3001',
+      },
+      {
+        url: 'https://api.nextchapter.co.uk',
+      },
+    ],
+  },
+  apis: ['./routes/*.ts'],
+};
+const swaggerDocs = swaggerjsdoc(swaggerOptions)
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 
 app.get('/health', (req: Request, res: Response) => {
   res.status(200).send('OK');
