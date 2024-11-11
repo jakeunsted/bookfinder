@@ -42,6 +42,6 @@ In a new terminal, we need to sync the build:
 
 then we can launch:
 
-`npx @ionic/cli capacitor run ios --livereload-url=http://${LIP}:3000  --external --mode development`
+`npx @ionic/cli capacitor run ios --livereload-url=http://127.0.0.1:3000  --external --mode development`
 
-`npx @ionic/cli capacitor run android --livereload-url=http://${LIP}:3000  --external --mode development`
+`npx @ionic/cli capacitor run android --livereload-url=http://127.0.0.1:3000  --external --mode development`
