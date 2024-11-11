@@ -3,21 +3,60 @@ import { query } from 'express-validator';
 import * as passportConfig from '../passport-config.ts';
 import * as ai from '../modules/ai/index.ts';
 import * as booksModule from '../modules/books/index.ts';
-import { addBookRecord } from '../database/services/book.service.ts';
-import { 
-  addBookRecommendations 
-} from '../database/services/bookRecommendations.service.ts'
+// import { addBookRecord } from '../database/services/book.service.ts';
+// import { 
+//   addBookRecommendations 
+// } from '../database/services/bookRecommendations.service.ts'
 
 /**
  * Types
  */
-import { Book } from '../database/models/Book.model.ts'
-import { User } from '../database/models/user.model.ts'
+// import { Book } from '../database/models/Book.model.ts'
+// import { User } from '../database/models/user.model.ts'
 
 const router = express.Router();
 
 /**
- * GET route to find related books for given ISBN
+ * @swagger
+ * /related-books:
+ *   post:
+ *     summary: Get related books
+ *     tags: [AI]
+ *     parameters:
+ *       - in: query
+ *         name: isbn
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ISBN of the book
+ *       - in: query
+ *         name: title
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The title of the book
+ *       - in: query
+ *         name: author
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The author of the book
+ *     responses:
+ *       200:
+ *         description: List of related books
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 books:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       404:
+ *         description: No related books found
+ *       500:
+ *         description: Internal server error
  */
 router.post(
   '/related-books',

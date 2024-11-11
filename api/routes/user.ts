@@ -10,7 +10,61 @@ import {
 const router = express.Router();
 
 /**
- * Create a new user
+ * @swagger
+ * /signup:
+ *   post:
+ *     summary: Create a new user
+ *     tags: 
+ *       - User
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: The username of the user
+ *                 example: johndoe
+ *               password:
+ *                 type: string
+ *                 description: The password of the user
+ *                 example: password123
+ *               email:
+ *                 type: string
+ *                 description: The email of the user
+ *                 example: johndoe@example.com
+ *               role:
+ *                 type: string
+ *                 description: The role of the user
+ *                 example: admin
+ *     responses:
+ *       200:
+ *         description: User created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   description: The user ID
+ *                   example: 1
+ *                 username:
+ *                   type: string
+ *                   description: The username of the user
+ *                   example: johndoe
+ *                 email:
+ *                   type: string
+ *                   description: The email of the user
+ *                   example: johndoe@example.com
+ *                 role:
+ *                   type: string
+ *                   description: The role of the user
+ *                   example: admin
+ *       500:
+ *         description: Internal server error
  */
 router.post(
   '/signup',
@@ -40,7 +94,30 @@ router.post(
 );
 
 /**
- * Get a user's role by id
+ * @swagger
+ * /user/role/{id}:
+ *   get:
+ *     summary: Get user role by ID
+ *     tags: [User]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The user ID
+ *     responses:
+ *       200:
+ *         description: The user role
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               example: admin
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
  */
 router.get(
   '/role/:id',
@@ -60,7 +137,36 @@ router.get(
 );
 
 /**
- * Get user by id
+ * @swagger
+ * /user/{id}:
+ *   get:
+ *     summary: Get user by ID
+ *     tags: [User]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The user ID
+ *     responses:
+ *       200:
+ *         description: The user data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 name:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
  */
 router.get(
   '/:id',

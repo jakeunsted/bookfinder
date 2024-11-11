@@ -6,6 +6,31 @@ import { addBookRecord } from '../database/services/book.service.ts';
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * /books/{isbn}:
+ *   get:
+ *     summary: Get book by ISBN
+ *     tags: [Books]
+ *     parameters:
+ *       - in: path
+ *         name: isbn
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ISBN of the book
+ *     responses:
+ *       200:
+ *         description: The book data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       400:
+ *         description: Validation errors
+ *       500:
+ *         description: Internal server error
+ */
 router.get(
   '/:isbn',
   passportConfig.authenticate,
@@ -18,12 +43,39 @@ router.get(
   }
 );
 
+/**
+ * @swagger
+ * /books/:
+ *   get:
+ *     summary: Search books by title
+ *     tags: [Books]
+ *     parameters:
+ *       - in: query
+ *         name: title
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The title of the book
+ *     responses:
+ *       200:
+ *         description: List of books matching the title
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *       400:
+ *         description: Validation errors
+ *       500:
+ *         description: Internal server error
+ */
 router.get(
   '/',
   passportConfig.authenticate,
   query('title')
     .isString()
-    .withMessage('Name query parameter is required'),
+    .withMessage('Title query parameter is required'),
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -35,11 +87,83 @@ router.get(
       res.send(result);
     } catch (error) {
       console.log('error', error);
-      res.status(500).send('Error searching books by name');
+      res.status(500).send('Error searching books by title');
     }
   }
 );
 
+/**
+ * @swagger
+ * /books/:
+ *   post:
+ *     summary: Add a new book
+ *     tags: [Books]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: The title of the book
+ *                 example: "The Great Gatsby"
+ *               isbn:
+ *                 type: string
+ *                 description: The ISBN of the book
+ *                 example: "978-0743273565"
+ *               tags:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Tags associated with the book
+ *                 example: ["classic", "novel"]
+ *               createdById:
+ *                 type: integer
+ *                 description: The ID of the user who created the book record
+ *                 example: 1
+ *               quickLink:
+ *                 type: string
+ *                 description: A quick link to the book
+ *                 example: "https://example.com/book"
+ *     responses:
+ *       200:
+ *         description: Book added successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   description: The ID of the added book
+ *                   example: 1
+ *                 title:
+ *                   type: string
+ *                   description: The title of the book
+ *                   example: "The Great Gatsby"
+ *                 isbn:
+ *                   type: string
+ *                   description: The ISBN of the book
+ *                   example: "978-0743273565"
+ *                 tags:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   description: Tags associated with the book
+ *                   example: ["classic", "novel"]
+ *                 createdById:
+ *                   type: integer
+ *                   description: The ID of the user who created the book record
+ *                   example: 1
+ *                 quickLink:
+ *                   type: string
+ *                   description: A quick link to the book
+ *                   example: "https://example.com/book"
+ *       500:
+ *         description: Internal server error
+ */
 router.post(
   '/',
   passportConfig.authenticate,
