@@ -5,6 +5,7 @@ import {
 import { UsersBooks } from '../database/models/UsersBooks.model.ts';
 import { RefreshToken } from '../database/models/refreshToken.model.ts';
 import { User } from '../database/models//user.model.ts';
+import { RegisterToken } from '../database/models/RegisterToken.model.ts';
 
 // Define Models interface
 export interface Models {
@@ -13,4 +14,5 @@ export interface Models {
   UsersBooks: typeof UsersBooks;
   RefreshToken: typeof RefreshToken;
   User: typeof User;
+  RegisterToken: typeof RegisterToken;
 }

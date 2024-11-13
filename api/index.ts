@@ -11,6 +11,7 @@ import aiRouter from './routes/ai.ts';
 import authRouter from './routes/auth.ts';
 import usersBooksRouter from './routes/usersBooks.ts';
 import scheduleTokenDeletion from './tasks/removeTokens.ts';
+import registerTokenRouter from './routes/registerToken.ts';
 import { connectToDatabase } from './database/db.ts';
 
 const app = express();
@@ -55,7 +56,7 @@ app.use('/user', userRouter);
 app.use('/ai', aiRouter);
 app.use('/auth', authRouter);
 app.use('/users-books', usersBooksRouter);
-
+app.use('/register-token', registerTokenRouter);
 app.use((err: Error, req: Request, res: Response) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
