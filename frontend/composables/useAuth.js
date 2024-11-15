@@ -110,9 +110,54 @@ export const useAuth = () => {
     }
   };
 
+  const checkRegistrationToken = async (token) => {
+    const config = useRuntimeConfig();
+    const response = await fetch(
+      `${config.public.baseUrl}/register-token/validate`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error('Invalid registration token');
+    }
+
+    const data = await response.json();
+    const { valid } = data;
+
+    if (valid) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const register = async (username, password, email) => {
+    const config = useRuntimeConfig();
+    const response = await fetch(`${config.public.baseUrl}/user/signup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password, email, role: 'user' }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to register');
+    }
+
+    const data = await response.json();
+    const { id } = data;
+
+    return id;
+  };
+
   return {
     login,
     logout,
     refreshAccessToken,
+    checkRegistrationToken,
+    register,
   };
 };
