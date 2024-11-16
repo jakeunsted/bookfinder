@@ -4,6 +4,7 @@ import { BookRecommendations } from './models/BookRecommendations.model.ts';
 import { UsersBooks } from './models/UsersBooks.model.ts';
 import { RefreshToken } from './models/refreshToken.model.ts';
 import { User } from './models/user.model.ts';
+import { RegisterToken } from './models/RegisterToken.model.ts';
 import { Models } from '../types/Models.types.ts';
 
 /**
@@ -37,6 +38,7 @@ export async function connectToDatabase(): Promise<void> {
   UsersBooks.initModel(sequelize);
   RefreshToken.initModel(sequelize);
   User.initModel(sequelize);
+  RegisterToken.initModel(sequelize);
 
   const models: Models = {
     Book,
@@ -44,6 +46,7 @@ export async function connectToDatabase(): Promise<void> {
     UsersBooks,
     RefreshToken,
     User,
+    RegisterToken,
   };
 
   Book.associate?.(models);

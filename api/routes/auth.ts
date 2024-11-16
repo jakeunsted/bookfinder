@@ -23,7 +23,57 @@ interface TokenPayload {
 }
 
 /**
- * Login route to generate JWT
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Login user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: The username of the user
+ *                 example: johndoe
+ *               password:
+ *                 type: string
+ *                 description: The password of the user
+ *                 example: password123
+ *     responses:
+ *       200:
+ *         description: User logged in successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessToken:
+ *                   type: string
+ *                   description: The access token for the user
+ *                 refreshToken:
+ *                   type: string
+ *                   description: The refresh token for the user
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: number
+ *                       description: The user ID
+ *                     username:
+ *                       type: string
+ *                       description: The username of the user
+ *                     email:
+ *                       type: string
+ *                       description: The email of the user
+ *                     role:
+ *                       type: string
+ *                       description: The role of the user
+ *       500:
+ *         description: Internal server error
  */
 router.post(
   '/login',
@@ -55,7 +105,40 @@ router.post(
 );
 
 /**
- * Refresh token route to generate new JWT
+ * @swagger
+ * /refresh-token:
+ *   post:
+ *     summary: Refresh access token
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *                 description: The refresh token to exchange for a new access token
+ *                 example: "your_refresh_token_here"
+ *     responses:
+ *       200:
+ *         description: New access token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessToken:
+ *                   type: string
+ *                   description: The new access token
+ *                   example: "your_new_access_token_here"
+ *       401:
+ *         description: Refresh token not found
+ *       403:
+ *         description: Invalid refresh token
+ *       500:
+ *         description: Internal server error
  */
 router.post(
   '/refresh-token',
@@ -94,7 +177,36 @@ router.post(
 });
 
 /**
- * Logout route to invalidate JWT
+ * @swagger
+ * /logout:
+ *   post:
+ *     summary: Logout user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *                 description: The refresh token to invalidate
+ *                 example: "your_refresh_token_here"
+ *     responses:
+ *       200:
+ *         description: User logged out successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Success message
+ *                   example: "Logged out"
+ *       500:
+ *         description: Internal server error
  */
 router.post(
   '/logout',
@@ -109,7 +221,30 @@ router.post(
 );
 
 /**
- * Check user authentication status
+ * @swagger
+ * /check-status:
+ *   get:
+ *     summary: Check user authentication status
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: User is authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   description: The status of the user
+ *                   example: "Authenticated"
+ *                 user:
+ *                   type: object
+ *                   description: The user object
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
  */
 router.get(
   '/check-status',

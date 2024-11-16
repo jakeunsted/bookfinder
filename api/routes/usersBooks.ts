@@ -16,7 +16,29 @@ const isValidDate: CustomValidator = (value) => {
 };
 
 /**
- * Get all books for a user
+ * @swagger
+ * /users-books/{userId}:
+ *   get:
+ *     summary: Get books for a user
+ *     tags: [UsersBooks]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The user ID
+ *     responses:
+ *       200:
+ *         description: A list of books for the user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *       500:
+ *         description: Internal server error
  */
 router.get(
   '/:userId',
@@ -36,8 +58,33 @@ router.get(
 );
 
 /**
- * Get single book for a user.
- * User to get the users data of the book.
+ * @swagger
+ * /users-books/{userId}/{bookId}:
+ *   get:
+ *     summary: Get a book for a user
+ *     tags: [UsersBooks]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The user ID
+ *       - in: path
+ *         name: bookId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The book ID
+ *     responses:
+ *       200:
+ *         description: The book for the user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       500:
+ *         description: Internal server error
  */
 router.get(
   '/:userId/:bookId',
@@ -63,8 +110,60 @@ router.get(
 );
 
 /**
- * Save a book to a user
- * userId and bookId required in params
+ * @swagger
+ * /users-books/{userId}/{bookId}:
+ *   post:
+ *     summary: Add a book to a user
+ *     tags: [UsersBooks]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The user ID
+ *       - in: path
+ *         name: bookId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The book ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userRating:
+ *                 type: integer
+ *                 description: The user's rating of the book
+ *                 example: 8
+ *               dateStarted:
+ *                 type: string
+ *                 description: The date the user started reading the book
+ *                 example: "2022-01-01"
+ *               dateFinished:
+ *                 type: string
+ *                 description: The date the user finished reading the book
+ *                 example: "2022-02-01"
+ *               userNotes:
+ *                 type: string
+ *                 description: The user's notes about the book
+ *                 example: "A great read!"
+ *     responses:
+ *       200:
+ *         description: The book added to the user successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       400:
+ *         description: Validation errors
+ *       404:
+ *         description: Book does not exist
+ *       500:
+ *         description: Internal server error
  */
 router.post(
   '/:userId/:bookId',
@@ -122,9 +221,59 @@ router.post(
     }
   }
 );
-
 /**
- * update a users book entry
+ * @swagger 
+ * /users-books/{userId}/{bookId}:
+ *   patch:
+ *     summary: Update a users book entry
+ *     tags: [UsersBooks]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The user ID
+ *       - in: path
+ *         name: bookId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The book ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userRating:
+ *                 type: integer
+ *                 description: The user's rating of the book
+ *                 example: 8
+ *               dateStarted:
+ *                 type: string
+ *                 description: The date the user started reading the book
+ *                 example: "2022-01-01"
+ *               dateFinished:
+ *                 type: string
+ *                 description: The date the user finished reading the book
+ *                 example: "2022-02-01"
+ *               userNotes:
+ *                 type: string
+ *                 description: The user's notes about the book
+ *                 example: "A great read!"
+ *     responses:
+ *       200:
+ *         description: The book updated for the user successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       404:
+ *         description: Book does not exist for user
+ *       500:
+ *         description: Internal server error
  */
 router.patch(
   '/:userId/:bookId',
@@ -192,6 +341,40 @@ router.patch(
   }
 )
 
+/**
+ * @swagger
+ * /users-books/{userId}/{bookId}:
+ *   delete:
+ *     summary: Delete a book from a user
+ *     tags: [UsersBooks]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The user ID
+ *       - in: path
+ *         name: bookId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The book ID
+ *     responses:
+ *       200:
+ *         description: The book was successfully removed from the user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Success message
+ *                   example: "Book deleted"
+ *       500:
+ *         description: Internal server error
+ */
 router.delete(
   '/:userId/:bookId',
   passportConfig.authenticate,

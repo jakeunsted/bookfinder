@@ -10,7 +10,11 @@ export default [
   ...tseslint.configs.recommended,
   {
     rules: {
-      'max-len': ['error', { code: 80, ignoreUrls: true }],
+      'max-len': ['error', { 
+        code: 80, 
+        ignoreUrls: true, 
+        ignoreComments: true 
+      }],
     }
   }
 ];
