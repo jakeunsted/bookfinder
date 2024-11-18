@@ -7,7 +7,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /validate:
+ * /register-token/validate:
  *   post:
  *     summary: Validate a register token
  *     tags: 
@@ -59,7 +59,7 @@ router.post(
 
 /**
  * @swagger
- * /create:
+ * /register-token/create:
  *   post:
  *     summary: Create a new register token
  *     tags: 

@@ -24,7 +24,7 @@ interface TokenPayload {
 
 /**
  * @swagger
- * /login:
+ * /auth/login:
  *   post:
  *     summary: Login user
  *     tags: [Auth]
@@ -106,7 +106,7 @@ router.post(
 
 /**
  * @swagger
- * /refresh-token:
+ * /auth/refresh-token:
  *   post:
  *     summary: Refresh access token
  *     tags: [Auth]
@@ -178,7 +178,7 @@ router.post(
 
 /**
  * @swagger
- * /logout:
+ * /auth/logout:
  *   post:
  *     summary: Logout user
  *     tags: [Auth]
@@ -222,7 +222,7 @@ router.post(
 
 /**
  * @swagger
- * /check-status:
+ * /auth/check-status:
  *   get:
  *     summary: Check user authentication status
  *     tags: [Auth]
