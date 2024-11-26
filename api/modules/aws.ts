@@ -20,7 +20,7 @@ export async function uploadStorygraphImportFile(
   try {
     const command = new PutObjectCommand({
       Bucket: process.env.AWS_S3_BUCKET_NAME!,
-      Key: `storygraph/${user.id}`,
+      Key: `storygraph/${user.id}.csv`,
       Body: file.buffer
     });
 
