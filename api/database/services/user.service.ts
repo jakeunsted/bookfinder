@@ -149,8 +149,8 @@ export async function createRefreshToken(
   token: string
 ): Promise<void> {
   const expiresAt = new Date(
-    Date.now() + 24 * 60 * 60 * 1000
-  ); // 24 hours refresh token
+    Date.now() + 6 * 30 * 24 * 60 * 60 * 1000
+  ); // 6 months refresh token
   await RefreshToken.create({ userId, token, expiresAt });
 }
 
