@@ -67,14 +67,25 @@
                   @touchend="endHold(item.id)"
                 >
                   <v-card-text class="text-wrap text-center">
-                    <v-img 
-                      :src="
-                        item.book.bookDetails?.
-                          volumeInfo?.imageLinks?.thumbnail || 
-                          item.image
-                      " 
-                      class="pb-2 max-h-50"
-                    ></v-img>
+                    <div v-if="
+                      item.book.bookDetails?.volumeInfo?.
+                        imageLinks?.thumbnail || item.image
+                    ">
+                      <v-img 
+                        :src="
+                          item.book.bookDetails?.
+                            volumeInfo?.imageLinks?.thumbnail || 
+                            item.image
+                        " 
+                        class="pb-2 max-h-50"
+                      ></v-img>
+                    </div>
+                    <div v-else>
+                      <v-img 
+                        src="@/assets/default_book.jpg" 
+                        class="pb-2 max-h-50"
+                      />
+                    </div>
                     <p>{{ item.book.title }}</p>
                     <p class="text-grey" v-if="item.dateFinished">
                       Finished -  
