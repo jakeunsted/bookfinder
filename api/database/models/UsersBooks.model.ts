@@ -17,6 +17,7 @@ export class UsersBooks extends Model {
   public dateStarted?: Date;
   public dateFinished?: Date;
   public userNotes?: string;
+  public import?: boolean;
 
   public getUser!: BelongsToGetAssociationMixin<User>;
   public getBook!: BelongsToGetAssociationMixin<Book>;
@@ -73,6 +74,11 @@ export class UsersBooks extends Model {
         validate: {
           len: [1, 1000],
         },
+      },
+      import: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
       },
     }, {
       sequelize,

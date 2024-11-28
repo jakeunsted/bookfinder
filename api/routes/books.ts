@@ -2,7 +2,21 @@ import express, { Request, Response } from 'express';
 import { param, query, validationResult } from 'express-validator';
 import * as passportConfig from '../passport-config.ts';
 import * as books from '../modules/books/index.ts';
-import { addBookRecord } from '../database/services/book.service.ts';
+import { 
+  addBookRecord, 
+  storygraphImport 
+} from '../database/services/book.service.ts';
+import multer from 'multer';
+
+const storage = multer.memoryStorage();
+const fileFilter = (
+  req: Request,
+  file: Express.Multer.File,
+  cb: multer.FileFilterCallback
+) => {
+  cb(null, true);
+};
+const upload = multer({ storage: storage, fileFilter: fileFilter });
 
 const router = express.Router();
 
@@ -184,5 +198,12 @@ router.post(
     }
   }
 );
+
+router.post(
+  '/storygraph/import',
+  passportConfig.authenticate,
+  upload.single('file'),
+  storygraphImport
+)
 
 export default router;

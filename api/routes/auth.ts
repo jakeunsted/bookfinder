@@ -24,7 +24,7 @@ interface TokenPayload {
 
 /**
  * @swagger
- * /login:
+ * /auth/login:
  *   post:
  *     summary: Login user
  *     tags: [Auth]
@@ -106,21 +106,12 @@ router.post(
 
 /**
  * @swagger
- * /refresh-token:
+ * /auth/refresh-token:
  *   post:
  *     summary: Refresh access token
  *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               refreshToken:
- *                 type: string
- *                 description: The refresh token to exchange for a new access token
- *                 example: "your_refresh_token_here"
+ *     security:
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: New access token
@@ -178,7 +169,7 @@ router.post(
 
 /**
  * @swagger
- * /logout:
+ * /auth/logout:
  *   post:
  *     summary: Logout user
  *     tags: [Auth]
@@ -222,7 +213,7 @@ router.post(
 
 /**
  * @swagger
- * /check-status:
+ * /auth/check-status:
  *   get:
  *     summary: Check user authentication status
  *     tags: [Auth]

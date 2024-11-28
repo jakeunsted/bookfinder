@@ -31,6 +31,7 @@ interface UserBookDetails {
   dateFinished?: Date;
   userNotes?: string;
   quickLink?: string;
+  import?: boolean;
 }
 
 /**
@@ -153,7 +154,8 @@ async function addBookToUser(
   userRating: number | null = null,
   dateStarted: Date | null = null,
   dateFinished: Date | null = null,
-  userNotes: string | null = null
+  userNotes: string | null = null,
+  importBook: boolean = false
 ): Promise<UsersBooks> {
   if (userRating !== null && userRating > 10) {
     throw new Error('User rating must be between 1 and 10');
@@ -169,13 +171,23 @@ async function addBookToUser(
     throw new Error('Book does not exist');
   }
   try {
+    // check if book is already in user's books
+    const existingBook = await UsersBooks.findOne({
+      where: { userId, bookId }
+    });
+    if (existingBook) {
+      // get book with details and return
+      return existingBook as UsersBooksType;
+    }
+
     const userBook = await UsersBooks.create({
       userId,
       bookId,
-      userRating,
-      dateStarted,
-      dateFinished,
-      userNotes
+      userRating: userRating ? userRating : null,
+      dateStarted: dateStarted ? dateStarted : null,
+      dateFinished: dateFinished ? dateFinished : null,
+      userNotes: userNotes?.length ? userNotes : null,
+      import: importBook
     });
 
     const bookWithDetails = await UsersBooks.findOne({

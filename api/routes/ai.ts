@@ -18,7 +18,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /related-books:
+ * /ai/related-books:
  *   post:
  *     summary: Get related books
  *     tags: [AI]

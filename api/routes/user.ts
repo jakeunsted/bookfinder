@@ -11,7 +11,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /signup:
+ * user/signup:
  *   post:
  *     summary: Create a new user
  *     tags: 
