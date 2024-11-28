@@ -1,4 +1,7 @@
 import { Book } from '../models/Book.model.ts';
+import { Request, Response } from 'express';
+import { uploadStorygraphImportFile } from '../../modules/aws.ts';
+import { User } from '../models/user.model.ts';
 // import { getBookByISBN } from '../../modules/books';
 
 /**
@@ -92,5 +95,33 @@ export async function deleteBookRecord(isbn: string): Promise<Book | null> {
     return book;
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : String(error));
+  }
+}
+
+/**
+ * Storygraph export file upload
+ * @param {Request} req
+ * @param {Response} res
+ */
+export async function storygraphImport(
+  req: Request,
+  res: Response
+): Promise<void> {
+  try {
+    if (!req.file) {
+      res.status(400).send('No file uploaded');
+      return;
+    }
+
+    if (!req.user) {
+      res.status(401).send('Unauthorized');
+      return;
+    }
+
+    await uploadStorygraphImportFile(req.file, req.user as User);
+    res.status(200).send('File uploaded successfully');
+  } catch (error) {
+    console.error('Error during file upload:', error);
+    res.status(500).send('Error uploading file');
   }
 }

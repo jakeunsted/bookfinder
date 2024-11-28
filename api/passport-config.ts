@@ -79,7 +79,7 @@ export const generateAccessToken = (payload: object): string => {
  */
 export const generateRefreshToken = (payload: object): string => {
   return jwt.sign(
-    payload, process.env.REFRESH_SECRET_KEY as string, { expiresIn: '24hr' }
+    payload, process.env.REFRESH_SECRET_KEY as string, { expiresIn: '180d' }
   );
 };
 

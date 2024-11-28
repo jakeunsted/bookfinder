@@ -175,17 +175,17 @@ router.post(
     .isInt()
     .withMessage('Book ID is required'),
   body('userRating')
-    .optional()
+    .optional({ nullable: true })
     .isInt({ min: 1, max: 10 })
     .withMessage('User rating must be between 1 and 10'),
   body('dateStarted')
-    .optional()
+    .optional({ nullable: true })
     .isString(),
   body('dateFinished')
-    .optional()
+    .optional({ nullable: true })
     .isString(),
   body('userNotes')
-    .optional()
+    .optional({ nullable: true })
     .isString(),
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
@@ -207,6 +207,8 @@ router.post(
         return res.status(404).send('Book does not exist');
       }
 
+      console.log('adding book to user', userId, bookId)
+
       const book = await usersBooksService.addBookToUser(
         Number(userId),
         Number(bookId),
@@ -217,6 +219,7 @@ router.post(
       );
       res.json(book);
     } catch (error) {
+      console.error('error', error);
       res.status(500).send((error as Error).message);
     }
   }
