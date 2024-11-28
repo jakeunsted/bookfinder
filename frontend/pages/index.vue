@@ -169,11 +169,6 @@ const quickItems = computed(() => {
     case 'currently-reading':
       return [
         {
-          title: 'Delete book from library',
-          value: 'delete',
-          icon: 'mdi-trash-can-outline',
-        },
-        {
           title: 'Find similar books',
           value: 'similar',
           icon: 'mdi-creation',
@@ -183,14 +178,14 @@ const quickItems = computed(() => {
           value: 'read',
           icon: 'mdi-check',
         },
-      ];
-    case 'to-read':
-      return [
         {
           title: 'Delete book from library',
           value: 'delete',
           icon: 'mdi-trash-can-outline',
         },
+      ];
+    case 'to-read':
+      return [
         {
           title: 'Find similar books',
           value: 'similar',
@@ -201,18 +196,23 @@ const quickItems = computed(() => {
           value: 'start',
           icon: 'mdi-book-open-page-variant',
         },
-      ];
-    case 'read':
-      return [
         {
           title: 'Delete book from library',
           value: 'delete',
           icon: 'mdi-trash-can-outline',
         },
+      ];
+    case 'read':
+      return [
         {
           title: 'Find similar books',
           value: 'similar',
           icon: 'mdi-creation',
+        },
+        {
+          title: 'Delete book from library',
+          value: 'delete',
+          icon: 'mdi-trash-can-outline',
         },
       ];
     default:
