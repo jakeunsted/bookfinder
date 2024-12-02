@@ -13,6 +13,9 @@ export default defineNuxtConfig({
   build: {
     transpile: ['vuetify'],
   },
+  plugins: [
+    '@/plugins/disableContextMenu.js',
+  ],
   alias: {
     pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
   },
