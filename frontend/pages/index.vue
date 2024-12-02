@@ -61,10 +61,13 @@
                   class="p-2 hover:cursor-pointer hover:bg-gray-100"
                   rounded="xl"
                   elevation="10"
-                  @mousedown="startHold(item.id, $event)" 
-                  @mouseup="endHold(item.id)"
-                  @touchstart="startHold(item.id, $event)" 
-                  @touchend="endHold(item.id)"
+                  @touchstart="(e) => startHold(item.id, e)"
+                  @touchmove="checkForScroll"
+                  @touchend="(e) => endHold(item.id, e)"
+                  @mousedown="(e) => startHold(item.id, e)"
+                  @mousemove="checkForScroll"
+                  @mouseup="(e) => endHold(item.id, e)"
+                  @contextmenu="preventRightClick"
                 >
                   <v-card-text class="text-wrap text-center">
                     <div v-if="
@@ -172,8 +175,6 @@ const toReadBooks = ref([]);
 const user = ref({});
 const selectedBook = ref({});
 const showQuickActions = ref(false);
-let holdTimeout = null;
-let holdLength = 0;
 
 const quickItems = computed(() => {
   switch (tab.value) {
@@ -289,20 +290,58 @@ const handleClick = (bookId) => {
   goToBookDetails(bookId);
 };
 
+let holdTimeout = null;
+let holdLength = 0;
+let startX = 0;
+let startY = 0;
+let isDragging = false;
+const moveThreshold = 10;
+const verticalDragThreshold = 10;
+
 const startHold = (bookId, event) => {
-  event.preventDefault();
+  const touch = event.touches?.[0] || event;
+  startX = touch.clientX;
+  startY = touch.clientY;
+  isDragging = false;
   holdLength = 0;
   holdTimeout = setInterval(() => {
     holdLength += 100;
   }, 100);
   setTimeout(() => {
-    clearInterval(holdTimeout);
-    openQuickActions(bookId);
+    if (!isDragging && holdLength >= 500) {
+      clearInterval(holdTimeout);
+      openQuickActions(bookId);
+    }
   }, 500);
 };
 
+const checkForScroll = (event) => {
+  const touch = event.touches?.[0] || event;
+  const deltaX = Math.abs(touch.clientX - startX);
+  const deltaY = Math.abs(touch.clientY - startY);
+
+  if (deltaY > verticalDragThreshold) {
+    isDragging = true;
+    if (holdTimeout) {
+      clearInterval(holdTimeout);
+    }
+    holdLength = 0;
+    holdTimeout = null;
+  } else if (deltaX > moveThreshold) {
+    isDragging = true;
+    if (holdTimeout) {
+      clearInterval(holdTimeout);
+    }
+    holdLength = 0;
+    holdTimeout = null;
+  }
+};
+
 const endHold = (bookId) => {
-  if (holdLength < 100) {
+  if (isDragging) {
+    return;
+  }
+  if (holdLength < 500) {
     handleClick(bookId);
   }
   if (holdTimeout) {
@@ -310,6 +349,10 @@ const endHold = (bookId) => {
   }
   holdLength = 0;
   holdTimeout = null;
+};
+
+const preventRightClick = (event) => {
+  event.preventDefault();
 };
 
 /**
