@@ -10,15 +10,3 @@
 .page-leave-to {
   opacity: 0;
 }
-
-.max-800 {
-  max-width: 800px;
-}
-
-@media (min-width: 799px) {
-  body {
-    margin: 0 auto;
-    overflow-x: hidden;
-    max-width: 800px;
-  }
-}

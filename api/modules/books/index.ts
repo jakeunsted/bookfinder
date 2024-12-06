@@ -10,6 +10,7 @@ interface Book {
   categories: string[];
   image: string;
   quickLink: string;
+  bookDetails?: object;
   isbn?: {
     isbn10: string | null;
     isbn13: string | null;

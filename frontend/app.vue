@@ -2,7 +2,7 @@
   <v-app :style="{'margin-top': marginAbove}">
     <NuxtLoadingIndicator />
     <NuxtLayout>
-      <NuxtPage class="max-800" />
+      <NuxtPage />
     </NuxtLayout>
   </v-app>
 </template>

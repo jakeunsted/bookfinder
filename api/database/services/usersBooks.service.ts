@@ -2,6 +2,7 @@ import { FindOptions } from 'sequelize';
 import { UsersBooks } from '../models/UsersBooks.model.ts';
 import { Book } from '../models/Book.model.ts';
 import * as bookModule from '../../modules/books/index.ts';
+import { GoogleBooksApiResponse } from '../../types/GoogleBooks.types.ts';
 
 /**
  * interface for BookDetails
@@ -14,6 +15,7 @@ interface BookDetails {
   description: string;
   pageCount: number;
   averageRating: number;
+  bookDetails?: GoogleBooksApiResponse | undefined;
   imageLinks: {
     thumbnail: string;
   };
@@ -63,9 +65,20 @@ async function getBooksForUser(userId: number): Promise<UserBookDetails[]> {
     // Fetch detailed book information from Google Books API for each book
     const booksWithDetails = await Promise.all(
       (books as UsersBooksType[]).map(async (userBook: UsersBooksType) => {
-      const bookDetails = await bookModule.getFromBookQuickLink(
-        userBook.book.quickLink
-      );
+        let bookDetails: GoogleBooksApiResponse | undefined
+          = userBook.book.bookDetails;
+
+        /**
+         * Updating books to store a valid bookDetails object in the database
+         */
+        if (!bookDetails || !bookDetails.volumeInfo?.title) {
+          bookDetails = await bookModule.getFromBookQuickLink(
+            userBook.book.quickLink
+          );
+
+          await userBook.book.update({ bookDetails });
+        }
+
       return {
         ...userBook.toJSON(),
         book: {

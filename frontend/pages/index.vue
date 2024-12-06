@@ -107,8 +107,17 @@
               </template>
             </masonry-wall>
           </div>
-          <div v-else>
-            <span>You haven't read any books yet. Add your first book!</span>
+          <div v-else class="flex flex-col items-center">
+            <img src="@/assets/images/empty_bookshelf.svg" class="w-1/4 mt-5" />
+            <span class="mt-5">
+              {{ 
+                tab === 'currently-reading' 
+                  ? 'You are not reading any books right now.' 
+                  : tab === 'to-read' 
+                    ? 'You have not added any books to your library yet.'
+                    : 'You have not marked any books as read yet.'
+              }}
+            </span>
           </div>
         </div>
         <div v-else>
