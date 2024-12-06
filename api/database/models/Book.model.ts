@@ -8,6 +8,7 @@ import {
 import { User } from './user.model.ts';
 import { BookRecommendations } from './BookRecommendations.model.ts';
 import { Models } from '../../types/Models.types.ts';
+import { GoogleBooksApiResponse } from '../../types/GoogleBooks.types.ts';
 
 export class Book extends Model {
   public id!: number;
@@ -16,6 +17,7 @@ export class Book extends Model {
   public tags?: string[];
   public quickLink!: string;
   public createdById!: number;
+  public bookDetails?: GoogleBooksApiResponse;
 
   public readonly users?: User[];
   public readonly recommendations?: BookRecommendations;
@@ -49,6 +51,10 @@ export class Book extends Model {
       quickLink: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+      bookDetails: {
+        type: DataTypes.JSONB,
+        allowNull: true,
       },
       createdById: {
         type: DataTypes.INTEGER,
