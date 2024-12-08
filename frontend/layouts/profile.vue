@@ -4,9 +4,9 @@
       <slot />
     </div>
     <MenuBar
-      :centerIcon="'mdi-plus'"
-      :leftIcon="'mdi-home'"
-      :rightIcon="'mdi-creation'"
+      :centerIcon="menuBarValues.centerIcon"
+      :leftIcon="menuBarValues.leftIcon"
+      :rightIcon="menuBarValues.rightIcon"
       :menuItems="addItems"
       @left-click="onHomeClick"
       @right-click="onSuggestClick"
@@ -36,6 +36,21 @@ const addItems = [
     icon: 'mdi-book-plus',
   },
 ];
+
+const menuBarValues = ref({
+  centerIcon: {
+    icon: 'mdi-plus',
+    text: '',
+  },
+  leftIcon: {
+    icon: 'mdi-home',
+    text: 'Home',
+  },
+  rightIcon: {
+    icon: 'mdi-creation',
+    text: 'Suggest',
+  },
+});
 
 // Methods to handle events
 const onHomeClick = () => {
