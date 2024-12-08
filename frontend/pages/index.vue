@@ -186,7 +186,6 @@ const route = useRoute();
 
 const { deleteBook, markAsRead, startReading } = useBookFunctions();
 
-const tab = ref('currently-reading');
 const booksLoading = ref(true);
 const userLoading = ref(true);
 const allBooks = ref([]);
