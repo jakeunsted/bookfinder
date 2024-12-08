@@ -36,21 +36,12 @@
           <v-sheet :height="2" class="my-5 w-10/12 bg-grey"></v-sheet>
         </div>
 
-        <v-tabs
-          v-model="tab"
-          align-tabs="center"
-          slider-color="primary"
-          class="mb-5"
-        >
-          <v-tab value="to-read">To Read</v-tab>
-          <v-tab value="currently-reading">Currently Reading</v-tab>
-          <v-tab value="read">Read</v-tab>
-        </v-tabs>
-
+        <!-- Currently Reading Section -->
         <div v-if="!booksLoading">
-          <div v-if="filteredBooks.length">
+          <h2 class="text-center mb-4">Currently Reading</h2>
+          <div v-if="currentlyReadingBooks.length">
             <masonry-wall
-              :items="filteredBooks"
+              :items="currentlyReadingBooks"
               :ssr-columns="1"
               :column-width="160"
               :gap="16"
@@ -109,21 +100,42 @@
           </div>
           <div v-else class="flex flex-col items-center">
             <img src="@/assets/images/empty_bookshelf.svg" class="w-1/4 mt-5" />
-            <span class="mt-5">
-              {{ 
-                tab === 'currently-reading' 
-                  ? 'You are not reading any books right now.' 
-                  : tab === 'to-read' 
-                    ? 'You have not added any books to your library yet.'
-                    : 'You have not marked any books as read yet.'
-              }}
-            </span>
+            <span class="mt-5">You are not reading any books right now.</span>
           </div>
         </div>
         <div v-else>
           <v-progress-circular
             indeterminate color="primary"
           />
+        </div>
+
+
+        <!-- To Read Books Navigation Card -->
+        <div class="flex justify-center mt-10">
+          <v-card
+            class="p-4 hover:cursor-pointer hover:bg-gray-100"
+            rounded="xl"
+            elevation="10"
+            @click="navigateToToReadBooks"
+          >
+            <v-card-text class="text-center">
+              <h2>View To Read Books</h2>
+            </v-card-text>
+          </v-card>
+        </div>
+
+        <!-- Read Books Navigation Card -->
+        <div class="flex justify-center mt-10">
+          <v-card
+            class="p-4 hover:cursor-pointer hover:bg-gray-100"
+            rounded="xl"
+            elevation="10"
+            @click="navigateToReadBooks"
+          >
+            <v-card-text class="text-center">
+              <h2>View Read Books</h2>
+            </v-card-text>
+          </v-card>
         </div>
 
         <v-dialog
@@ -185,61 +197,23 @@ const user = ref({});
 const selectedBook = ref({});
 const showQuickActions = ref(false);
 
-const quickItems = computed(() => {
-  switch (tab.value) {
-    case 'currently-reading':
-      return [
-        {
-          title: 'Find similar books',
-          value: 'similar',
-          icon: 'mdi-creation',
-        },
-        {
-          title: 'Mark as read',
-          value: 'read',
-          icon: 'mdi-check',
-        },
-        {
-          title: 'Delete book from library',
-          value: 'delete',
-          icon: 'mdi-trash-can-outline',
-        },
-      ];
-    case 'to-read':
-      return [
-        {
-          title: 'Find similar books',
-          value: 'similar',
-          icon: 'mdi-creation',
-        },
-        {
-          title: 'Start reading',
-          value: 'start',
-          icon: 'mdi-book-open-page-variant',
-        },
-        {
-          title: 'Delete book from library',
-          value: 'delete',
-          icon: 'mdi-trash-can-outline',
-        },
-      ];
-    case 'read':
-      return [
-        {
-          title: 'Find similar books',
-          value: 'similar',
-          icon: 'mdi-creation',
-        },
-        {
-          title: 'Delete book from library',
-          value: 'delete',
-          icon: 'mdi-trash-can-outline',
-        },
-      ];
-    default:
-      return [];
-  }
-});
+const quickItems = ref([
+  {
+    title: 'Find similar books',
+    value: 'similar',
+    icon: 'mdi-creation',
+  },
+  {
+    title: 'Mark as read',
+    value: 'read',
+    icon: 'mdi-check',
+  },
+  {
+    title: 'Delete book from library',
+    value: 'delete',
+    icon: 'mdi-trash-can-outline',
+  },
+]);
 
 const handleItemClick = async (item) => {
   switch (item.value) {
@@ -264,19 +238,6 @@ const handleItemClick = async (item) => {
     }
   }
 };
-
-const filteredBooks = computed(() => {
-  if (tab.value === 'read') {
-    return readBooks.value;
-  }
-  if (tab.value === 'currently-reading') {
-    return currentlyReadingBooks.value;
-  }
-  if (tab.value === 'to-read') {
-    return toReadBooks.value;
-  }
-  return [];
-});
 
 const goToBookDetails = (bookId) => {
   navigateTo(`/books/${user.value.id}/${bookId}`);
@@ -380,6 +341,14 @@ const showToast = (message, color = 'success') => {
   snackbarMessage.value = message;
   snackbarColor.value = color;
   snackbar.value = true;
+};
+
+const navigateToReadBooks = () => {
+  navigateTo('/books/read');
+};
+
+const navigateToToReadBooks = () => {
+  navigateTo('/books/to-read');
 };
 
 onMounted(async () => {

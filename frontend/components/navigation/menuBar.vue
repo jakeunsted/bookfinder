@@ -59,7 +59,7 @@
       <div
         class="absolute bottom-0 w-5/6 mb-8 left-1/2 transform 
           -translate-x-1/2 flex justify-between items-center 
-          rounded-full py-2 px-8 bg-primary z-0 drop-shadow-lg"
+          rounded-full py-2 px-8 bg-primary z-0 drop-shadow-xl"
       >
         <v-btn
           @click="onLeftButtonClick"

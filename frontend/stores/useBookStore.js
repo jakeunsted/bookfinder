@@ -7,15 +7,6 @@ export const useBookStore = defineStore('book', {
     error: null,
   }),
   actions: {
-    // Bits to do
-    /**
-     * Need to sort books into:
-     * 1. Read (book.dateFinished)
-     * 2. Currently reading (book.dateStarted && !book.dateFinished)
-     * 3. Want to read (!book.dateStarted && !book.dateFinished)
-     * Will then need to have a getter for each of these.
-     */
-
     /**
      * Fetches books for a specific user.
      * @param {string} userId - The ID of the user whose books are to be
@@ -40,9 +31,10 @@ export const useBookStore = defineStore('book', {
   getters: {
     getAllBooks: (state) => { return state.books; },
     getReadBooks: (state) => {
+      // sorting by dateFinished desc
       return state.books.filter(
         (book) => book.dateFinished,
-      );
+      ).sort((a, b) => new Date(b.dateFinished) - new Date(a.dateFinished));
     },
     getCurrentlyReadingBooks: (state) => {
       return state.books.filter(
@@ -50,9 +42,10 @@ export const useBookStore = defineStore('book', {
       );
     },
     getWantToReadBooks: (state) => {
+      // sorting by createdAt desc
       return state.books.filter(
         (book) => !book.dateStarted && !book.dateFinished,
-      );
+      ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     },
     getBookById: (state) => (id) => {
       const userBook = state.books.find((userBook) => {
