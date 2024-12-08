@@ -288,19 +288,19 @@ router.patch(
     .isInt()
     .withMessage('Book ID is required'),
   body('userRating')
-    .optional()
+    .optional({ nullable: true })
     .isInt({ min: 1, max: 10 })
     .withMessage('User rating must be between 1 and 10'),
   body('dateStarted')
-    .optional()
+    .optional({ nullable: true })
     .isString()
     .withMessage('Invalid dateStared'),
   body('dateStarted')
-    .optional()
+    .optional({ nullable: true })
     .custom(isValidDate)
     .withMessage('Invalid dateStarted'),
   body('dateFinished')
-    .optional()
+    .optional({ nullable: true })
     .custom(isValidDate)
     .withMessage('Invalid dateFinished'),
   async (req: Request, res: Response) => {
