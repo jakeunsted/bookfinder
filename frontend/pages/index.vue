@@ -109,34 +109,21 @@
           />
         </div>
 
-
         <!-- To Read Books Navigation Card -->
-        <div class="flex justify-center mt-10">
-          <v-card
-            class="p-4 hover:cursor-pointer hover:bg-gray-100"
-            rounded="xl"
-            elevation="10"
-            @click="navigateToToReadBooks"
-          >
-            <v-card-text class="text-center">
-              <h2>View To Read Books</h2>
-            </v-card-text>
-          </v-card>
-        </div>
+        <PreviewCard 
+          title="View Books to Read" 
+          :books="toReadBooks"
+          @card-click="navigateToToReadBooks" 
+          v-if="!booksLoading"
+        />
 
         <!-- Read Books Navigation Card -->
-        <div class="flex justify-center mt-10">
-          <v-card
-            class="p-4 hover:cursor-pointer hover:bg-gray-100"
-            rounded="xl"
-            elevation="10"
-            @click="navigateToReadBooks"
-          >
-            <v-card-text class="text-center">
-              <h2>View Read Books</h2>
-            </v-card-text>
-          </v-card>
-        </div>
+        <PreviewCard 
+          title="View Books Read" 
+          :books="readBooks"
+          @card-click="navigateToReadBooks" 
+          v-if="!booksLoading"
+        />
 
         <v-dialog
           v-model="showQuickActions"
@@ -175,6 +162,7 @@
 <script setup>
 import { useBookStore } from '@/stores/useBookStore';
 import { useAuthStore } from '@/stores/useAuthStore';
+import PreviewCard from '@/components/books/PreviewCard.vue';
 import MasonryWall from '@yeger/vue-masonry-wall';
 
 definePageMeta({
