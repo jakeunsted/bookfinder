@@ -58,9 +58,9 @@
       </div>
       <MenuBar 
         v-if="selectedBook"
-        :centerIcon="'mdi-play'"
-        :leftIcon="'mdi-content-save'"
-        :rightIcon="'mdi-creation'"
+        :centerIcon="menuBarValues.centerIcon"
+        :leftIcon="menuBarValues.leftIcon"
+        :rightIcon="menuBarValues.rightIcon"
         @left-click="saveBook"
         @right-click="fetchRecommendations"
         :menuItems="startItems"
@@ -76,7 +76,7 @@ definePageMeta({
 });
 
 import CloseBar from '@/components/navigation/CloseBar.vue';
-import MenuBar from '@/components/navigation/MenuBar.vue';
+import MenuBar from '~/components/navigation/MenuBar.vue';
 import BookSearch from '@/components/books/BookSearch.vue';
 import BookSearchResults from '@/components/books/BookSearchResults.vue';
 import BookDetails from '@/components/books/BookDetails.vue'; 
@@ -108,6 +108,21 @@ const startItems = [
     icon: 'mdi-book-check-outline',
   },
 ];
+
+const menuBarValues = ref({
+  centerIcon: {
+    icon: 'mdi-play',
+    text: 'Start reading',
+  },
+  leftIcon: {
+    icon: 'mdi-content-save',
+    text: 'Save to read later',
+  },
+  rightIcon: {
+    icon: 'mdi-creation',
+    text: 'Find similar',
+  },
+});
 
 const handleStartItemClick = (item) => {
   if (item.value === 'start') {

@@ -4,8 +4,10 @@
     <v-navigation-drawer
       v-model="showDrawer"
       location="bottom"
+      :mobile="true"
       :class="[
-        'drawer w-5/6 left-1/2 transform -translate-x-1/2 bg-background',
+        'drawer w-5/6 left-1/2 transform -translate-x-1/2 ' +
+          'bg-background max-w-screen-sm',
         showDrawer ? 'z-40 bottom-0' : '-bottom-96',
       ]"
     >
@@ -34,7 +36,7 @@
     </v-navigation-drawer>
 
     <!-- Bottom Navigation Bar -->
-    <div class="relative h-24">
+    <div class="relative h-24 max-w-screen-sm mx-auto">
       <!-- Floating Action Button -->
       <div
         class="absolute left-1/2 transform -translate-x-1/2 bottom-0 mb-15 z-10"
@@ -48,7 +50,7 @@
             variant="text"
             class="rounded-circle h-16 drop-shadow-lg"
           >
-            <v-icon class="text-white text-4xl">{{ centerIcon }}</v-icon>
+            <v-icon class="text-white text-4xl">{{ centerIcon.icon }}</v-icon>
           </v-btn>
         </div>
       </div>
@@ -57,23 +59,29 @@
       <div
         class="absolute bottom-0 w-5/6 mb-8 left-1/2 transform 
           -translate-x-1/2 flex justify-between items-center 
-          rounded-full py-2 px-8 bg-primary z-0 drop-shadow-lg"
+          rounded-full py-2 px-8 bg-primary z-0 drop-shadow-xl"
       >
         <v-btn
           @click="onLeftButtonClick"
           :ripple="false"
           variant="text"
-          class="text-white text-2xl"
+          class="text-white text-base"
+          height="40"
+          stacked
         >
-          <v-icon>{{ leftIcon }}</v-icon>
+          <v-icon>{{ leftIcon.icon }}</v-icon>
+          <span class="text-xs">{{ leftIcon.text }}</span>
         </v-btn>
         <v-btn
           @click="onRightButtonClick"
           :ripple="false"
           variant="text"
-          class="text-white text-2xl"
+          class="text-white text-base"
+          height="40"
+          stacked
         >
-          <v-icon>{{ rightIcon }}</v-icon>
+          <v-icon>{{ rightIcon.icon }}</v-icon>
+          <span class="text-xs">{{ rightIcon.text }}</span>
         </v-btn>
       </div>
     </div>
@@ -87,16 +95,28 @@ import { ref } from 'vue';
 const props = defineProps({
   // Icons for the buttons
   centerIcon: {
-    type: String,
-    default: 'mdi-plus',
+    type: Object,
+    required: true,
+    default: () => ({
+      icon: 'mdi-plus',
+      text: '',
+    }),
   },
   leftIcon: {
-    type: String,
-    default: 'mdi-home',
+    type: Object,
+    required: true,
+    default: () => ({
+      icon: 'mdi-home',
+      text: 'Home',
+    }),
   },
   rightIcon: {
-    type: String,
-    default: 'mdi-creation',
+    type: Object,
+    required: true,
+    default: () => ({
+      icon: 'mdi-creation',
+      text: 'Suggest',
+    }),
   },
   // Menu items for the drawer
   menuItems: {
